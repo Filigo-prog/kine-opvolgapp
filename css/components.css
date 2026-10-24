@@ -1267,3 +1267,48 @@ select.input {
   border-color: var(--color-primary);
   background: var(--color-surface-alt);
 }
+
+/* Importeren uit VALD Hub */
+.vald-import > * + *,
+.vald-import + div > * + * {
+  margin-top: var(--space-4);
+}
+
+.import-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.import-include {
+  border: none;
+  padding: 0;
+  min-height: var(--touch-min);
+}
+
+.import-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: var(--space-3);
+}
+
+.import-fields .field {
+  margin-bottom: 0;
+}
+
+.import-result {
+  margin: var(--space-3) 0 0;
+  font-weight: 600;
+  color: var(--color-primary-strong);
+}
+
+.import-unit {
+  margin-top: var(--space-1);
+}
+
+.import-summary {
+  margin: 0;
+}

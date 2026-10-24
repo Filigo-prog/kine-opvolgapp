@@ -39,6 +39,7 @@ export function validateProtocol(protocol, expectedId) {
   problems.push(...validateTestGroups(protocol?.testGroups));
   if (!problems.length) problems.push(...validateLevels(protocol));
   problems.push(...validateHomeLog(protocol));
+  problems.push(...validateValdMapping(protocol));
   if (problems.length) throw new Error(`Protocol ${expectedId} is ongeldig: ${problems.join('; ')}.`);
   return protocol;
 }
@@ -124,6 +125,19 @@ function validateMilestones(protocol, criterionIds, tests) {
     } else if (trigger.type === 'homeLogWeeks' && !(trigger.weeks > 0 && trigger.perWeek > 0 && trigger.perWeek <= 7)) {
       problems.push(`${name}: "weeks" en "perWeek" (1 tot 7) ontbreken of zijn ongeldig`);
     }
+  }
+  return problems;
+}
+
+function validateValdMapping(protocol) {
+  if (!protocol.valdMapping) return [];
+  const tests = new Map((protocol.testGroups ?? []).flatMap((group) => group.tests).map((test) => [test.id, test]));
+  const problems = [];
+  for (const entry of protocol.valdMapping) {
+    const name = `valdMapping ${entry.match?.region ?? '?'} ${entry.match?.movement ?? '?'}`;
+    if (!entry.match?.region || !entry.match?.movement) problems.push(`${name}: "match.region" en "match.movement" ontbreken`);
+    if (tests.get(entry.test)?.type !== 'bilateral') problems.push(`${name}: test "${entry.test}" bestaat niet of heeft geen links/rechts`);
+    if (!entry.metric) problems.push(`${name}: "metric" ontbreekt`);
   }
   return problems;
 }

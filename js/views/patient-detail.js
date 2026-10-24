@@ -102,6 +102,9 @@ export async function patientDetailView({ code }) {
           ? h('p', { class: 'notice notice-success' }, `${protocol.completion?.title ?? 'Afgerond'}: bevestigd op ${formatDate(history.at(-1).date)}.`)
           : null,
         h('a', { class: 'btn btn-primary', href: `#/patient/${encodeURIComponent(code)}/test/nieuw` }, 'Testmoment ingeven'),
+        protocol.valdMapping
+          ? h('a', { class: 'btn btn-secondary', href: `#/patient/${encodeURIComponent(code)}/import` }, 'Importeren uit VALD Hub')
+          : null,
         h('a', { class: 'btn btn-secondary', href: `#/patient/${encodeURIComponent(code)}/criteria` }, 'Criteria-checklist'),
         h('div', { class: 'button-row' },
           h('a', { class: 'btn btn-secondary', href: `#/patient/${encodeURIComponent(code)}/voortgang` }, 'Bekijk patiëntweergave'),

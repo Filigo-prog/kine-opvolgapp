@@ -1,7 +1,7 @@
 // Service worker: houdt de app-shell offline beschikbaar.
 // Verhoog CACHE_VERSION bij elke wijziging en voeg nieuwe bestanden toe aan PRECACHE.
 
-const CACHE_VERSION = 'v8';
+const CACHE_VERSION = 'v9';
 const CACHE_NAME = `kine-${CACHE_VERSION}`;
 
 const PRECACHE = [
@@ -24,6 +24,7 @@ const PRECACHE = [
   './data/protocol-enkel.json',
   './js/domain/backup.js',
   './js/domain/criteria.js',
+  './js/domain/csv.js',
   './js/domain/dates.js',
   './js/domain/feedback.js',
   './js/domain/home-log.js',
@@ -33,6 +34,7 @@ const PRECACHE = [
   './js/domain/progression.js',
   './js/domain/protocol.js',
   './js/domain/test-session.js',
+  './js/domain/vald.js',
   './js/repo/backup.js',
   './js/repo/criteria-status.js',
   './js/repo/level-history.js',
@@ -41,6 +43,7 @@ const PRECACHE = [
   './js/repo/patients.js',
   './js/repo/settings.js',
   './js/repo/test-sessions.js',
+  './js/repo/vald-mappings.js',
   './js/io/backup.js',
   './js/ui/dom.js',
   './js/ui/format.js',
@@ -57,6 +60,7 @@ const PRECACHE = [
   './js/views/patient-view.js',
   './js/views/settings.js',
   './js/views/test-entry.js',
+  './js/views/vald-import.js',
 ];
 
 self.addEventListener('install', (event) => {

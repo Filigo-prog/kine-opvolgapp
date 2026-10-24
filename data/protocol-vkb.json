@@ -16,6 +16,24 @@
     "jokersPerWeek": 1,
     "tracksSwelling": true
   },
+  "valdMapping": [
+    {
+      "match": {
+        "region": "Knee",
+        "movement": "Extension"
+      },
+      "test": "quad-iso",
+      "metric": "Max Force (N)"
+    },
+    {
+      "match": {
+        "region": "Knee",
+        "movement": "Flexion"
+      },
+      "test": "ham-iso",
+      "metric": "Max Force (N)"
+    }
+  ],
   "patientFields": {
     "graft": {
       "label": "Transplantaat",
@@ -163,10 +181,10 @@
           "id": "quad-iso",
           "label": "Quadriceps isometrisch",
           "type": "bilateral",
-          "unit": "Nm",
+          "unit": "N",
           "compare": "lsi",
           "min": 0,
-          "max": 1000,
+          "max": 2500,
           "decimals": 0,
           "relativeToBodyWeight": true,
           "patientLabel": "Kracht van je dijspier",
@@ -177,10 +195,10 @@
           "id": "ham-iso",
           "label": "Hamstrings isometrisch",
           "type": "bilateral",
-          "unit": "Nm",
+          "unit": "N",
           "compare": "lsi",
           "min": 0,
-          "max": 1000,
+          "max": 2500,
           "decimals": 0,
           "relativeToBodyWeight": true,
           "patientLabel": "Kracht achterkant van je dijbeen",
