@@ -1,9 +1,11 @@
 // Overzicht van één patiënt in de therapeutmodus. Vertrekpunt voor testmomenten en criteria.
 
-import { getAllByIndex } from '../db.js';
 import { describeTimeSince, formatDate } from '../domain/dates.js';
+import { currentStage, isCompleted, levelByNumber, levelProgress, stageLabel } from '../domain/progression.js';
 import { loadProtocol, optionLabel } from '../domain/protocol.js';
 import { findTest } from '../domain/test-session.js';
+import { getCriteriaStatuses } from '../repo/criteria-status.js';
+import { getLevelHistory } from '../repo/level-history.js';
 import { deletePatient, getPatient } from '../repo/patients.js';
 import { listTestSessions } from '../repo/test-sessions.js';
 import { navigate } from '../router.js';
@@ -16,12 +18,15 @@ export async function patientDetailView({ code }) {
   const patient = await getPatient(code);
   if (!patient) return notFound('Patiënt niet gevonden', `Er is geen patiënt met code ${code}.`);
 
-  const [protocol, levels, sessions] = await Promise.all([
+  const [protocol, history, sessions, statuses] = await Promise.all([
     loadProtocol(patient.injury),
-    getAllByIndex('levelHistory', 'patientCode', code),
+    getLevelHistory(code),
     listTestSessions(code),
+    getCriteriaStatuses(code),
   ]);
-  const currentLevel = levels.reduce((max, entry) => Math.max(max, entry.level), 1);
+  const stage = currentStage(history);
+  const level = levelByNumber(protocol, stage);
+  const progress = level ? levelProgress(level, statuses) : null;
   const editHref = `#/patient/${encodeURIComponent(code)}/bewerken`;
 
   const associated = [
@@ -61,7 +66,7 @@ export async function patientDetailView({ code }) {
     h('div', { class: 'page-head' },
       h('div', {},
         h('h1', {}, patient.code),
-        h('p', { class: 'muted page-subtitle' }, `${protocol.name}, level ${currentLevel}`),
+        h('p', { class: 'muted page-subtitle' }, `${protocol.name}, ${stageLabel(protocol, stage).toLowerCase()}`),
       ),
       h('a', { class: 'btn btn-secondary', href: editHref }, 'Gegevens bewerken'),
     ),
@@ -73,9 +78,19 @@ export async function patientDetailView({ code }) {
       ),
       h('div', { class: 'card stack' },
         h('h2', {}, 'Opvolging'),
+        level
+          ? h('div', {},
+            h('p', { class: 'level-kicker' }, `Level ${level.number} van ${protocol.levels.length}`),
+            h('p', { class: 'level-title' }, level.title),
+            h('div', { class: 'progress', role: 'presentation' },
+              h('span', { style: `width: ${progress.total ? (progress.met / progress.total) * 100 : 100}%` })),
+            h('p', { class: 'muted progress-text' }, `${progress.met} van ${progress.total} criteria voldaan`))
+          : null,
+        isCompleted(stage, protocol)
+          ? h('p', { class: 'notice notice-success' }, `${protocol.completion?.title ?? 'Afgerond'}: bevestigd op ${formatDate(history.at(-1).date)}.`)
+          : null,
         h('a', { class: 'btn btn-primary', href: `#/patient/${encodeURIComponent(code)}/test/nieuw` }, 'Testmoment ingeven'),
-        // Wordt actief in stap 4.
-        h('button', { type: 'button', class: 'btn btn-secondary', disabled: true }, 'Criteria-checklist'),
+        h('a', { class: 'btn btn-secondary', href: `#/patient/${encodeURIComponent(code)}/criteria` }, 'Criteria-checklist'),
       ),
     ),
     h('div', { class: 'card sessions-card' },

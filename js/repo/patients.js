@@ -76,12 +76,10 @@ export async function listPatientSummaries() {
     getAll('testSessions'),
   ]);
 
+  // Huidig level = hoogste vrijgegeven level.
   const currentLevel = new Map();
   for (const entry of levels) {
-    const best = currentLevel.get(entry.patientCode);
-    if (!best || entry.date > best.date || (entry.date === best.date && entry.level > best.level)) {
-      currentLevel.set(entry.patientCode, entry);
-    }
+    currentLevel.set(entry.patientCode, Math.max(currentLevel.get(entry.patientCode) ?? 1, entry.level));
   }
 
   const lastTest = new Map();
@@ -92,7 +90,7 @@ export async function listPatientSummaries() {
 
   return patients.map((patient) => ({
     patient,
-    level: currentLevel.get(patient.code)?.level ?? 1,
+    level: currentLevel.get(patient.code) ?? 1,
     lastTestDate: lastTest.get(patient.code) ?? null,
   }));
 }

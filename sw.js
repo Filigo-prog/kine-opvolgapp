@@ -1,7 +1,7 @@
 // Service worker: houdt de app-shell offline beschikbaar.
 // Verhoog CACHE_VERSION bij elke wijziging en voeg nieuwe bestanden toe aan PRECACHE.
 
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = `kine-${CACHE_VERSION}`;
 
 const PRECACHE = [
@@ -21,11 +21,15 @@ const PRECACHE = [
   './js/db.js',
   './data/protocol-vkb.json',
   './data/protocol-enkel.json',
+  './js/domain/criteria.js',
   './js/domain/dates.js',
   './js/domain/lsi.js',
   './js/domain/patient.js',
+  './js/domain/progression.js',
   './js/domain/protocol.js',
   './js/domain/test-session.js',
+  './js/repo/criteria-status.js',
+  './js/repo/level-history.js',
   './js/repo/patients.js',
   './js/repo/settings.js',
   './js/repo/test-sessions.js',
@@ -34,6 +38,7 @@ const PRECACHE = [
   './js/ui/dialog.js',
   './js/ui/mode.js',
   './js/ui/not-found.js',
+  './js/views/criteria-checklist.js',
   './js/views/patient-detail.js',
   './js/views/patient-form.js',
   './js/views/patient-home.js',

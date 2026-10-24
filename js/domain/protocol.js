@@ -1,5 +1,7 @@
 // Laadt de klinische protocollen uit /data. De inhoud staat in JSON, niet in de code.
 
+import { CRITERION_TYPES, METRICS, OPERATOR_NAMES } from './criteria.js';
+
 export const INJURIES = ['vkb', 'enkel'];
 
 const cache = new Map();
@@ -34,6 +36,7 @@ export function validateProtocol(protocol, expectedId) {
   if (!/^[A-Z]{2,5}$/.test(protocol?.codePrefix ?? '')) problems.push('"codePrefix" moet 2 tot 5 hoofdletters zijn');
   if (typeof protocol?.patientFields !== 'object') problems.push('"patientFields" ontbreekt');
   problems.push(...validateTestGroups(protocol?.testGroups));
+  if (!problems.length) problems.push(...validateLevels(protocol));
   if (problems.length) throw new Error(`Protocol ${expectedId} is ongeldig: ${problems.join('; ')}.`);
   return protocol;
 }
@@ -64,6 +67,39 @@ function validateTestGroups(groups) {
       }
     }
   }
+  return problems;
+}
+
+function validateLevels(protocol) {
+  if (!Array.isArray(protocol.levels)) return ['"levels" ontbreekt'];
+  const problems = [];
+  const tests = new Map(protocol.testGroups.flatMap((group) => group.tests).map((test) => [test.id, test]));
+  const ids = new Set();
+  protocol.levels.forEach((level, index) => {
+    if (level.number !== index + 1) problems.push(`level ${index + 1}: "number" moet ${index + 1} zijn`);
+    if (!level.title) problems.push(`level ${index + 1}: "title" ontbreekt`);
+    for (const criterion of level.criteria ?? []) {
+      const name = `criterium "${criterion.id}"`;
+      if (!criterion.id || ids.has(criterion.id)) problems.push(`${name}: id ontbreekt of komt dubbel voor`);
+      ids.add(criterion.id);
+      if (!criterion.label) problems.push(`${name}: "label" ontbreekt`);
+      if (!CRITERION_TYPES.includes(criterion.type)) problems.push(`${name}: onbekend type "${criterion.type}"`);
+      if (criterion.type === 'minTime' && !(criterion.weeks > 0 || criterion.months > 0)) {
+        problems.push(`${name}: "weeks" of "months" ontbreekt`);
+      }
+      if (criterion.type === 'measurement') {
+        const testIds = criterion.tests ?? [criterion.test];
+        for (const testId of testIds) {
+          if (!tests.has(testId)) problems.push(`${name}: test "${testId}" bestaat niet`);
+        }
+        if (!METRICS.includes(criterion.metric)) problems.push(`${name}: onbekende "metric" "${criterion.metric}"`);
+        if (!OPERATOR_NAMES.includes(criterion.operator)) problems.push(`${name}: onbekende "operator" "${criterion.operator}"`);
+        if (criterion.operator === 'in' ? !Array.isArray(criterion.values) : !Number.isFinite(criterion.threshold)) {
+          problems.push(`${name}: "threshold" of "values" ontbreekt`);
+        }
+      }
+    }
+  });
   return problems;
 }
 

@@ -39,3 +39,19 @@ export function formatDate(iso) {
   const [y, m, d] = iso.split('-').map(Number);
   return formatter.format(new Date(y, m - 1, d));
 }
+
+/** 'JJJJ-MM-DD' + n kalenderdagen. */
+export function addDays(iso, days) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d + days));
+  return date.toISOString().slice(0, 10);
+}
+
+/** 'JJJJ-MM-DD' + n maanden; 31 jan + 1 maand → 28/29 feb. */
+export function addMonths(iso, months) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const target = new Date(Date.UTC(y, m - 1 + months, 1));
+  const lastDay = new Date(Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0)).getUTCDate();
+  target.setUTCDate(Math.min(d, lastDay));
+  return target.toISOString().slice(0, 10);
+}

@@ -1,4 +1,5 @@
 import { describeTimeSince, formatDate } from '../domain/dates.js';
+import { stageLabel } from '../domain/progression.js';
 import { loadAllProtocols } from '../domain/protocol.js';
 import { listPatientSummaries } from '../repo/patients.js';
 import { h } from '../ui/dom.js';
@@ -30,7 +31,7 @@ function patientRow({ patient, level, lastTestDate }, protocol) {
         h('span', { class: 'muted' }, `${protocol?.name ?? patient.injury}, ${sideLabel}`),
       ),
       h('span', { class: 'patient-row-meta' },
-        h('span', { class: 'level-pill' }, `Level ${level}`),
+        h('span', { class: 'level-pill' }, protocol ? stageLabel(protocol, level) : `Level ${level}`),
         h('span', { class: 'muted' }, `${describeTimeSince(patient.injuryDate)} ${protocol?.sinceLabel ?? ''}`.trim()),
         h('span', { class: 'muted' }, lastTestDate ? `Laatste test: ${formatDate(lastTestDate)}` : 'Nog geen testmoment'),
       ),

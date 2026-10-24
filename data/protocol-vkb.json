@@ -254,5 +254,248 @@
       ]
     }
   ],
-  "levels": []
+  "levels": [
+    {
+      "number": 1,
+      "title": "Rustig opstarten",
+      "subtitle": "Vroege postoperatieve fase",
+      "patientGoal": "Je knie terug rustig krijgen, volledig strekken en je dijspier weer aanzetten.",
+      "focus": "Zwelling beheersen, volledige extensie, quadricepsactivatie, normaal stappen.",
+      "criteria": [
+        {
+          "id": "vkb-1-extensie",
+          "label": "Passieve extensie symmetrisch met de andere knie (0° of zelfde hyperextensie)",
+          "type": "measurement",
+          "test": "extensie",
+          "metric": "difference",
+          "operator": "<=",
+          "threshold": 0
+        },
+        {
+          "id": "vkb-1-flexie",
+          "label": "Flexie ≥ 120°",
+          "type": "measurement",
+          "test": "flexie",
+          "metric": "injured",
+          "operator": ">=",
+          "threshold": 120
+        },
+        {
+          "id": "vkb-1-slr",
+          "label": "Straight leg raise zonder extensielag",
+          "type": "judgement"
+        },
+        {
+          "id": "vkb-1-stroke",
+          "label": "Zwelling: stroke test ≤ 1+",
+          "type": "measurement",
+          "test": "stroke-test",
+          "metric": "value",
+          "operator": "in",
+          "values": [
+            "0",
+            "spoor",
+            "1+"
+          ]
+        },
+        {
+          "id": "vkb-1-gang",
+          "label": "Normaal gangpatroon zonder krukken",
+          "type": "judgement"
+        },
+        {
+          "id": "vkb-1-pijn",
+          "label": "Pijn bij dagelijkse activiteiten ≤ 2/10",
+          "type": "measurement",
+          "test": "nprs-adl",
+          "metric": "value",
+          "operator": "<=",
+          "threshold": 2
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "title": "Sterk worden",
+      "subtitle": "Kracht en neuromusculaire controle",
+      "patientGoal": "Kracht opbouwen en controle krijgen over je knie, op één been.",
+      "focus": "Progressieve krachttraining (quadriceps, hamstrings, heup, kuit), single-leg controle.",
+      "criteria": [
+        {
+          "id": "vkb-2-tijd",
+          "label": "Minimum 12 weken postoperatief",
+          "type": "minTime",
+          "weeks": 12,
+          "note": "Houd rekening met bijkomende letsels, bv. een meniscushechting."
+        },
+        {
+          "id": "vkb-2-quad",
+          "label": "Quadriceps isometrische kracht LSI ≥ 80 %",
+          "type": "measurement",
+          "test": "quad-iso",
+          "metric": "lsi",
+          "operator": ">=",
+          "threshold": 80,
+          "note": "Literatuur: 70–80 %. Grens instelbaar in het protocol."
+        },
+        {
+          "id": "vkb-2-stroke",
+          "label": "Stroke test: 0 of spoor",
+          "type": "measurement",
+          "test": "stroke-test",
+          "metric": "value",
+          "operator": "in",
+          "values": [
+            "0",
+            "spoor"
+          ]
+        },
+        {
+          "id": "vkb-2-squat",
+          "label": "Single-leg squat: 10 herhalingen met goede controle (geen valgus, geen bekkenafwijking)",
+          "type": "judgement"
+        },
+        {
+          "id": "vkb-2-rom",
+          "label": "Volledige ROM",
+          "type": "judgement",
+          "note": "Zie extensie en flexie in het laatste testmoment."
+        },
+        {
+          "id": "vkb-2-belasting",
+          "label": "Geen pijntoename na belasting de volgende dag",
+          "type": "judgement"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "Lopen, springen en wenden",
+      "subtitle": "Running, plyometrie, agility",
+      "patientGoal": "Je knie leren omgaan met impact, landen en van richting veranderen.",
+      "focus": "Loopprogramma, plyometrie, landingstechniek, wendingen.",
+      "criteria": [
+        {
+          "id": "vkb-3-quad",
+          "label": "Quadriceps LSI ≥ 85 %",
+          "type": "measurement",
+          "test": "quad-iso",
+          "metric": "lsi",
+          "operator": ">=",
+          "threshold": 85,
+          "note": "Literatuur: 80–90 %. Grens instelbaar in het protocol."
+        },
+        {
+          "id": "vkb-3-ham",
+          "label": "Hamstrings LSI ≥ 85 %",
+          "type": "measurement",
+          "test": "ham-iso",
+          "metric": "lsi",
+          "operator": ">=",
+          "threshold": 85,
+          "note": "Literatuur: 80–90 %. Grens instelbaar in het protocol."
+        },
+        {
+          "id": "vkb-3-hop",
+          "label": "Hoptests LSI ≥ 85 % (single, triple, crossover, 6 m timed hop)",
+          "type": "measurement",
+          "tests": [
+            "single-hop",
+            "triple-hop",
+            "crossover-hop",
+            "timed-hop"
+          ],
+          "metric": "lsi",
+          "operator": ">=",
+          "threshold": 85
+        },
+        {
+          "id": "vkb-3-landing",
+          "label": "Landingskwaliteit goed (bv. drop jump zonder dynamische valgus)",
+          "type": "judgement"
+        },
+        {
+          "id": "vkb-3-lopen",
+          "label": "Loopprogramma zonder klachten afgewerkt",
+          "type": "judgement"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "title": "Terug naar je sport",
+      "subtitle": "Sportspecifieke training, return to sport",
+      "patientGoal": "Stap voor stap terug naar je sport: eerst trainen, dan spelen.",
+      "focus": "Return to participation, return to sport, return to performance.",
+      "criteria": [
+        {
+          "id": "vkb-4-tijd",
+          "label": "Minimum 9 maanden postoperatief",
+          "type": "minTime",
+          "months": 9
+        },
+        {
+          "id": "vkb-4-quad",
+          "label": "Quadriceps LSI ≥ 90 %",
+          "type": "measurement",
+          "test": "quad-iso",
+          "metric": "lsi",
+          "operator": ">=",
+          "threshold": 90
+        },
+        {
+          "id": "vkb-4-ham",
+          "label": "Hamstrings LSI ≥ 90 %",
+          "type": "measurement",
+          "test": "ham-iso",
+          "metric": "lsi",
+          "operator": ">=",
+          "threshold": 90
+        },
+        {
+          "id": "vkb-4-hop",
+          "label": "Alle hoptests LSI ≥ 90 %",
+          "type": "measurement",
+          "tests": [
+            "single-hop",
+            "triple-hop",
+            "crossover-hop",
+            "timed-hop"
+          ],
+          "metric": "lsi",
+          "operator": ">=",
+          "threshold": 90
+        },
+        {
+          "id": "vkb-4-aclrsi",
+          "label": "Psychologische bereidheid: ACL-RSI ≥ 65",
+          "type": "measurement",
+          "test": "acl-rsi",
+          "metric": "value",
+          "operator": ">=",
+          "threshold": 65
+        },
+        {
+          "id": "vkb-4-sporttest",
+          "label": "Sportspecifieke testen (change of direction, reactieve agility) goed uitgevoerd",
+          "type": "judgement"
+        },
+        {
+          "id": "vkb-4-team",
+          "label": "Volledige teamtraining zonder klachten",
+          "type": "judgement"
+        },
+        {
+          "id": "vkb-4-beslissing",
+          "label": "Gedeelde beslissing tussen therapeut, patiënt en (indien van toepassing) chirurg en coach",
+          "type": "judgement"
+        }
+      ]
+    }
+  ],
+  "completion": {
+    "title": "Groen licht",
+    "patientText": "Je therapeut heeft bevestigd dat je terug mag naar je sport.",
+    "releaseLabel": "Return to sport bevestigen"
+  }
 }
