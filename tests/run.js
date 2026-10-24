@@ -12,8 +12,9 @@ import { tests as scheduleTests } from './schedule.test.js';
 import { tests as sessionTests } from './test-session.test.js';
 import { tests as textTests } from './text.test.js';
 import { tests as valdTests } from './vald.test.js';
+import { tests as vkbTests } from './vkb-uitbreiding.test.js';
 
-const suites = { backup: backupTests, criteria: criteriaTests, dates: dateTests, enkel: enkelTests, thuislog: homeLogTests, lsi: lsiTests, mijlpalen: milestoneTests, patient: patientTests, testschema: scheduleTests, testmoment: sessionTests, tekst: textTests, vald: valdTests };
+const suites = { backup: backupTests, criteria: criteriaTests, dates: dateTests, enkel: enkelTests, thuislog: homeLogTests, lsi: lsiTests, mijlpalen: milestoneTests, patient: patientTests, testschema: scheduleTests, testmoment: sessionTests, tekst: textTests, vald: valdTests, vkbUitbreiding: vkbTests };
 const results = document.getElementById('results');
 let passed = 0;
 let failed = 0;

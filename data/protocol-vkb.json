@@ -1,6 +1,6 @@
 {
   "id": "vkb",
-  "version": "2026-10-24",
+  "version": "2026-10-24.2",
   "status": "concept, te valideren door de therapeut",
   "name": "VKB-reconstructie",
   "codePrefix": "VKB",
@@ -527,6 +527,43 @@
           "patientLabel": "Snelheid over 6 meter hoppen",
           "patientPhrase": "snelheid bij het hoppen over 6 meter",
           "target": 90
+        },
+        {
+          "id": "vertical-hop",
+          "label": "Vertical hop",
+          "type": "bilateral",
+          "unit": "cm",
+          "compare": "lsi",
+          "min": 0,
+          "max": 150,
+          "decimals": 1,
+          "patientLabel": "Verticale sprong",
+          "patientPhrase": "verticale sprong",
+          "target": 90
+        }
+      ]
+    },
+    {
+      "id": "lopen",
+      "label": "Lopen en coördinatie",
+      "tests": [
+        {
+          "id": "run-speed-pct",
+          "label": "Lineaire loopsnelheid (% van het maximum)",
+          "type": "single",
+          "unit": "%",
+          "min": 0,
+          "max": 100,
+          "decimals": 0
+        },
+        {
+          "id": "coord-pct",
+          "label": "Voorgeplande coördinatieoefeningen (% van het maximum)",
+          "type": "single",
+          "unit": "%",
+          "min": 0,
+          "max": 100,
+          "decimals": 0
         }
       ]
     },
@@ -663,6 +700,17 @@
           "patientLabel": "Je dijspier is weer sterk genoeg."
         },
         {
+          "id": "vkb-2-ham",
+          "label": "Hamstrings isometrische kracht LSI ≥ {threshold} %",
+          "patientLabel": "De spieren achteraan je dijbeen zijn sterk genoeg.",
+          "type": "measurement",
+          "test": "ham-iso",
+          "metric": "lsi",
+          "operator": ">=",
+          "threshold": 80,
+          "note": "Literatuur: 70–80 %. Grens instelbaar in het protocol."
+        },
+        {
           "id": "vkb-2-stroke",
           "label": "Stroke test: 0 of spoor",
           "type": "measurement",
@@ -689,10 +737,26 @@
           "patientLabel": "Je knie beweegt volledig."
         },
         {
+          "id": "vkb-2-flexie",
+          "label": "Flexiedeficit ≤ {threshold}° t.o.v. de andere knie",
+          "patientLabel": "Je knie kan bijna even ver plooien als je andere knie.",
+          "type": "measurement",
+          "test": "flexie",
+          "metric": "difference",
+          "operator": "<=",
+          "threshold": 5
+        },
+        {
           "id": "vkb-2-belasting",
           "label": "Geen pijntoename na belasting de volgende dag",
           "type": "judgement",
           "patientLabel": "Je knie reageert goed op training, ook de dag erna."
+        },
+        {
+          "id": "vkb-2-loopgang",
+          "label": "Basisbewegingspatronen en looptechniek (rennen) hersteld",
+          "patientLabel": "Je basisbewegingen en je looptechniek zijn weer in orde.",
+          "type": "judgement"
         }
       ],
       "patientFocus": [
@@ -756,6 +820,32 @@
           "label": "Loopprogramma zonder klachten afgewerkt",
           "type": "judgement",
           "patientLabel": "Je hebt je loopprogramma zonder klachten afgewerkt."
+        },
+        {
+          "id": "vkb-3-snelheid",
+          "label": "Lineaire loopsnelheid ≥ {threshold} % van het maximum",
+          "patientLabel": "Je loopt in een rechte lijn weer bijna op je topsnelheid.",
+          "type": "measurement",
+          "test": "run-speed-pct",
+          "metric": "value",
+          "operator": ">=",
+          "threshold": 95
+        },
+        {
+          "id": "vkb-3-coord",
+          "label": "Voorgeplande coördinatieoefeningen ≥ {threshold} % van het maximum",
+          "patientLabel": "Je coördinatieoefeningen lukken weer bijna op je beste niveau.",
+          "type": "measurement",
+          "test": "coord-pct",
+          "metric": "value",
+          "operator": ">=",
+          "threshold": 95
+        },
+        {
+          "id": "vkb-3-aeroob",
+          "label": "Aerobe conditie hersteld",
+          "patientLabel": "Je conditie is weer op peil.",
+          "type": "judgement"
         }
       ],
       "patientFocus": [
@@ -814,6 +904,16 @@
           "patientLabel": "Al je sprongen zijn bijna even goed als aan je andere been."
         },
         {
+          "id": "vkb-4-vhop",
+          "label": "Vertical hop LSI ≥ {threshold} %",
+          "patientLabel": "Je verticale sprong is bijna even goed als aan je andere been.",
+          "type": "measurement",
+          "test": "vertical-hop",
+          "metric": "lsi",
+          "operator": ">=",
+          "threshold": 90
+        },
+        {
           "id": "vkb-4-aclrsi",
           "label": "Psychologische bereidheid: ACL-RSI ≥ {threshold}",
           "type": "measurement",
@@ -834,6 +934,18 @@
           "label": "Volledige teamtraining zonder klachten",
           "type": "judgement",
           "patientLabel": "Je trainde volledig mee met je team, zonder klachten."
+        },
+        {
+          "id": "vkb-4-loopsnelheid",
+          "label": "Maximale loopsnelheid hersteld",
+          "patientLabel": "Je kan weer op volle snelheid lopen.",
+          "type": "judgement"
+        },
+        {
+          "id": "vkb-4-excentrisch",
+          "label": "Maximale excentrische kracht van de knieflexoren op lange lengte hersteld",
+          "patientLabel": "De spieren achteraan je dijbeen zijn sterk, ook als je ze ver uitrekt.",
+          "type": "judgement"
         },
         {
           "id": "vkb-4-beslissing",
