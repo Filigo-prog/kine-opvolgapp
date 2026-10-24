@@ -3,10 +3,11 @@
 import { tests as criteriaTests } from './criteria.test.js';
 import { tests as dateTests } from './dates.test.js';
 import { tests as lsiTests } from './lsi.test.js';
+import { tests as milestoneTests } from './milestones.test.js';
 import { tests as patientTests } from './patient.test.js';
 import { tests as sessionTests } from './test-session.test.js';
 
-const suites = { criteria: criteriaTests, dates: dateTests, lsi: lsiTests, patient: patientTests, testmoment: sessionTests };
+const suites = { criteria: criteriaTests, dates: dateTests, lsi: lsiTests, mijlpalen: milestoneTests, patient: patientTests, testmoment: sessionTests };
 const results = document.getElementById('results');
 let passed = 0;
 let failed = 0;

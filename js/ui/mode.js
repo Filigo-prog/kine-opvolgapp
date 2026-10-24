@@ -19,8 +19,17 @@ export async function initMode() {
   mode = (await getSetting('mode', THERAPIST)) === PATIENT ? PATIENT : THERAPIST;
   applyMode();
   document.getElementById('mode-toggle').addEventListener('click', () => {
-    if (isPatientMode()) exitPatientMode();
-    else enterPatientMode();
+    if (isPatientMode()) {
+      exitPatientMode();
+      return;
+    }
+    // De patiënt van het scherm waar je nu bent; zonder open patiënt is er niets om te tonen.
+    const code = patientCodeFromHash();
+    if (!code) {
+      showToast('Open eerst een patiënt om de patiëntmodus te starten.');
+      return;
+    }
+    enterPatientMode(code);
   });
 }
 
@@ -44,11 +53,22 @@ export async function hasPin() {
   return Boolean(await getSetting('pin'));
 }
 
-export async function enterPatientMode() {
+function patientCodeFromHash() {
+  const match = location.hash.match(/^#\/patient\/([^/]+)/);
+  return match && match[1] !== 'nieuw' ? decodeURIComponent(match[1]) : null;
+}
+
+/** De patiënt die in patiëntmodus getoond wordt (of null). */
+export function getPatientModeCode() {
+  return getSetting('patientCode', null);
+}
+
+export async function enterPatientMode(code) {
   if (!(await hasPin())) {
     const created = await createPin('Kies eerst een pincode. Die heb je nodig om de patiëntmodus te verlaten.');
     if (!created) return;
   }
+  await setSetting('patientCode', code);
   await setMode(PATIENT, '#/start');
 }
 

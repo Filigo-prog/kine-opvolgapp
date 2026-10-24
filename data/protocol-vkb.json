@@ -6,6 +6,10 @@
   "codePrefix": "VKB",
   "dateLabel": "Datum operatie",
   "sinceLabel": "na operatie",
+  "patientSideLabels": {
+    "injured": "Geopereerd been",
+    "healthy": "Ander been"
+  },
   "patientFields": {
     "graft": {
       "label": "Transplantaat",
@@ -158,7 +162,10 @@
           "min": 0,
           "max": 1000,
           "decimals": 0,
-          "relativeToBodyWeight": true
+          "relativeToBodyWeight": true,
+          "patientLabel": "Kracht van je dijspier",
+          "patientPhrase": "kracht van je dijspier",
+          "target": 90
         },
         {
           "id": "ham-iso",
@@ -169,7 +176,10 @@
           "min": 0,
           "max": 1000,
           "decimals": 0,
-          "relativeToBodyWeight": true
+          "relativeToBodyWeight": true,
+          "patientLabel": "Kracht achterkant van je dijbeen",
+          "patientPhrase": "kracht aan de achterkant van je dijbeen",
+          "target": 90
         }
       ]
     },
@@ -185,7 +195,10 @@
           "compare": "lsi",
           "min": 0,
           "max": 400,
-          "decimals": 0
+          "decimals": 0,
+          "patientLabel": "Sprong op één been",
+          "patientPhrase": "sprong op één been",
+          "target": 90
         },
         {
           "id": "triple-hop",
@@ -195,7 +208,10 @@
           "compare": "lsi",
           "min": 0,
           "max": 1200,
-          "decimals": 0
+          "decimals": 0,
+          "patientLabel": "Driedubbele sprong",
+          "patientPhrase": "driedubbele sprong",
+          "target": 90
         },
         {
           "id": "crossover-hop",
@@ -205,7 +221,10 @@
           "compare": "lsi",
           "min": 0,
           "max": 1200,
-          "decimals": 0
+          "decimals": 0,
+          "patientLabel": "Kruissprong",
+          "patientPhrase": "kruissprong",
+          "target": 90
         },
         {
           "id": "timed-hop",
@@ -216,7 +235,10 @@
           "min": 0,
           "max": 20,
           "decimals": 2,
-          "hint": "Tijd: lager is beter, de LSI wordt omgekeerd berekend."
+          "hint": "Tijd: lager is beter, de LSI wordt omgekeerd berekend.",
+          "patientLabel": "Snelheid over 6 meter hoppen",
+          "patientPhrase": "snelheid bij het hoppen over 6 meter",
+          "target": 90
         }
       ]
     },
@@ -269,7 +291,8 @@
           "test": "extensie",
           "metric": "difference",
           "operator": "<=",
-          "threshold": 0
+          "threshold": 0,
+          "patientLabel": "Je knie kan even ver strekken als je andere knie."
         },
         {
           "id": "vkb-1-flexie",
@@ -278,12 +301,14 @@
           "test": "flexie",
           "metric": "injured",
           "operator": ">=",
-          "threshold": 120
+          "threshold": 120,
+          "patientLabel": "Je kan je knie ver genoeg plooien."
         },
         {
           "id": "vkb-1-slr",
           "label": "Straight leg raise zonder extensielag",
-          "type": "judgement"
+          "type": "judgement",
+          "patientLabel": "Je kan je been gestrekt optillen."
         },
         {
           "id": "vkb-1-stroke",
@@ -296,12 +321,14 @@
             "0",
             "spoor",
             "1+"
-          ]
+          ],
+          "patientLabel": "Je knie is nauwelijks gezwollen."
         },
         {
           "id": "vkb-1-gang",
           "label": "Normaal gangpatroon zonder krukken",
-          "type": "judgement"
+          "type": "judgement",
+          "patientLabel": "Je stapt normaal, zonder krukken."
         },
         {
           "id": "vkb-1-pijn",
@@ -310,8 +337,15 @@
           "test": "nprs-adl",
           "metric": "value",
           "operator": "<=",
-          "threshold": 2
+          "threshold": 2,
+          "patientLabel": "Je hebt weinig pijn in het dagelijks leven."
         }
+      ],
+      "patientFocus": [
+        "We beschermen je knie en houden de zwelling onder controle.",
+        "Je leert je knie volledig strekken en plooien.",
+        "Je zet je dijspier weer aan.",
+        "Je stapt weer normaal."
       ]
     },
     {
@@ -326,7 +360,8 @@
           "label": "Minimum 12 weken postoperatief",
           "type": "minTime",
           "weeks": 12,
-          "note": "Houd rekening met bijkomende letsels, bv. een meniscushechting."
+          "note": "Houd rekening met bijkomende letsels, bv. een meniscushechting.",
+          "patientLabel": "Je knie heeft genoeg tijd gekregen om te herstellen."
         },
         {
           "id": "vkb-2-quad",
@@ -336,7 +371,8 @@
           "metric": "lsi",
           "operator": ">=",
           "threshold": 80,
-          "note": "Literatuur: 70–80 %. Grens instelbaar in het protocol."
+          "note": "Literatuur: 70–80 %. Grens instelbaar in het protocol.",
+          "patientLabel": "Je dijspier is weer sterk genoeg."
         },
         {
           "id": "vkb-2-stroke",
@@ -348,24 +384,33 @@
           "values": [
             "0",
             "spoor"
-          ]
+          ],
+          "patientLabel": "Je knie is niet gezwollen."
         },
         {
           "id": "vkb-2-squat",
           "label": "Single-leg squat: 10 herhalingen met goede controle (geen valgus, geen bekkenafwijking)",
-          "type": "judgement"
+          "type": "judgement",
+          "patientLabel": "Je doet 10 keer een squat op één been, met controle."
         },
         {
           "id": "vkb-2-rom",
           "label": "Volledige ROM",
           "type": "judgement",
-          "note": "Zie extensie en flexie in het laatste testmoment."
+          "note": "Zie extensie en flexie in het laatste testmoment.",
+          "patientLabel": "Je knie beweegt volledig."
         },
         {
           "id": "vkb-2-belasting",
           "label": "Geen pijntoename na belasting de volgende dag",
-          "type": "judgement"
+          "type": "judgement",
+          "patientLabel": "Je knie reageert goed op training, ook de dag erna."
         }
+      ],
+      "patientFocus": [
+        "Je bouwt kracht op in je been en je heup.",
+        "Je leert controle krijgen over je knie, op twee en op één been.",
+        "Je oefent op kwaliteit, niet op snelheid."
       ]
     },
     {
@@ -383,7 +428,8 @@
           "metric": "lsi",
           "operator": ">=",
           "threshold": 85,
-          "note": "Literatuur: 80–90 %. Grens instelbaar in het protocol."
+          "note": "Literatuur: 80–90 %. Grens instelbaar in het protocol.",
+          "patientLabel": "Je dijspier is sterk genoeg om te springen."
         },
         {
           "id": "vkb-3-ham",
@@ -393,7 +439,8 @@
           "metric": "lsi",
           "operator": ">=",
           "threshold": 85,
-          "note": "Literatuur: 80–90 %. Grens instelbaar in het protocol."
+          "note": "Literatuur: 80–90 %. Grens instelbaar in het protocol.",
+          "patientLabel": "De spieren achteraan je dijbeen zijn sterk genoeg."
         },
         {
           "id": "vkb-3-hop",
@@ -407,18 +454,26 @@
           ],
           "metric": "lsi",
           "operator": ">=",
-          "threshold": 85
+          "threshold": 85,
+          "patientLabel": "Je springt en hopt op één been bijna even goed als op het andere."
         },
         {
           "id": "vkb-3-landing",
           "label": "Landingskwaliteit goed (bv. drop jump zonder dynamische valgus)",
-          "type": "judgement"
+          "type": "judgement",
+          "patientLabel": "Je landt stabiel, met je knie mooi in lijn."
         },
         {
           "id": "vkb-3-lopen",
           "label": "Loopprogramma zonder klachten afgewerkt",
-          "type": "judgement"
+          "type": "judgement",
+          "patientLabel": "Je hebt je loopprogramma zonder klachten afgewerkt."
         }
+      ],
+      "patientFocus": [
+        "Je start met rustig lopen en bouwt dat stap voor stap op.",
+        "Je leert springen, landen en van richting veranderen.",
+        "Je knie leert omgaan met impact."
       ]
     },
     {
@@ -432,7 +487,8 @@
           "id": "vkb-4-tijd",
           "label": "Minimum 9 maanden postoperatief",
           "type": "minTime",
-          "months": 9
+          "months": 9,
+          "patientLabel": "Je knie heeft de nodige tijd gekregen om sterk te worden."
         },
         {
           "id": "vkb-4-quad",
@@ -441,7 +497,8 @@
           "test": "quad-iso",
           "metric": "lsi",
           "operator": ">=",
-          "threshold": 90
+          "threshold": 90,
+          "patientLabel": "Je dijspier is bijna even sterk als aan je andere been."
         },
         {
           "id": "vkb-4-ham",
@@ -450,7 +507,8 @@
           "test": "ham-iso",
           "metric": "lsi",
           "operator": ">=",
-          "threshold": 90
+          "threshold": 90,
+          "patientLabel": "De spieren achteraan je dijbeen zijn bijna even sterk als aan je andere been."
         },
         {
           "id": "vkb-4-hop",
@@ -464,7 +522,8 @@
           ],
           "metric": "lsi",
           "operator": ">=",
-          "threshold": 90
+          "threshold": 90,
+          "patientLabel": "Al je sprongen zijn bijna even goed als aan je andere been."
         },
         {
           "id": "vkb-4-aclrsi",
@@ -473,23 +532,32 @@
           "test": "acl-rsi",
           "metric": "value",
           "operator": ">=",
-          "threshold": 65
+          "threshold": 65,
+          "patientLabel": "Je voelt je klaar om terug te sporten."
         },
         {
           "id": "vkb-4-sporttest",
           "label": "Sportspecifieke testen (change of direction, reactieve agility) goed uitgevoerd",
-          "type": "judgement"
+          "type": "judgement",
+          "patientLabel": "Je doet sportspecifieke oefeningen goed."
         },
         {
           "id": "vkb-4-team",
           "label": "Volledige teamtraining zonder klachten",
-          "type": "judgement"
+          "type": "judgement",
+          "patientLabel": "Je trainde volledig mee met je team, zonder klachten."
         },
         {
           "id": "vkb-4-beslissing",
           "label": "Gedeelde beslissing tussen therapeut, patiënt en (indien van toepassing) chirurg en coach",
-          "type": "judgement"
+          "type": "judgement",
+          "patientLabel": "Jij, je therapeut en (indien nodig) je chirurg en coach beslissen samen."
         }
+      ],
+      "patientFocus": [
+        "Je traint stap voor stap sportspecifiek.",
+        "Eerst trainen, dan pas spelen.",
+        "Samen beslissen we wanneer je klaar bent voor wedstrijden."
       ]
     }
   ],
@@ -497,5 +565,94 @@
     "title": "Groen licht",
     "patientText": "Je therapeut heeft bevestigd dat je terug mag naar je sport.",
     "releaseLabel": "Return to sport bevestigen"
-  }
+  },
+  "milestones": [
+    {
+      "id": "vkb-gestrekt",
+      "label": "Volledig gestrekt",
+      "description": "Je knie strekt weer even ver als je andere knie.",
+      "trigger": {
+        "type": "criterion",
+        "criterion": "vkb-1-extensie"
+      }
+    },
+    {
+      "id": "vkb-krukken",
+      "label": "Krukken aan de kant",
+      "description": "Je stapt weer normaal.",
+      "trigger": {
+        "type": "criterion",
+        "criterion": "vkb-1-gang"
+      }
+    },
+    {
+      "id": "vkb-squats",
+      "label": "Eerste 10 squats op één been",
+      "description": "Tien keer door je knie op één been, met controle.",
+      "trigger": {
+        "type": "criterion",
+        "criterion": "vkb-2-squat"
+      }
+    },
+    {
+      "id": "vkb-lsi80",
+      "label": "Kracht op 80 %",
+      "description": "Je geopereerde been haalt 80 % van de kracht van je andere been.",
+      "trigger": {
+        "type": "lsi",
+        "test": "quad-iso",
+        "threshold": 80
+      }
+    },
+    {
+      "id": "vkb-loopsessie",
+      "label": "Eerste loopsessie",
+      "description": "Je eerste keer lopen na je operatie.",
+      "trigger": {
+        "type": "manual"
+      }
+    },
+    {
+      "id": "vkb-sprong-2",
+      "label": "Eerste sprongen op twee benen",
+      "description": "Je eerste sprongen, met twee benen tegelijk.",
+      "trigger": {
+        "type": "manual"
+      }
+    },
+    {
+      "id": "vkb-hop-1",
+      "label": "Eerste hop op één been",
+      "description": "Je eerste hop op je geopereerde been.",
+      "trigger": {
+        "type": "manual"
+      }
+    },
+    {
+      "id": "vkb-wending",
+      "label": "Eerste wendingen",
+      "description": "Je eerste keer van richting veranderen.",
+      "trigger": {
+        "type": "manual"
+      }
+    },
+    {
+      "id": "vkb-lsi90",
+      "label": "Kracht op 90 %",
+      "description": "Je geopereerde been haalt 90 % van de kracht van je andere been.",
+      "trigger": {
+        "type": "lsi",
+        "test": "quad-iso",
+        "threshold": 90
+      }
+    },
+    {
+      "id": "vkb-groenlicht",
+      "label": "Groen licht",
+      "description": "Je therapeut heeft bevestigd dat je terug mag naar je sport.",
+      "trigger": {
+        "type": "completion"
+      }
+    }
+  ]
 }

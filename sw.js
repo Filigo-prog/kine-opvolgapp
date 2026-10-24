@@ -1,7 +1,7 @@
 // Service worker: houdt de app-shell offline beschikbaar.
 // Verhoog CACHE_VERSION bij elke wijziging en voeg nieuwe bestanden toe aan PRECACHE.
 
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const CACHE_NAME = `kine-${CACHE_VERSION}`;
 
 const PRECACHE = [
@@ -19,22 +19,27 @@ const PRECACHE = [
   './js/app.js',
   './js/router.js',
   './js/db.js',
+  './vendor/chart.umd.js',
   './data/protocol-vkb.json',
   './data/protocol-enkel.json',
   './js/domain/criteria.js',
   './js/domain/dates.js',
+  './js/domain/feedback.js',
   './js/domain/lsi.js',
+  './js/domain/milestones.js',
   './js/domain/patient.js',
   './js/domain/progression.js',
   './js/domain/protocol.js',
   './js/domain/test-session.js',
   './js/repo/criteria-status.js',
   './js/repo/level-history.js',
+  './js/repo/milestones.js',
   './js/repo/patients.js',
   './js/repo/settings.js',
   './js/repo/test-sessions.js',
   './js/ui/dom.js',
   './js/ui/format.js',
+  './js/ui/lsi-chart.js',
   './js/ui/dialog.js',
   './js/ui/mode.js',
   './js/ui/not-found.js',
@@ -43,6 +48,7 @@ const PRECACHE = [
   './js/views/patient-form.js',
   './js/views/patient-home.js',
   './js/views/patient-list.js',
+  './js/views/patient-view.js',
   './js/views/settings.js',
   './js/views/test-entry.js',
 ];

@@ -1,16 +1,19 @@
 // Overzicht van één patiënt in de therapeutmodus. Vertrekpunt voor testmomenten en criteria.
 
-import { describeTimeSince, formatDate } from '../domain/dates.js';
+import { describeTimeSince, formatDate, todayIso } from '../domain/dates.js';
+import { milestoneOverview } from '../domain/milestones.js';
 import { currentStage, isCompleted, levelByNumber, levelProgress, stageLabel } from '../domain/progression.js';
 import { loadProtocol, optionLabel } from '../domain/protocol.js';
 import { findTest } from '../domain/test-session.js';
 import { getCriteriaStatuses } from '../repo/criteria-status.js';
 import { getLevelHistory } from '../repo/level-history.js';
+import { getMilestones, refreshMilestones, removeManualMilestone, setManualMilestone } from '../repo/milestones.js';
 import { deletePatient, getPatient } from '../repo/patients.js';
 import { listTestSessions } from '../repo/test-sessions.js';
-import { navigate } from '../router.js';
+import { navigate, render } from '../router.js';
 import { confirmDialog } from '../ui/dialog.js';
 import { h, showToast } from '../ui/dom.js';
+import { enterPatientMode } from '../ui/mode.js';
 import { describeBilateral, describeSingle } from '../ui/format.js';
 import { notFound } from '../ui/not-found.js';
 
@@ -27,6 +30,8 @@ export async function patientDetailView({ code }) {
   const stage = currentStage(history);
   const level = levelByNumber(protocol, stage);
   const progress = level ? levelProgress(level, statuses) : null;
+  const dates = await refreshMilestones(code, { protocol, sessions, statuses, history });
+  const storedMilestones = await getMilestones(code);
   const editHref = `#/patient/${encodeURIComponent(code)}/bewerken`;
 
   const associated = [
@@ -91,8 +96,13 @@ export async function patientDetailView({ code }) {
           : null,
         h('a', { class: 'btn btn-primary', href: `#/patient/${encodeURIComponent(code)}/test/nieuw` }, 'Testmoment ingeven'),
         h('a', { class: 'btn btn-secondary', href: `#/patient/${encodeURIComponent(code)}/criteria` }, 'Criteria-checklist'),
+        h('div', { class: 'button-row' },
+          h('a', { class: 'btn btn-secondary', href: `#/patient/${encodeURIComponent(code)}/voortgang` }, 'Bekijk patiëntweergave'),
+          h('button', { type: 'button', class: 'btn btn-secondary', onclick: () => enterPatientMode(code) }, 'Toon aan patiënt'),
+        ),
       ),
     ),
+    milestoneCard(protocol, dates, storedMilestones, code),
     h('div', { class: 'card sessions-card' },
       h('h2', {}, 'Testmomenten'),
       sessions.length
@@ -123,5 +133,45 @@ function sessionItem(session, protocol, code) {
     ),
     session.note ? h('p', { class: 'muted session-note' }, session.note) : null,
     h('ul', { class: 'result-chips' }, chips),
+  );
+}
+
+/** Mijlpalen voor de therapeut: wat is behaald, en handmatige mijlpalen registreren. */
+function milestoneCard(protocol, dates, stored, code) {
+  const overview = milestoneOverview(protocol, dates);
+  if (!overview.length) return null;
+
+  return h('div', { class: 'card sessions-card' },
+    h('h2', {}, 'Mijlpalen'),
+    h('ul', { class: 'milestone-admin' }, overview.map(({ milestone, date }) => {
+      const manual = milestone.trigger.type === 'manual';
+      const isManualEarned = date && stored.get(milestone.id)?.source === 'manual';
+      return h('li', { class: 'milestone-admin-item' },
+        h('span', {},
+          h('strong', {}, milestone.label),
+          h('span', { class: 'muted' }, date ? ` · behaald op ${formatDate(date)}` : ' · nog niet behaald')),
+        manual && !date
+          ? h('button', {
+            type: 'button',
+            class: 'btn btn-secondary',
+            onclick: async () => {
+              await setManualMilestone(code, milestone.id, todayIso());
+              showToast(`${milestone.label} geregistreerd.`);
+              render();
+            },
+          }, 'Behaald vandaag')
+          : null,
+        isManualEarned
+          ? h('button', {
+            type: 'button',
+            class: 'btn btn-secondary',
+            onclick: async () => {
+              await removeManualMilestone(code, milestone.id);
+              render();
+            },
+          }, 'Ongedaan maken')
+          : null,
+      );
+    })),
   );
 }

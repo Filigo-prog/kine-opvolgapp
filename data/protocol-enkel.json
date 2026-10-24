@@ -6,6 +6,10 @@
   "codePrefix": "ENK",
   "dateLabel": "Datum letsel",
   "sinceLabel": "na letsel",
+  "patientSideLabels": {
+    "injured": "Aangedaan been",
+    "healthy": "Ander been"
+  },
   "patientFields": {
     "associatedInjuries": {
       "label": "Bijkomende letsels en voorgeschiedenis",
@@ -103,7 +107,10 @@
           "compare": "lsi",
           "min": 0,
           "max": 100,
-          "decimals": 0
+          "decimals": 0,
+          "patientLabel": "Kracht van je kuit",
+          "patientPhrase": "kracht van je kuit",
+          "target": 90
         },
         {
           "id": "sls-open",
@@ -114,7 +121,10 @@
           "min": 0,
           "max": 60,
           "decimals": 0,
-          "hint": "Maximaal 30 s is gebruikelijk."
+          "hint": "Maximaal 30 s is gebruikelijk.",
+          "patientLabel": "Evenwicht op één been",
+          "patientPhrase": "evenwicht op één been",
+          "target": 90
         },
         {
           "id": "sls-dicht",
@@ -124,7 +134,10 @@
           "compare": "lsi",
           "min": 0,
           "max": 60,
-          "decimals": 0
+          "decimals": 0,
+          "patientLabel": "Evenwicht met gesloten ogen",
+          "patientPhrase": "evenwicht met gesloten ogen",
+          "target": 90
         },
         {
           "id": "ybal-ant",
@@ -150,7 +163,10 @@
           "compare": "lsi",
           "min": 0,
           "max": 400,
-          "decimals": 0
+          "decimals": 0,
+          "patientLabel": "Sprong op één been",
+          "patientPhrase": "sprong op één been",
+          "target": 90
         },
         {
           "id": "side-hop",
@@ -160,7 +176,10 @@
           "compare": "lsi",
           "min": 0,
           "max": 100,
-          "decimals": 0
+          "decimals": 0,
+          "patientLabel": "Zijwaartse sprongen",
+          "patientPhrase": "zijwaartse sprongen",
+          "target": 90
         }
       ]
     },
@@ -189,5 +208,6 @@
       ]
     }
   ],
-  "levels": []
+  "levels": [],
+  "milestones": []
 }

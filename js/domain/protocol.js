@@ -1,6 +1,7 @@
 // Laadt de klinische protocollen uit /data. De inhoud staat in JSON, niet in de code.
 
 import { CRITERION_TYPES, METRICS, OPERATOR_NAMES } from './criteria.js';
+import { TRIGGER_TYPES } from './milestones.js';
 
 export const INJURIES = ['vkb', 'enkel'];
 
@@ -100,6 +101,27 @@ function validateLevels(protocol) {
       }
     }
   });
+  problems.push(...validateMilestones(protocol, ids, tests));
+  return problems;
+}
+
+function validateMilestones(protocol, criterionIds, tests) {
+  const problems = [];
+  const ids = new Set();
+  for (const milestone of protocol.milestones ?? []) {
+    const name = `mijlpaal "${milestone.id}"`;
+    if (!milestone.id || ids.has(milestone.id)) problems.push(`${name}: id ontbreekt of komt dubbel voor`);
+    ids.add(milestone.id);
+    if (!milestone.label) problems.push(`${name}: "label" ontbreekt`);
+    const trigger = milestone.trigger;
+    if (!TRIGGER_TYPES.includes(trigger?.type)) {
+      problems.push(`${name}: onbekende trigger "${trigger?.type}"`);
+    } else if (trigger.type === 'criterion' && !criterionIds.has(trigger.criterion)) {
+      problems.push(`${name}: criterium "${trigger.criterion}" bestaat niet`);
+    } else if (trigger.type === 'lsi' && !(tests.has(trigger.test) && Number.isFinite(trigger.threshold))) {
+      problems.push(`${name}: "test" of "threshold" ontbreekt of is ongeldig`);
+    }
+  }
   return problems;
 }
 
