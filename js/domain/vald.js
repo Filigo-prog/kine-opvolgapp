@@ -158,7 +158,7 @@ export function buildImportSessions(choices) {
       problems.push(`${choice.row.testLabel}: er is al een meting voor dezelfde test op dezelfde dag. Vink er één uit.`);
       continue;
     }
-    entries[choice.test] = { left: String(value.left), right: String(value.right) };
+    entries[choice.test] = { left: String(value.left), right: String(value.right), ...(choice.unit ? { unit: choice.unit } : {}) };
     byDate.set(choice.date, entries);
   }
 

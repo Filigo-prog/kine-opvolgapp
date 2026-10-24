@@ -7,9 +7,11 @@ import { compareSides } from '../domain/lsi.js';
 import { loadProtocol } from '../domain/protocol.js';
 import { buildSession, allTests } from '../domain/test-session.js';
 import { buildImportSessions, matchPerson, metricUnit, parseValdExport, suggestMapping } from '../domain/vald.js';
+import { testUnits } from '../domain/test-session.js';
 import { readFileText } from '../io/backup.js';
 import { getPatient } from '../repo/patients.js';
 import { importTestSessions } from '../repo/test-sessions.js';
+import { getSetting, setSetting } from '../repo/settings.js';
 import { getValdMappings, saveValdMappings } from '../repo/vald-mappings.js';
 import { navigate } from '../router.js';
 import { h, showToast } from '../ui/dom.js';
@@ -32,6 +34,8 @@ export async function valdImportView({ code }) {
   }
 
   const savedMappings = await getValdMappings();
+  // Heb je bevestigd dat je VALD Hub dag/maand gebruikt, dan waarschuwen we daar niet meer voor.
+  let dateOrderConfirmed = await getSetting('valdDateOrderConfirmed', false);
   const bilateralTests = allTests(protocol).filter((test) => test.type === 'bilateral');
   const today = todayIso();
 
@@ -129,7 +133,7 @@ export async function valdImportView({ code }) {
     }
 
     async function doImport() {
-      const { sessions, problems: found } = buildImportSessions(choices);
+      const { sessions, problems: found } = buildImportSessions(choices.map((choice) => ({ ...choice, unit: metricUnit(choice.metric) })));
       const lines = [...found];
       const items = [];
       for (const entry of sessions) {
@@ -173,9 +177,7 @@ export async function valdImportView({ code }) {
         picker,
         person ? h('p', { class: 'muted' }, `Persoon ${person.initials}${person.externalId ? ` · External Id ${person.externalId}` : ' · geen External Id'}`) : null,
         otherCode ? h('p', { class: 'notice notice-danger', role: 'alert' }, `Let op: in het bestand staat deze persoon als ${person.externalId}, niet als ${code}. Controleer of dit de juiste patiënt is.`) : null,
-        parsed.datesAmbiguous
-          ? h('p', { class: 'notice notice-warning', role: 'note' }, 'De datums in dit bestand kunnen dag/maand of maand/dag zijn. We gaan uit van dag/maand. Controleer de datums hieronder.')
-          : null,
+        parsed.datesAmbiguous && !dateOrderConfirmed ? dateNotice() : null,
       ),
       person
         ? choices.map((choice, index) => rowCard(choice, index, refreshSummary))
@@ -189,6 +191,22 @@ export async function valdImportView({ code }) {
         : null,
     ].flat().filter(Boolean));
     refreshSummary();
+  }
+
+  function dateNotice() {
+    const notice = h('div', { class: 'notice notice-warning', role: 'note' },
+      h('p', {}, 'De datums in dit bestand kunnen dag/maand of maand/dag zijn. We gaan uit van dag/maand. Controleer de datums hieronder.'),
+      h('button', {
+        type: 'button', class: 'btn btn-secondary',
+        onclick: async () => {
+          dateOrderConfirmed = true;
+          await setSetting('valdDateOrderConfirmed', true);
+          notice.remove();
+          showToast('Onthouden: VALD Hub gebruikt dag/maand.');
+        },
+      }, 'Dag/maand klopt, niet meer vragen'),
+    );
+    return notice;
   }
 
   function rowCard(choice, index, onChange) {
@@ -206,7 +224,8 @@ export async function valdImportView({ code }) {
         refresh(); onChange();
       } },
     h('option', { value: '' }, '— niet importeren —'),
-    bilateralTests.map((test) => h('option', { value: test.id, selected: test.id === choice.test }, `${test.label} (${test.unit})`)));
+    bilateralTests.map((test) => h('option', { value: test.id, selected: test.id === choice.test },
+      `${test.label} (${testUnits(test).map((entry) => entry.unit).join(' of ')})`)));
     const metricSelect = h('select', { class: 'input', 'aria-label': 'Welke meetwaarde?',
       onchange: () => { choice.metric = metricSelect.value; refresh(); onChange(); } },
     Object.keys(choice.row.values).map((metric) => h('option', { value: metric, selected: metric === choice.metric }, metric)));
@@ -222,11 +241,12 @@ export async function valdImportView({ code }) {
       if (test) {
         const comparison = compareSides(test, value.left, value.right, patient.side);
         text += ` → ${test.compare === 'difference' ? formatDifference(comparison.difference, test) : formatLsi(comparison.lsi)}`;
-        const perKg = describePerKg(test, value.left, value.right, patient.side, patient.bodyWeightKg);
+        const allowed = testUnits(test).map((entry) => entry.unit);
+        const perKg = describePerKg(test, value.left, value.right, patient.side, patient.bodyWeightKg, unit ?? test.unit);
         if (perKg) text += ` · ${perKg}`;
-        if (unit && test.unit && unit !== test.unit) {
+        if (unit && allowed[0] && !allowed.includes(unit)) {
           unitNote.hidden = false;
-          unitNote.textContent = `Let op: de meetwaarde is in ${unit}, de test in ${test.unit}.`;
+          unitNote.textContent = `Let op: de meetwaarde is in ${unit}, de test kent ${allowed.join(' en ')}.`;
         }
       }
       resultLine.textContent = text;

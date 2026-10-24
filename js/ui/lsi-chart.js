@@ -2,6 +2,7 @@
 // Chart.js staat lokaal in vendor/ en wordt pas geladen als er een grafiek nodig is.
 
 import { formatDate } from '../domain/dates.js';
+import { unitOf } from '../domain/test-session.js';
 import { h } from './dom.js';
 import { formatNumber, withUnit } from './format.js';
 
@@ -119,7 +120,7 @@ export function lsiChartCard({ test, series, target, feedback, sideLabels }) {
               label: (item) => {
                 const point = series[item.dataIndex];
                 const m = point.measurement;
-                const values = `${sideLabels.injured} ${withUnit(formatNumber(sideValue(m, 'injured', sideLabels.side), test.decimals), test.unit)}, ${sideLabels.healthy} ${withUnit(formatNumber(sideValue(m, 'healthy', sideLabels.side), test.decimals), test.unit)}`;
+                const values = `${sideLabels.injured} ${withUnit(formatNumber(sideValue(m, 'injured', sideLabels.side), test.decimals), unitOf(test, m))}, ${sideLabels.healthy} ${withUnit(formatNumber(sideValue(m, 'healthy', sideLabels.side), test.decimals), unitOf(test, m))}`;
                 return [`${formatNumber(point.lsi)} %`, values];
               },
             },
@@ -156,8 +157,8 @@ function valuesTable(test, series, sideLabels) {
         h('th', { scope: 'col' }, 'Verhouding'))),
       h('tbody', {}, [...series].reverse().map((point) => h('tr', {},
         h('td', {}, formatDate(point.date)),
-        h('td', {}, withUnit(formatNumber(sideValue(point.measurement, 'injured', sideLabels.side), test.decimals), test.unit)),
-        h('td', {}, withUnit(formatNumber(sideValue(point.measurement, 'healthy', sideLabels.side), test.decimals), test.unit)),
+        h('td', {}, withUnit(formatNumber(sideValue(point.measurement, 'injured', sideLabels.side), test.decimals), unitOf(test, point.measurement))),
+        h('td', {}, withUnit(formatNumber(sideValue(point.measurement, 'healthy', sideLabels.side), test.decimals), unitOf(test, point.measurement))),
         h('td', {}, `${formatNumber(point.lsi)} %`))))),
   );
 }

@@ -5,7 +5,7 @@ import { compareSides, parseNumber } from '../domain/lsi.js';
 import { loadProtocol } from '../domain/protocol.js';
 import { buildSession } from '../domain/test-session.js';
 import { getPatient } from '../repo/patients.js';
-import { deleteTestSession, getTestSession, saveTestSession } from '../repo/test-sessions.js';
+import { deleteTestSession, getTestSession, listTestSessions, saveTestSession } from '../repo/test-sessions.js';
 import { navigate } from '../router.js';
 import { confirmDialog } from '../ui/dialog.js';
 import { h, showToast } from '../ui/dom.js';
@@ -22,6 +22,15 @@ export async function testEntryView({ code, id }) {
 
   const protocol = await loadProtocol(patient.injury);
   const today = todayIso();
+  // Nieuw testmoment: begin met de eenheid van de vorige meting (bv. N als je met de DynaMo meet).
+  const lastUnits = new Map();
+  if (!existing) {
+    for (const session of (await listTestSessions(code)).reverse()) {
+      for (const [testId, measurement] of Object.entries(session.measurements)) {
+        if (measurement.unit) lastUnits.set(testId, measurement.unit);
+      }
+    }
+  }
   const detailHref = `#/patient/${encodeURIComponent(code)}`;
   const measurements = existing?.measurements ?? {};
   const sideName = (s) => (s === 'L' ? 'Links' : 'Rechts');
@@ -67,7 +76,7 @@ export async function testEntryView({ code, id }) {
     const m = measurements[test.id] ?? {};
     const label = h('div', { class: 'test-label' },
       h('span', { class: 'test-name' }, test.label),
-      test.unit && test.type !== 'choice' ? h('span', { class: 'muted' }, ` (${test.unit})`) : null,
+      test.unit && test.type !== 'choice' && !test.units ? h('span', { class: 'muted' }, ` (${test.unit})`) : null,
       test.hint ? h('span', { class: 'test-hint muted' }, test.hint) : null,
     );
     const error = h('p', { class: 'field-error test-error' });
@@ -87,6 +96,16 @@ export async function testEntryView({ code, id }) {
       const right = input('right', m.right);
       const perKgLine = h('span', { class: 'test-perkg muted' });
 
+      // Eén test, meerdere eenheden (bv. Nm of N): de LSI is een verhouding en verandert niet.
+      let unit = m.unit ?? lastUnits.get(test.id) ?? test.unit;
+      const unitSwitch = test.units?.length > 1
+        ? h('div', { class: 'segmented segmented-compact unit-switch', role: 'radiogroup', 'aria-label': `Eenheid van ${test.label}` },
+          test.units.map((entry) => h('label', { class: 'segment' },
+            h('input', { type: 'radio', name: `${test.id}.unit`, value: entry.unit, checked: entry.unit === unit,
+              onchange: () => { unit = entry.unit; update(); } }),
+            h('span', {}, entry.unit))))
+        : null;
+
       function update() {
         const l = parseNumber(left.value);
         const r = parseNumber(right.value);
@@ -99,10 +118,11 @@ export async function testEntryView({ code, id }) {
         result.textContent = test.compare === 'difference'
           ? formatDifference(comparison.difference, test)
           : formatLsi(comparison.lsi);
-        perKgLine.textContent = describePerKg(test, l, r, patient.side, patient.bodyWeightKg) ?? '';
+        perKgLine.textContent = describePerKg(test, l, r, patient.side, patient.bodyWeightKg, unit) ?? '';
       }
       update();
 
+      if (unitSwitch) label.append(unitSwitch);
       return h('div', { class: 'test-row', 'data-field': test.id },
         label,
         h('span', { class: 'test-side-label' }, injuredLabel('L')), left,

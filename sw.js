@@ -1,7 +1,7 @@
 // Service worker: houdt de app-shell offline beschikbaar.
 // Verhoog CACHE_VERSION bij elke wijziging en voeg nieuwe bestanden toe aan PRECACHE.
 
-const CACHE_VERSION = 'v9';
+const CACHE_VERSION = 'v10';
 const CACHE_NAME = `kine-${CACHE_VERSION}`;
 
 const PRECACHE = [

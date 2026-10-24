@@ -65,6 +65,12 @@ function validateTestGroups(groups) {
         && !(Number.isFinite(test.min) && Number.isFinite(test.max) && test.min < test.max)) {
         problems.push(`${name}: "min" en "max" ontbreken of zijn ongeldig`);
       }
+      if (test.units !== undefined) {
+        const ok = Array.isArray(test.units) && test.units.length > 0
+          && test.units.every((entry) => entry.unit && Number.isFinite(entry.min) && Number.isFinite(entry.max) && entry.min < entry.max)
+          && test.units.some((entry) => entry.unit === test.unit);
+        if (test.type !== 'bilateral' || !ok) problems.push(`${name}: "units" is ongeldig (elke eenheid heeft min en max, en "unit" moet erin staan)`);
+      }
       if (test.type === 'choice' && !(Array.isArray(test.options) && test.options.length)) {
         problems.push(`${name}: "options" ontbreekt`);
       }

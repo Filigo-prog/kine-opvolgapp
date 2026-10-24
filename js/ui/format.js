@@ -1,6 +1,7 @@
 // Getallen en meetresultaten weergeven in Vlaamse notatie (komma als decimaalteken).
 
 import { injuredAndHealthy, perKg } from '../domain/lsi.js';
+import { unitOf } from '../domain/test-session.js';
 
 export function formatNumber(value, decimals = 0, { fixed = false } = {}) {
   if (!Number.isFinite(value)) return '–';
@@ -35,18 +36,19 @@ export function describeBilateral(test, measurement) {
   const result = test.compare === 'difference'
     ? formatDifference(measurement.difference, test)
     : formatLsi(measurement.lsi);
-  const values = `L ${withUnit(formatNumber(measurement.left, test.decimals), test.unit)} / R ${withUnit(formatNumber(measurement.right, test.decimals), test.unit)}`;
+  const unit = unitOf(test, measurement);
+  const values = `L ${withUnit(formatNumber(measurement.left, test.decimals), unit)} / R ${withUnit(formatNumber(measurement.right, test.decimals), unit)}`;
   return { result, values };
 }
 
 /** "1,98 / 2,45 Nm/kg (aangedaan / gezond)" of null. */
-export function describePerKg(test, left, right, side, bodyWeightKg) {
+export function describePerKg(test, left, right, side, bodyWeightKg, unit = test.unit) {
   if (!test.relativeToBodyWeight) return null;
   const { injured, healthy } = injuredAndHealthy(left, right, side);
   const a = perKg(injured, bodyWeightKg);
   const b = perKg(healthy, bodyWeightKg);
   if (a === null || b === null) return null;
-  return `${formatNumber(a, 2, { fixed: true })} / ${formatNumber(b, 2, { fixed: true })} ${test.unit}/kg (aangedaan / gezond)`;
+  return `${formatNumber(a, 2, { fixed: true })} / ${formatNumber(b, 2, { fixed: true })} ${unit}/kg (aangedaan / gezond)`;
 }
 
 export function describeSingle(test, measurement) {

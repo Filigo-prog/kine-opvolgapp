@@ -181,29 +181,53 @@
           "id": "quad-iso",
           "label": "Quadriceps isometrisch",
           "type": "bilateral",
-          "unit": "N",
+          "unit": "Nm",
           "compare": "lsi",
           "min": 0,
-          "max": 2500,
+          "max": 1000,
           "decimals": 0,
           "relativeToBodyWeight": true,
           "patientLabel": "Kracht van je dijspier",
           "patientPhrase": "kracht van je dijspier",
-          "target": 90
+          "target": 90,
+          "units": [
+            {
+              "unit": "Nm",
+              "min": 0,
+              "max": 1000
+            },
+            {
+              "unit": "N",
+              "min": 0,
+              "max": 2500
+            }
+          ]
         },
         {
           "id": "ham-iso",
           "label": "Hamstrings isometrisch",
           "type": "bilateral",
-          "unit": "N",
+          "unit": "Nm",
           "compare": "lsi",
           "min": 0,
-          "max": 2500,
+          "max": 1000,
           "decimals": 0,
           "relativeToBodyWeight": true,
           "patientLabel": "Kracht achterkant van je dijbeen",
           "patientPhrase": "kracht aan de achterkant van je dijbeen",
-          "target": 90
+          "target": 90,
+          "units": [
+            {
+              "unit": "Nm",
+              "min": 0,
+              "max": 1000
+            },
+            {
+              "unit": "N",
+              "min": 0,
+              "max": 2500
+            }
+          ]
         }
       ]
     },

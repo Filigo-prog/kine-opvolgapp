@@ -130,11 +130,23 @@ export const tests = {
     equal(left.session.measurements['quad-iso'].lsi, 108.3); // aangedaan links: 520 ÷ 480
     equal(right.session.measurements['quad-iso'].lsi, 92.3); // aangedaan rechts: 480 ÷ 520
   },
-  'Protocol: kracht staat in N en de standaardkoppeling verwijst naar bestaande tests': async () => {
+  'Protocol: kracht heeft Nm als standaard en N als tweede keuze; de koppeling verwijst naar bestaande tests': async () => {
     const protocol = validateProtocol(await (await fetch('../data/protocol-vkb.json')).json(), 'vkb');
-    const tests = protocol.testGroups.flatMap((g) => g.tests);
-    equal(tests.filter((t) => ['quad-iso', 'ham-iso'].includes(t.id)).map((t) => t.unit), ['N', 'N']);
+    const strength = protocol.testGroups.flatMap((g) => g.tests).filter((t) => ['quad-iso', 'ham-iso'].includes(t.id));
+    equal(strength.map((t) => t.unit), ['Nm', 'Nm']);
+    equal(strength.map((t) => t.units.map((u) => u.unit)), [['Nm', 'N'], ['Nm', 'N']]);
     equal(protocol.valdMapping.map((m) => m.test), ['quad-iso', 'ham-iso']);
+  },
+  'Import van een N-meting: de eenheid gaat mee naar het testmoment': async () => {
+    const protocol = validateProtocol(await (await fetch('../data/protocol-vkb.json')).json(), 'vkb');
+    const { rows } = parseValdExport(await sample());
+    const row = rows[0];
+    const { sessions } = buildImportSessions([{ row, include: true, date: row.date, test: 'quad-iso', metric: 'Max Force (N)', unit: metricUnit('Max Force (N)') }]);
+    equal(sessions[0].entries['quad-iso'], { left: '520', right: '480', unit: 'N' });
+    const built = buildSession({ date: row.date, entries: sessions[0].entries }, { protocol, patient: { side: 'L' }, today: '2026-10-24' });
+    equal(built.errors, {});
+    equal(built.session.measurements['quad-iso'].unit, 'N');
+    equal(built.session.measurements['quad-iso'].lsi, 108.3);
   },
   'Protocol: een koppeling naar een onbekende test wordt geweigerd': async () => {
     const protocol = await (await fetch('../data/protocol-vkb.json')).json();

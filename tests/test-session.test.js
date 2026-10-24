@@ -69,4 +69,34 @@ export const tests = {
     try { validateProtocol(broken, 'vkb'); } catch { failed = true; }
     ok(failed, 'moet falen');
   },
+  'Eenheid per meting: Nm is de standaard, N is een tweede keuze met een eigen bereik': () => {
+    const today = '2026-10-24';
+    const strength = {
+      testGroups: [{ id: 'k', label: 'Kracht', tests: [{
+        id: 'quad', label: 'Quadriceps', type: 'bilateral', unit: 'Nm', compare: 'lsi', min: 0, max: 1000, decimals: 0,
+        units: [{ unit: 'Nm', min: 0, max: 1000 }, { unit: 'N', min: 0, max: 2500 }],
+      }] }],
+    };
+    const build = (entry) => buildSession({ date: '2026-10-20', entries: { quad: entry } }, { protocol: strength, patient: { side: 'L' }, today });
+    equal(build({ left: '145', right: '179' }).session.measurements.quad.unit, 'Nm');
+    equal(build({ left: '1450', right: '1790', unit: 'N' }).session.measurements.quad.unit, 'N');
+    equal(build({ left: '1450', right: '1790', unit: 'N' }).session.measurements.quad.lsi, 81);
+    ok(build({ left: '1450', right: '1790', unit: 'Nm' }).errors.quad.includes('0 tot 1000 Nm'), 'te groot voor Nm');
+    ok(build({ left: '1450', right: '1790', unit: 'kg' }).errors.quad.includes('Onbekende eenheid'), 'onbekende eenheid');
+    equal(buildSession({ date: '2026-10-20', entries: { quad: { left: '1', right: '2' } } }, { protocol: { testGroups: [{ tests: [{ id: 'quad', label: 'Q', type: 'bilateral', unit: 'Nm', compare: 'lsi', min: 0, max: 10 }] }] }, patient: { side: 'L' }, today }).session.measurements.quad.unit, undefined);
+  },
+  'Protocol: ongeldige eenheden worden geweigerd': () => {
+    const base = () => ({
+      id: 'vkb', version: '1', name: 'x', codePrefix: 'VKB', dateLabel: 'd', sinceLabel: 's', patientFields: {}, levels: [],
+      testGroups: [{ tests: [{ id: 't', label: 'T', type: 'bilateral', unit: 'Nm', compare: 'lsi', min: 0, max: 10, units: [{ unit: 'Nm', min: 0, max: 10 }] }] }],
+    });
+    validateProtocol(base(), 'vkb');
+    const missingDefault = base(); missingDefault.testGroups[0].tests[0].units = [{ unit: 'N', min: 0, max: 10 }];
+    const badRange = base(); badRange.testGroups[0].tests[0].units = [{ unit: 'Nm', min: 5, max: 5 }];
+    for (const broken of [missingDefault, badRange]) {
+      let message = '';
+      try { validateProtocol(broken, 'vkb'); } catch (error) { message = error.message; }
+      ok(message.includes('"units" is ongeldig'), message);
+    }
+  },
 };

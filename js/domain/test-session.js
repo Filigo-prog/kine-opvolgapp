@@ -11,14 +11,28 @@ export function findTest(protocol, testId) {
   return allTests(protocol).find((test) => test.id === testId) ?? null;
 }
 
-function checkRange(test, value) {
+/**
+ * Een test kan meerdere eenheden toelaten (bv. kracht in Nm of N): `units: [{ unit, min, max }]`.
+ * De LSI is een verhouding en hangt niet van de eenheid af. Zonder `units` geldt `unit`, `min` en `max` van de test.
+ */
+export function testUnits(test) {
+  return test.units?.length ? test.units : [{ unit: test.unit, min: test.min, max: test.max }];
+}
+
+/** De eenheid waarin een bewaarde meting genoteerd is (oudere metingen hebben geen eigen eenheid). */
+export function unitOf(test, measurement) {
+  return measurement?.unit ?? test.unit;
+}
+
+function checkRange(test, value, unit = test.unit) {
   if (Number.isNaN(value)) return 'Geen geldig getal.';
-  if (value < test.min || value > test.max) return `Kies een waarde van ${test.min} tot ${test.max}.`;
+  const range = testUnits(test).find((entry) => entry.unit === unit) ?? testUnits(test)[0];
+  if (value < range.min || value > range.max) return `Kies een waarde van ${range.min} tot ${range.max}${test.units?.length ? ` ${range.unit}` : ''}.`;
   return null;
 }
 
 /**
- * raw = { date, note, entries: { testId: { left, right } | { value } } } met tekst uit het formulier.
+ * raw = { date, note, entries: { testId: { left, right, unit? } | { value } } } met tekst uit het formulier.
  * Geeft { session, errors } terug. errors: { date?, form?, [testId]: boodschap }.
  */
 export function buildSession(raw, { protocol, patient, today }) {
@@ -39,12 +53,20 @@ export function buildSession(raw, { protocol, patient, today }) {
         errors[test.id] = 'Vul beide zijden in.';
         continue;
       }
-      const problem = checkRange(test, left) ?? checkRange(test, right);
+      let unit = null;
+      if (test.units?.length) {
+        unit = entry.unit || test.unit;
+        if (!test.units.some((entry2) => entry2.unit === unit)) {
+          errors[test.id] = `Onbekende eenheid "${unit}".`;
+          continue;
+        }
+      }
+      const problem = checkRange(test, left, unit ?? test.unit) ?? checkRange(test, right, unit ?? test.unit);
       if (problem) {
         errors[test.id] = problem;
         continue;
       }
-      measurements[test.id] = { left, right, ...compareSides(test, left, right, patient.side) };
+      measurements[test.id] = { left, right, ...compareSides(test, left, right, patient.side), ...(unit ? { unit } : {}) };
     } else if (test.type === 'single') {
       const value = parseNumber(entry.value);
       if (value === null) continue;
