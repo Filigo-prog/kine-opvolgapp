@@ -1215,3 +1215,55 @@ select.input {
     height: 52px;
   }
 }
+
+/* Back-up */
+.backup-card .button-row {
+  margin-top: var(--space-4);
+}
+
+.import-problem {
+  margin-top: var(--space-4);
+  margin-bottom: 0;
+}
+
+.import-problem ul {
+  margin: var(--space-2) 0 0;
+  padding-left: var(--space-5);
+}
+
+.choice-list {
+  border: none;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.choice input {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 2px 0 0;
+  accent-color: var(--color-primary);
+}
+
+.choice-text {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.choice:has(input:checked) {
+  border-color: var(--color-primary);
+  background: var(--color-surface-alt);
+}

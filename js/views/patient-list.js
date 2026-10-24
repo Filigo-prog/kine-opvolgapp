@@ -1,17 +1,23 @@
+import { backupReminder, backupReminderText } from '../domain/backup.js';
 import { describeTimeSince, formatDate } from '../domain/dates.js';
 import { stageLabel } from '../domain/progression.js';
 import { loadAllProtocols } from '../domain/protocol.js';
+import { getLastBackupAt } from '../repo/backup.js';
 import { listPatientSummaries } from '../repo/patients.js';
 import { h } from '../ui/dom.js';
 
 export async function patientListView() {
-  const [summaries, protocols] = await Promise.all([listPatientSummaries(), loadAllProtocols()]);
+  const [summaries, protocols, lastBackupAt] = await Promise.all([listPatientSummaries(), loadAllProtocols(), getLastBackupAt()]);
+  const reminder = backupReminderText(backupReminder({ lastBackupAt, hasData: summaries.length > 0 }));
 
   return h('section', {},
     h('div', { class: 'page-head' },
       h('h1', {}, 'Patiënten'),
       h('a', { class: 'btn btn-primary', href: '#/patient/nieuw' }, 'Nieuwe patiënt'),
     ),
+    reminder
+      ? h('p', { class: 'notice notice-warning', role: 'note' }, reminder, ' ', h('a', { href: '#/instellingen' }, 'Naar de back-up'))
+      : null,
     summaries.length === 0
       ? h('div', { class: 'card empty-state' },
         h('h2', {}, 'Nog geen patiënten'),

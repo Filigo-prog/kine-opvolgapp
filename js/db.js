@@ -104,7 +104,13 @@ export async function transaction(storeNames, fn) {
   const db = await openDb();
   const tx = db.transaction(storeNames, 'readwrite');
   const stores = Object.fromEntries(storeNames.map((name) => [name, tx.objectStore(name)]));
-  fn(stores);
+  try {
+    fn(stores);
+  } catch (error) {
+    // Een fout halverwege mag nooit een half resultaat bewaren (bv. gewist maar niet teruggezet).
+    try { tx.abort(); } catch { /* al afgerond */ }
+    throw error;
+  }
   await new Promise((resolve, reject) => {
     tx.oncomplete = resolve;
     tx.onerror = () => reject(tx.error);

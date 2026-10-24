@@ -2,7 +2,8 @@
 
 import { h } from './dom.js';
 
-function openDialog(build) {
+/** Toont een modaal venster. build(close) geeft de inhoud; close(waarde) sluit en geeft de waarde terug (null bij annuleren). */
+export function showDialog(build) {
   return new Promise((resolve) => {
     const dialog = h('dialog', { class: 'dialog' });
     let settled = false;
@@ -27,7 +28,7 @@ function openDialog(build) {
 }
 
 export async function confirmDialog({ title, message, confirmLabel = 'OK', cancelLabel = 'Annuleren', danger = false }) {
-  const result = await openDialog((close) => h('div', {},
+  const result = await showDialog((close) => h('div', {},
     h('h2', {}, title),
     message ? h('p', {}, message) : null,
     h('div', { class: 'dialog-actions' },
@@ -62,7 +63,7 @@ function pinInput(id, label) {
  * validate(pin): async, geeft een foutboodschap terug of null; bij een fout blijft het venster open.
  */
 export function pinDialog({ title, message, confirmLabel = 'OK', repeat = false, validate = null }) {
-  return openDialog((close) => {
+  return showDialog((close) => {
     const error = h('p', { class: 'dialog-error', role: 'alert' });
     const first = pinInput('pin-1', repeat ? 'Nieuwe pincode (4 tot 8 cijfers)' : 'Pincode');
     const second = repeat ? pinInput('pin-2', 'Herhaal de pincode') : null;
