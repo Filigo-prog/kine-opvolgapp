@@ -2,12 +2,17 @@ import { openDb, requestPersistentStorage } from './db.js';
 import { startRouter } from './router.js';
 import { h } from './ui/dom.js';
 import { initMode } from './ui/mode.js';
+import { patientDetailView } from './views/patient-detail.js';
+import { patientFormView } from './views/patient-form.js';
 import { patientHomeView } from './views/patient-home.js';
 import { patientListView } from './views/patient-list.js';
 import { settingsView } from './views/settings.js';
 
 const routes = [
   { path: '/patienten', view: patientListView, therapistOnly: true },
+  { path: '/patient/nieuw', view: () => patientFormView(), therapistOnly: true },
+  { path: '/patient/:code/bewerken', view: patientFormView, therapistOnly: true },
+  { path: '/patient/:code', view: patientDetailView, therapistOnly: true },
   { path: '/instellingen', view: settingsView, therapistOnly: true },
   { path: '/start', view: patientHomeView },
 ];

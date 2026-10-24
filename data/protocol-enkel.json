@@ -1,0 +1,30 @@
+{
+  "id": "enkel",
+  "version": "2026-10-24",
+  "status": "concept, te valideren door de therapeut",
+  "name": "Laterale enkelverstuiking",
+  "codePrefix": "ENK",
+  "dateLabel": "Datum letsel",
+  "sinceLabel": "na letsel",
+  "patientFields": {
+    "associatedInjuries": {
+      "label": "Bijkomende letsels en voorgeschiedenis",
+      "options": [
+        { "value": "syndesmose", "label": "Syndesmoseletsel" },
+        { "value": "mediaal", "label": "Mediaal ligamentair letsel" },
+        { "value": "recidief", "label": "Eerdere verstuiking(en) van deze enkel" },
+        { "value": "instabiliteit", "label": "Gekende chronische instabiliteit" }
+      ]
+    },
+    "sportLevel": {
+      "label": "Sportniveau",
+      "options": [
+        { "value": "I", "label": "I: springen, pivoteren (bv. voetbal, basket, volleybal)" },
+        { "value": "II", "label": "II: zijwaartse bewegingen (bv. tennis, skiën)" },
+        { "value": "III", "label": "III: rechtlijnig (bv. lopen, fietsen, zwemmen)" },
+        { "value": "IV", "label": "IV: geen sport" }
+      ]
+    }
+  },
+  "levels": []
+}

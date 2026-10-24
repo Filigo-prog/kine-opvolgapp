@@ -100,6 +100,8 @@
 }
 
 .input {
+  min-width: 0;
+  max-width: 100%;
   min-height: var(--touch-min);
   padding: 0 var(--space-3);
   border: 1px solid var(--color-border);
@@ -177,4 +179,236 @@
 /* Patiëntmodus-label in de header */
 body.mode-patient #mode-toggle {
   background: var(--color-surface-alt);
+}
+
+.btn-danger-outline {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+/* Formulieren: labels, hints, fouten */
+fieldset.field {
+  border: none;
+  padding: 0;
+  margin: 0 0 var(--space-4);
+  min-width: 0;
+}
+
+.field-label {
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: var(--space-1);
+}
+
+.field-hint,
+.field-error {
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+.field-error:empty {
+  display: none;
+}
+
+.field-error,
+.form-error {
+  color: var(--color-danger);
+}
+
+.has-error .input,
+.has-error .segment span {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 1px var(--color-danger);
+}
+
+.input-code {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  max-width: 220px;
+}
+
+.input[readonly] {
+  background: var(--color-surface-alt);
+  color: var(--color-text-muted);
+}
+
+select.input {
+  padding-right: var(--space-5);
+}
+
+.form-error:empty {
+  display: none;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.patient-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+/* Keuzeknoppen: radio's als grote knoppen die netjes afbreken op smalle schermen */
+.segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.segment {
+  position: relative;
+  display: inline-flex;
+}
+
+.segment input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.segment span {
+  min-height: var(--touch-min);
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-weight: 500;
+}
+
+.segment input:checked + span {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.segment input:focus-visible + span {
+  outline: 3px solid var(--color-focus);
+  outline-offset: -3px;
+}
+
+/* Aankruisvakjes */
+.checkbox-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+  gap: var(--space-2);
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--touch-min);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.checkbox input {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--color-primary);
+}
+
+/* Patiëntenlijst */
+.patient-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.patient-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  min-height: 64px;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.patient-row:active {
+  background: var(--color-surface-alt);
+}
+
+.patient-row-main,
+.patient-row-meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+}
+
+.patient-code {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.patient-row-meta {
+  font-size: var(--font-size-sm);
+  align-items: center;
+}
+
+.level-pill {
+  display: inline-block;
+  padding: 2px var(--space-3);
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+  color: var(--color-primary-strong);
+  font-weight: 700;
+}
+
+/* Patiëntdetail */
+.page-subtitle {
+  margin: var(--space-1) 0 0;
+}
+
+.data-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+}
+
+.data-list dt {
+  color: var(--color-text-muted);
+}
+
+.data-list dd {
+  margin: 0;
+}
+
+.danger-zone {
+  margin-top: var(--space-6);
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 600px) {
+  .data-list {
+    grid-template-columns: 1fr;
+  }
+
+  .data-list dd {
+    margin-bottom: var(--space-2);
+  }
 }

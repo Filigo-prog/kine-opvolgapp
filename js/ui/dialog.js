@@ -5,16 +5,22 @@ import { h } from './dom.js';
 function openDialog(build) {
   return new Promise((resolve) => {
     const dialog = h('dialog', { class: 'dialog' });
-    let result = null;
+    let settled = false;
+    // Rechtstreeks afronden: het 'close'-event komt niet altijd betrouwbaar (bv. in een achtergrondvenster).
     const close = (value) => {
-      result = value;
-      dialog.close();
+      if (settled) return;
+      settled = true;
+      if (dialog.open) dialog.close();
+      dialog.remove();
+      resolve(value);
     };
     dialog.append(build(close));
-    dialog.addEventListener('close', () => {
-      dialog.remove();
-      resolve(result);
+    // Escape-toets of sluiten door de browser = annuleren.
+    dialog.addEventListener('cancel', (event) => {
+      event.preventDefault();
+      close(null);
     });
+    dialog.addEventListener('close', () => close(null));
     document.body.append(dialog);
     dialog.showModal();
   });

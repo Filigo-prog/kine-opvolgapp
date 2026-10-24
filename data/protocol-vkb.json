@@ -1,0 +1,40 @@
+{
+  "id": "vkb",
+  "version": "2026-10-24",
+  "status": "concept, te valideren door de therapeut",
+  "name": "VKB-reconstructie",
+  "codePrefix": "VKB",
+  "dateLabel": "Datum operatie",
+  "sinceLabel": "na operatie",
+  "patientFields": {
+    "graft": {
+      "label": "Transplantaat",
+      "options": [
+        { "value": "HT", "label": "Hamstrings (HT)" },
+        { "value": "BPTB", "label": "Patellapees (BPTB)" },
+        { "value": "QT", "label": "Quadricepspees (QT)" },
+        { "value": "andere", "label": "Andere" }
+      ]
+    },
+    "associatedInjuries": {
+      "label": "Bijkomende letsels",
+      "options": [
+        { "value": "meniscushechting", "label": "Meniscushechting" },
+        { "value": "meniscectomie", "label": "Partiële meniscectomie" },
+        { "value": "kraakbeen", "label": "Kraakbeenletsel of -herstel" },
+        { "value": "mcl", "label": "Letsel mediale collaterale band" },
+        { "value": "revisie", "label": "Revisiereconstructie" }
+      ]
+    },
+    "sportLevel": {
+      "label": "Sportniveau",
+      "options": [
+        { "value": "I", "label": "I: springen, pivoteren (bv. voetbal, basket, handbal)" },
+        { "value": "II", "label": "II: zijwaartse bewegingen (bv. tennis, skiën)" },
+        { "value": "III", "label": "III: rechtlijnig (bv. lopen, fietsen, zwemmen)" },
+        { "value": "IV", "label": "IV: geen sport" }
+      ]
+    }
+  },
+  "levels": []
+}
