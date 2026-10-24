@@ -16,15 +16,19 @@ export function lsiSeries(sessions, testId) {
 export function lsiFeedback(test, series) {
   if (!series.length) return null;
   const phrase = test.patientPhrase ?? test.patientLabel?.toLowerCase() ?? test.label.toLowerCase();
+  const target = test.target ?? 90;
   const last = Math.round(series.at(-1).lsi);
+  const inZone = last >= target;
+  const zone = inZone ? ' Je zit in de doelzone.' : '';
 
   if (series.length === 1) {
-    return `Eerste meting: je ${phrase} staat op ${formatNumber(last)} %.`;
+    return `Eerste meting: je ${phrase} staat op ${formatNumber(last)} %.${zone}`;
   }
 
   const previous = Math.round(series.at(-2).lsi);
-  if (last > previous) return `Je ${phrase} ging van ${formatNumber(previous)} % naar ${formatNumber(last)} %.`;
-  if (last === previous) return `Je ${phrase} blijft stabiel op ${formatNumber(last)} %.`;
+  if (last > previous) return `Je ${phrase} ging van ${formatNumber(previous)} % naar ${formatNumber(last)} %.${zone}`;
+  if (last === previous) return `Je ${phrase} blijft stabiel op ${formatNumber(last)} %.${zone}`;
+  if (inZone) return `Je ${phrase} staat op ${formatNumber(last)} %.${zone}`;
   return `Je ${phrase} staat nu op ${formatNumber(last)} %. Een meting kan schommelen; we bekijken samen wat je volgende stap is.`;
 }
 

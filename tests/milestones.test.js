@@ -66,6 +66,13 @@ export const tests = {
     ok(!/achter|trager|langzamer|slechter|sneller|gemiddeld/i.test(down), `geen druk of vergelijking: ${down}`);
     equal(lsiFeedback(quadTest, []), null);
   },
+  'Feedback: in de doelzone wordt dat positief benoemd, ook bij een lichte daling': () => {
+    equal(lsiFeedback(quadTest, lsiSeries(sessions(80, 92), 'quad')), 'Je kracht van je dijspier ging van 80 % naar 92 %. Je zit in de doelzone.');
+    equal(lsiFeedback(quadTest, lsiSeries(sessions(95, 92), 'quad')), 'Je kracht van je dijspier staat op 92 %. Je zit in de doelzone.');
+    equal(lsiFeedback(quadTest, lsiSeries(sessions(95), 'quad')), 'Eerste meting: je kracht van je dijspier staat op 95 %. Je zit in de doelzone.');
+    const custom = { ...quadTest, target: 80 };
+    equal(lsiFeedback(custom, lsiSeries(sessions(70, 82), 'quad')), 'Je kracht van je dijspier ging van 70 % naar 82 %. Je zit in de doelzone.');
+  },
   'Voortgangszin: nooit drukkend': () => {
     equal(progressFeedback({ met: 0, total: 6 }), 'Je start dit level. Stap voor stap kom je er.');
     equal(progressFeedback({ met: 4, total: 6 }), 'Je hebt al 4 van de 6 stappen behaald. Nog 2 te gaan.');

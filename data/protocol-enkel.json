@@ -178,7 +178,7 @@
           "max": 100,
           "decimals": 0,
           "patientLabel": "Zijwaartse sprongen",
-          "patientPhrase": "zijwaartse sprongen",
+          "patientPhrase": "zijwaartse sprong",
           "target": 90
         }
       ]
@@ -208,6 +208,286 @@
       ]
     }
   ],
-  "levels": [],
-  "milestones": []
+  "levels": [
+    {
+      "number": 1,
+      "title": "Beschermen",
+      "subtitle": "Acute fase, ongeveer 0–5 dagen",
+      "patientGoal": "Je enkel de eerste dagen beschermen, maar wel blijven bewegen binnen wat kan.",
+      "focus": "Volgens PEACE & LOVE: beschermen, elevatie, compressie, educatie, belasten op geleide van pijn.",
+      "patientFocus": [
+        "Je beschermt je enkel de eerste dagen.",
+        "Je houdt je voet hoog waar het kan.",
+        "Je belast je enkel zoveel als de pijn toelaat.",
+        "Je therapeut legt uit wat er aan de hand is en wat je zelf kan doen."
+      ],
+      "criteria": [
+        {
+          "id": "enk-1-ottawa",
+          "label": "Ottawa ankle rules negatief of fractuur uitgesloten (klinisch, geregistreerd)",
+          "patientLabel": "Je therapeut heeft nagekeken dat er niets gebroken is.",
+          "type": "judgement",
+          "note": "De app registreert enkel dat dit gebeurd is. Beeldvorming zit niet in de app."
+        },
+        {
+          "id": "enk-1-belasten",
+          "label": "Belasten op geleide van pijn mogelijk",
+          "patientLabel": "Je kan je enkel belasten, zolang de pijn dat toelaat.",
+          "type": "judgement"
+        },
+        {
+          "id": "enk-1-pijn",
+          "label": "Pijn in rust ≤ 3/10",
+          "patientLabel": "Je hebt weinig pijn in rust.",
+          "type": "measurement",
+          "test": "nprs-rust",
+          "metric": "value",
+          "operator": "<=",
+          "threshold": 3
+        },
+        {
+          "id": "enk-1-zwelling",
+          "label": "Zwelling afnemend",
+          "patientLabel": "De zwelling wordt kleiner.",
+          "type": "judgement"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "title": "Bewegen en versterken",
+      "subtitle": "Subacute fase",
+      "patientGoal": "Je enkel terug soepel en sterk maken en je evenwicht trainen.",
+      "focus": "ROM (dorsaalflexie), kuitkracht, eversiekracht, evenwicht.",
+      "patientFocus": [
+        "Je enkel wordt weer soepel, vooral bij het naar boven buigen van je voet.",
+        "Je versterkt je kuit en de spieren aan de buitenkant van je enkel.",
+        "Je traint je evenwicht op één been."
+      ],
+      "criteria": [
+        {
+          "id": "enk-2-gang",
+          "label": "Normaal gangpatroon zonder hulpmiddel",
+          "patientLabel": "Je stapt normaal, zonder hulpmiddel.",
+          "type": "judgement"
+        },
+        {
+          "id": "enk-2-wblt",
+          "label": "Weight-bearing lunge test (knie-tot-muur): verschil met de gezonde zijde < 2 cm",
+          "patientLabel": "Je enkel buigt bijna even ver als je andere enkel.",
+          "type": "measurement",
+          "test": "wblt",
+          "metric": "difference",
+          "operator": "<",
+          "threshold": 2,
+          "note": "Grens instelbaar in het protocol."
+        },
+        {
+          "id": "enk-2-calf",
+          "label": "Single-leg calf raises ≥ 80 % van de gezonde zijde",
+          "patientLabel": "Je kuit is sterk genoeg: je kan bijna even vaak op je tenen staan als aan je andere been.",
+          "type": "measurement",
+          "test": "calf-raises",
+          "metric": "lsi",
+          "operator": ">=",
+          "threshold": 80
+        },
+        {
+          "id": "enk-2-sls",
+          "label": "Single-leg stand 30 s met ogen open, zonder steun",
+          "patientLabel": "Je blijft 30 seconden op één been staan, zonder steun.",
+          "type": "measurement",
+          "test": "sls-open",
+          "metric": "injured",
+          "operator": ">=",
+          "threshold": 30
+        },
+        {
+          "id": "enk-2-pijn",
+          "label": "Pijn bij dagelijkse activiteiten ≤ 2/10",
+          "patientLabel": "Je hebt weinig pijn in het dagelijks leven.",
+          "type": "measurement",
+          "test": "nprs-adl",
+          "metric": "value",
+          "operator": "<=",
+          "threshold": 2
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "Springen en wenden",
+      "subtitle": "Functionele fase",
+      "patientGoal": "Je enkel klaarmaken voor springen, landen en snelle bewegingen.",
+      "focus": "Dynamisch evenwicht, hoppen, landen, wendingen.",
+      "patientFocus": [
+        "Je traint je evenwicht terwijl je beweegt.",
+        "Je oefent hoppen en landen.",
+        "Je oefent van richting veranderen."
+      ],
+      "criteria": [
+        {
+          "id": "enk-3-ybal",
+          "label": "Y-balance test anterior reach: verschil < 4 cm met de gezonde zijde",
+          "patientLabel": "Je reikt op één been bijna even ver als op je andere been.",
+          "type": "measurement",
+          "test": "ybal-ant",
+          "metric": "difference",
+          "operator": "<",
+          "threshold": 4,
+          "note": "Grens instelbaar in het protocol."
+        },
+        {
+          "id": "enk-3-slsdicht",
+          "label": "Single-leg stand 30 s met ogen gesloten",
+          "patientLabel": "Je blijft 30 seconden op één been staan met je ogen dicht.",
+          "type": "measurement",
+          "test": "sls-dicht",
+          "metric": "injured",
+          "operator": ">=",
+          "threshold": 30,
+          "note": "Of vergelijkbaar met de gezonde zijde: dat beoordeel je zelf."
+        },
+        {
+          "id": "enk-3-hop",
+          "label": "Hoptests LSI ≥ 85 % (single hop, side hop)",
+          "patientLabel": "Je hopt bijna even goed op je enkel als op je andere been.",
+          "type": "measurement",
+          "tests": [
+            "single-hop",
+            "side-hop"
+          ],
+          "metric": "lsi",
+          "operator": ">=",
+          "threshold": 85
+        },
+        {
+          "id": "enk-3-givingway",
+          "label": "Geen pijn en geen giving way bij hoppen",
+          "patientLabel": "Je hopt zonder pijn en je enkel geeft niet mee.",
+          "type": "judgement"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "title": "Terug naar je sport en herval voorkomen",
+      "subtitle": "Return to sport en preventie",
+      "patientGoal": "Veilig terug naar je sport, en zorgen dat het niet opnieuw gebeurt.",
+      "focus": "Sportspecifieke drills, vragenlijsten en een preventieschema (neuromusculaire training).",
+      "patientFocus": [
+        "Je traint stap voor stap sportspecifiek.",
+        "Je bouwt een routine op om je enkel te beschermen.",
+        "Samen beslissen we wanneer je klaar bent om terug te sporten."
+      ],
+      "criteria": [
+        {
+          "id": "enk-4-hop",
+          "label": "Hoptests LSI ≥ 90 %",
+          "patientLabel": "Je hopt bijna even goed op je enkel als op je andere been.",
+          "type": "measurement",
+          "tests": [
+            "single-hop",
+            "side-hop"
+          ],
+          "metric": "lsi",
+          "operator": ">=",
+          "threshold": 90
+        },
+        {
+          "id": "enk-4-ybal",
+          "label": "Y-balance binnen de normgrens (verschil < 4 cm)",
+          "patientLabel": "Je evenwicht op één been is in orde.",
+          "type": "measurement",
+          "test": "ybal-ant",
+          "metric": "difference",
+          "operator": "<",
+          "threshold": 4,
+          "note": "De normgrens is hier gelijk aan level 3. Pas ze aan in het protocol als je een andere norm hanteert."
+        },
+        {
+          "id": "enk-4-drills",
+          "label": "Sportspecifieke drills zonder klachten",
+          "patientLabel": "Je doet sportspecifieke oefeningen zonder klachten.",
+          "type": "judgement"
+        },
+        {
+          "id": "enk-4-vragenlijst",
+          "label": "Vragenlijst: CAIT ≥ 25 (of FAAM sport voldoende)",
+          "patientLabel": "Je voelt je enkel stabiel bij het sporten.",
+          "type": "measurement",
+          "test": "cait",
+          "metric": "value",
+          "operator": ">=",
+          "threshold": 25,
+          "note": "Grens instelbaar. FAAM sport heeft hier geen vaste grens: die score beoordeel jij zelf."
+        },
+        {
+          "id": "enk-4-beslissing",
+          "label": "Beslissing door de therapeut",
+          "patientLabel": "Je therapeut beslist samen met jou dat je terug mag sporten.",
+          "type": "judgement"
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "id": "enk-stappen",
+      "label": "Eerste stappen zonder hinken",
+      "description": "Je stapt weer normaal, zonder hulpmiddel.",
+      "trigger": {
+        "type": "criterion",
+        "criterion": "enk-2-gang"
+      }
+    },
+    {
+      "id": "enk-wblt",
+      "label": "Knie-tot-muur in balans",
+      "description": "Je enkel buigt weer even ver als je andere enkel.",
+      "trigger": {
+        "type": "criterion",
+        "criterion": "enk-2-wblt"
+      }
+    },
+    {
+      "id": "enk-flamingo",
+      "label": "30 seconden flamingo",
+      "description": "Je staat 30 seconden op één been, zonder steun.",
+      "trigger": {
+        "type": "criterion",
+        "criterion": "enk-2-sls"
+      }
+    },
+    {
+      "id": "enk-ogendicht",
+      "label": "Ogen dicht, toch stabiel",
+      "description": "Je staat 30 seconden op één been met je ogen dicht.",
+      "trigger": {
+        "type": "criterion",
+        "criterion": "enk-3-slsdicht"
+      }
+    },
+    {
+      "id": "enk-hop",
+      "label": "Eerste hop",
+      "description": "Je eerste hop op je enkel.",
+      "trigger": {
+        "type": "manual"
+      }
+    },
+    {
+      "id": "enk-groenlicht",
+      "label": "Groen licht",
+      "description": "Je therapeut heeft bevestigd dat je terug mag naar je sport.",
+      "trigger": {
+        "type": "completion"
+      }
+    }
+  ],
+  "completion": {
+    "title": "Groen licht",
+    "patientText": "Je therapeut heeft bevestigd dat je terug mag naar je sport. Samen bespreken jullie hoe je herval voorkomt.",
+    "releaseLabel": "Return to sport bevestigen"
+  }
 }
