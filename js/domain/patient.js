@@ -38,6 +38,7 @@ export function normalizePatient(raw) {
     goal: text(raw.goal),
     bodyWeightKg: weight === '' ? null : Number(weight),
   };
+  patient.sportSupport = text(raw.sportSupport);
   if (patient.injury === 'vkb') {
     patient.graft = text(raw.graft);
     patient.graftOther = patient.graft === 'andere' ? text(raw.graftOther) : '';
@@ -76,6 +77,10 @@ export function validatePatient(patient, { protocol, existingCodes = [], isNew =
   const allowedInjuries = options('associatedInjuries');
   if (patient.associatedInjuries.some((value) => !allowedInjuries.includes(value))) {
     errors.associatedInjuries = 'Onbekende keuze bij bijkomende letsels.';
+  }
+
+  if (patient.sportSupport && !options('sportSupport').includes(patient.sportSupport)) {
+    errors.sportSupport = 'Kies een geldige optie.';
   }
 
   if (patient.sportLevel && !options('sportLevel').includes(patient.sportLevel)) {

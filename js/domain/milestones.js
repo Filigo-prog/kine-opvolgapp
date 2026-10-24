@@ -8,28 +8,30 @@
 //   lsi:        een meting van `test` haalde minstens `threshold` % LSI
 //   manual:     de therapeut registreert het zelf (bv. "Eerste loopsessie")
 //   completion: de therapeut bevestigde de return to sport
+//   homeLogWeeks: `weeks` opeenvolgende weken met minstens `perWeek` oefendagen, vanaf de return to sport
 
 import { STATUS } from './criteria.js';
+import { weeklyRun } from './home-log.js';
 import { currentStage, isCompleted } from './progression.js';
 
-export const TRIGGER_TYPES = ['criterion', 'lsi', 'manual', 'completion'];
+export const TRIGGER_TYPES = ['criterion', 'lsi', 'manual', 'completion', 'homeLogWeeks'];
 
 /**
  * Behaalde mijlpalen: [{ id, date }].
- * data = { protocol, sessions, statuses (Map), history, manual (Map milestoneId → { date }) }
+ * data = { protocol, sessions, statuses (Map), history, manual (Map milestoneId → { date }), homeLog (Map) }
  */
-export function earnedMilestones({ protocol, sessions, statuses, history, manual }) {
+export function earnedMilestones({ protocol, sessions, statuses, history, manual, homeLog = new Map() }) {
   const earned = [];
   const byDate = [...sessions].sort((a, b) => a.date.localeCompare(b.date));
 
   for (const milestone of protocol.milestones ?? []) {
-    const date = earnedDate(milestone.trigger, { protocol, byDate, statuses, history, manual, id: milestone.id });
+    const date = earnedDate(milestone.trigger, { protocol, byDate, statuses, history, manual, homeLog, id: milestone.id });
     if (date) earned.push({ id: milestone.id, date });
   }
   return earned;
 }
 
-function earnedDate(trigger, { protocol, byDate, statuses, history, manual, id }) {
+function earnedDate(trigger, { protocol, byDate, statuses, history, manual, homeLog, id }) {
   switch (trigger.type) {
     case 'criterion': {
       const record = statuses.get(trigger.criterion);
@@ -43,6 +45,15 @@ function earnedDate(trigger, { protocol, byDate, statuses, history, manual, id }
       return manual.get(id)?.date ?? null;
     case 'completion':
       return isCompleted(currentStage(history), protocol) ? (history.at(-1)?.date ?? null) : null;
+    case 'homeLogWeeks': {
+      const completedOn = isCompleted(currentStage(history), protocol) ? history.at(-1)?.date : null;
+      if (trigger.from === 'completion' && !completedOn) return null;
+      return weeklyRun(homeLog, {
+        weeks: trigger.weeks,
+        perWeek: trigger.perWeek,
+        from: trigger.from === 'completion' ? completedOn : null,
+      }).earnedOn;
+    }
     default:
       return null;
   }
@@ -51,4 +62,9 @@ function earnedDate(trigger, { protocol, byDate, statuses, history, manual, id }
 /** Alle mijlpalen van het protocol met hun datum (of null): [{ milestone, date }]. dates = Map id → datum. */
 export function milestoneOverview(protocol, dates) {
   return (protocol.milestones ?? []).map((milestone) => ({ milestone, date: dates.get(milestone.id) ?? null }));
+}
+
+/** Namen van mijlpalen bij een lijst id's, bv. voor een melding. */
+export function feedbackNames(protocol, ids) {
+  return (protocol.milestones ?? []).filter((milestone) => ids.includes(milestone.id)).map((milestone) => milestone.label).join(', ');
 }

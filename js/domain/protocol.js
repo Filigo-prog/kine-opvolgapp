@@ -38,6 +38,7 @@ export function validateProtocol(protocol, expectedId) {
   if (typeof protocol?.patientFields !== 'object') problems.push('"patientFields" ontbreekt');
   problems.push(...validateTestGroups(protocol?.testGroups));
   if (!problems.length) problems.push(...validateLevels(protocol));
+  problems.push(...validateHomeLog(protocol));
   if (problems.length) throw new Error(`Protocol ${expectedId} is ongeldig: ${problems.join('; ')}.`);
   return protocol;
 }
@@ -120,7 +121,23 @@ function validateMilestones(protocol, criterionIds, tests) {
       problems.push(`${name}: criterium "${trigger.criterion}" bestaat niet`);
     } else if (trigger.type === 'lsi' && !(tests.has(trigger.test) && Number.isFinite(trigger.threshold))) {
       problems.push(`${name}: "test" of "threshold" ontbreekt of is ongeldig`);
+    } else if (trigger.type === 'homeLogWeeks' && !(trigger.weeks > 0 && trigger.perWeek > 0 && trigger.perWeek <= 7)) {
+      problems.push(`${name}: "weeks" en "perWeek" (1 tot 7) ontbreken of zijn ongeldig`);
     }
+  }
+  return problems;
+}
+
+function validateHomeLog(protocol) {
+  const problems = [];
+  const homeLog = protocol.homeLog;
+  if (homeLog) {
+    if (!(homeLog.jokersPerWeek >= 0 && homeLog.jokersPerWeek <= 3)) problems.push('"homeLog.jokersPerWeek" moet 0 tot 3 zijn');
+  }
+  const prevention = protocol.prevention;
+  if (prevention) {
+    if (!(prevention.fromLevel >= 1 && prevention.fromLevel <= (protocol.levels?.length ?? 0))) problems.push('"prevention.fromLevel" is ongeldig');
+    if (!(prevention.weeks > 0 && prevention.perWeek > 0 && prevention.perWeek <= 7)) problems.push('"prevention.weeks" en "prevention.perWeek" zijn ongeldig');
   }
   return problems;
 }

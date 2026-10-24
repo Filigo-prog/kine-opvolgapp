@@ -154,6 +154,10 @@ function injuryFields(protocol, values) {
     field('associatedInjuriesOther', 'Andere (optioneel)', h('input', {
       id: 'f-associatedInjuriesOther', name: 'associatedInjuriesOther', class: 'input', value: sameInjury ? (values.associatedInjuriesOther ?? '') : '',
     })),
+    fields.sportSupport
+      ? segmented('sportSupport', fields.sportSupport.label,
+        [{ value: '', label: 'Geen advies' }, ...fields.sportSupport.options], sameInjury ? (values.sportSupport ?? '') : '')
+      : null,
   );
   return section;
 }

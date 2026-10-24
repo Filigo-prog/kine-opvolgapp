@@ -3,18 +3,21 @@
 // Geen ranglijsten en geen vergelijking met andere patiënten.
 
 import { STATUS } from '../domain/criteria.js';
-import { formatDate } from '../domain/dates.js';
+import { formatDate, todayIso } from '../domain/dates.js';
 import { lsiFeedback, lsiSeries, progressFeedback } from '../domain/feedback.js';
 import { milestoneOverview } from '../domain/milestones.js';
 import { currentStage, isCompleted, levelByNumber, levelProgress, statusOf } from '../domain/progression.js';
 import { loadProtocol } from '../domain/protocol.js';
 import { allTests } from '../domain/test-session.js';
 import { getCriteriaStatuses } from '../repo/criteria-status.js';
+import { getHomeLog } from '../repo/home-log.js';
 import { getLevelHistory } from '../repo/level-history.js';
-import { refreshMilestones } from '../repo/milestones.js';
+import { refreshMilestonesDetailed } from '../repo/milestones.js';
 import { getPatient } from '../repo/patients.js';
 import { listTestSessions } from '../repo/test-sessions.js';
-import { h } from '../ui/dom.js';
+import { render } from '../router.js';
+import { h, showToast } from '../ui/dom.js';
+import { homeLogCard } from '../ui/home-log.js';
 import { destroyCharts, lsiChartCard } from '../ui/lsi-chart.js';
 import { notFound } from '../ui/not-found.js';
 
@@ -24,16 +27,26 @@ export async function patientProgressView({ code }, { preview = false } = {}) {
   const patient = await getPatient(code);
   if (!patient) return notFound('Patiënt niet gevonden', `Er is geen patiënt met code ${code}.`);
 
-  const [protocol, statuses, history, sessions] = await Promise.all([
+  const [protocol, statuses, history, sessions, homeLog] = await Promise.all([
     loadProtocol(patient.injury),
     getCriteriaStatuses(code),
     getLevelHistory(code),
     listTestSessions(code),
+    getHomeLog(code),
   ]);
   const stage = currentStage(history);
   const completed = isCompleted(stage, protocol);
   const level = levelByNumber(protocol, stage);
-  const dates = await refreshMilestones(code, { protocol, sessions, statuses, history });
+  const { dates } = await refreshMilestonesDetailed(code, { protocol, sessions, statuses, history, homeLog });
+
+  // Na elke bewaarde dag kan er een mijlpaal bijgekomen zijn (bv. Preventiekampioen).
+  async function onLogSaved() {
+    const { fresh } = await refreshMilestonesDetailed(code, { protocol, sessions, statuses, history, homeLog });
+    if (!fresh.length) return;
+    const names = protocol.milestones.filter((m) => fresh.includes(m.id)).map((m) => m.label);
+    showToast(`Nieuwe mijlpaal: ${names.join(', ')}!`, 5000);
+    render();
+  }
 
   return h('div', { class: 'patient-view' },
     preview
@@ -49,6 +62,7 @@ export async function patientProgressView({ code }, { preview = false } = {}) {
     ),
     levelPath(protocol, stage, completed),
     completed ? completionCard(protocol, history) : (level ? levelCard(level, protocol, statuses) : null),
+    homeLogSection({ patient, protocol, homeLog, stage, completed, onSaved: onLogSaved }),
     milestoneSection(protocol, dates),
     chartSection(protocol, patient, sessions),
   );
@@ -153,5 +167,32 @@ function chartSection(protocol, patient, sessions) {
       ]
       : h('div', { class: 'card empty-state' },
         h('p', { class: 'muted' }, 'Na je eerste testmoment verschijnen hier je grafieken.')),
+  );
+}
+
+/** Thuisoefenlog met streak; na de return to sport (enkel) wordt het het preventieschema. */
+function homeLogSection({ patient, protocol, homeLog, stage, completed, onSaved }) {
+  const config = protocol.homeLog;
+  if (!config) return null;
+  const prevention = protocol.prevention;
+  const preventionActive = Boolean(prevention) && (completed || stage >= prevention.fromLevel);
+
+  const support = protocol.patientFields.sportSupport;
+  const supportLabel = support?.options.find((option) => option.value === patient.sportSupport)?.label;
+  const reminder = preventionActive && supportLabel
+    ? support.reminderText.replace('{support}', `${supportLabel.toLowerCase()}`)
+    : null;
+
+  return h('section', { class: 'home-log-section' },
+    reminder ? h('p', { class: 'notice notice-warning', role: 'note' }, reminder) : null,
+    homeLogCard({
+      patient,
+      log: homeLog,
+      config,
+      today: todayIso(),
+      title: preventionActive ? prevention.title : config.title,
+      intro: preventionActive ? prevention.patientText : 'Tik op een dag en vul in of je geoefend hebt.',
+      onSaved,
+    }),
   );
 }

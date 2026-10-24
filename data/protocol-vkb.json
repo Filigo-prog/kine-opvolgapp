@@ -10,6 +10,12 @@
     "injured": "Geopereerd been",
     "healthy": "Ander been"
   },
+  "homeLog": {
+    "title": "Thuisoefeningen",
+    "question": "Welke dagen heb je geoefend?",
+    "jokersPerWeek": 1,
+    "tracksSwelling": true
+  },
   "patientFields": {
     "graft": {
       "label": "Transplantaat",

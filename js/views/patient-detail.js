@@ -1,18 +1,21 @@
 // Overzicht van één patiënt in de therapeutmodus. Vertrekpunt voor testmomenten en criteria.
 
 import { describeTimeSince, formatDate, todayIso } from '../domain/dates.js';
+import { feedbackNames } from '../domain/milestones.js';
 import { milestoneOverview } from '../domain/milestones.js';
 import { currentStage, isCompleted, levelByNumber, levelProgress, stageLabel } from '../domain/progression.js';
 import { loadProtocol, optionLabel } from '../domain/protocol.js';
 import { findTest } from '../domain/test-session.js';
 import { getCriteriaStatuses } from '../repo/criteria-status.js';
 import { getLevelHistory } from '../repo/level-history.js';
-import { getMilestones, refreshMilestones, removeManualMilestone, setManualMilestone } from '../repo/milestones.js';
+import { getHomeLog } from '../repo/home-log.js';
+import { getMilestones, refreshMilestonesDetailed, removeManualMilestone, setManualMilestone } from '../repo/milestones.js';
 import { deletePatient, getPatient } from '../repo/patients.js';
 import { listTestSessions } from '../repo/test-sessions.js';
 import { navigate, render } from '../router.js';
 import { confirmDialog } from '../ui/dialog.js';
 import { h, showToast } from '../ui/dom.js';
+import { homeLogCard } from '../ui/home-log.js';
 import { enterPatientMode } from '../ui/mode.js';
 import { describeBilateral, describeSingle } from '../ui/format.js';
 import { notFound } from '../ui/not-found.js';
@@ -21,16 +24,17 @@ export async function patientDetailView({ code }) {
   const patient = await getPatient(code);
   if (!patient) return notFound('Patiënt niet gevonden', `Er is geen patiënt met code ${code}.`);
 
-  const [protocol, history, sessions, statuses] = await Promise.all([
+  const [protocol, history, sessions, statuses, homeLog] = await Promise.all([
     loadProtocol(patient.injury),
     getLevelHistory(code),
     listTestSessions(code),
     getCriteriaStatuses(code),
+    getHomeLog(code),
   ]);
   const stage = currentStage(history);
   const level = levelByNumber(protocol, stage);
   const progress = level ? levelProgress(level, statuses) : null;
-  const dates = await refreshMilestones(code, { protocol, sessions, statuses, history });
+  const { dates } = await refreshMilestonesDetailed(code, { protocol, sessions, statuses, history, homeLog });
   const storedMilestones = await getMilestones(code);
   const editHref = `#/patient/${encodeURIComponent(code)}/bewerken`;
 
@@ -48,6 +52,9 @@ export async function patientDetailView({ code }) {
     [protocol.dateLabel, `${formatDate(patient.injuryDate)} (${describeTimeSince(patient.injuryDate)} ${protocol.sinceLabel})`],
     graft ? [protocol.patientFields.graft.label, graft] : null,
     [protocol.patientFields.associatedInjuries?.label ?? 'Bijkomende letsels', associated.length ? associated.join(', ') : 'Geen'],
+    protocol.patientFields.sportSupport && patient.sportSupport
+      ? [protocol.patientFields.sportSupport.label, optionLabel(protocol, 'sportSupport', patient.sportSupport)]
+      : null,
     ['Sport', [patient.sport, patient.sportLevel ? `niveau ${patient.sportLevel}` : ''].filter(Boolean).join(', ') || '–'],
     ['Doel', patient.goal || '–'],
     ['Lichaamsgewicht', patient.bodyWeightKg ? `${patient.bodyWeightKg.toLocaleString('nl-BE')} kg` : '–'],
@@ -102,6 +109,23 @@ export async function patientDetailView({ code }) {
         ),
       ),
     ),
+    protocol.homeLog
+      ? homeLogCard({
+        patient,
+        log: homeLog,
+        config: protocol.homeLog,
+        today: todayIso(),
+        title: 'Thuisoefeningen',
+        intro: 'Wat de patiënt thuis deed. Je kan dagen hier ook zelf invullen of verbeteren.',
+        onSaved: async () => {
+          const { fresh } = await refreshMilestonesDetailed(code, { protocol, sessions, statuses, history, homeLog });
+          if (fresh.length) {
+            showToast(`Nieuwe mijlpaal: ${feedbackNames(protocol, fresh)}!`, 5000);
+            render();
+          }
+        },
+      })
+      : null,
     milestoneCard(protocol, dates, storedMilestones, code),
     h('div', { class: 'card sessions-card' },
       h('h2', {}, 'Testmomenten'),

@@ -10,6 +10,19 @@
     "injured": "Aangedaan been",
     "healthy": "Ander been"
   },
+  "homeLog": {
+    "title": "Thuisoefeningen",
+    "question": "Welke dagen heb je geoefend?",
+    "jokersPerWeek": 1,
+    "tracksSwelling": false
+  },
+  "prevention": {
+    "title": "Preventieschema",
+    "fromLevel": 4,
+    "patientText": "Neuromusculaire training houdt je enkel sterk en stabiel. Oefen elke week minstens 2 dagen, dan helpt het je om het niet opnieuw te krijgen.",
+    "weeks": 6,
+    "perWeek": 2
+  },
   "patientFields": {
     "associatedInjuries": {
       "label": "Bijkomende letsels en voorgeschiedenis",
@@ -52,6 +65,20 @@
           "label": "IV: geen sport"
         }
       ]
+    },
+    "sportSupport": {
+      "label": "Brace of tape tijdens sport (advies therapeut)",
+      "options": [
+        {
+          "value": "brace",
+          "label": "Brace"
+        },
+        {
+          "value": "tape",
+          "label": "Tape"
+        }
+      ],
+      "reminderText": "Vergeet je {support} niet als je gaat sporten."
     }
   },
   "testGroups": [
@@ -482,6 +509,17 @@
       "description": "Je therapeut heeft bevestigd dat je terug mag naar je sport.",
       "trigger": {
         "type": "completion"
+      }
+    },
+    {
+      "id": "enk-preventie",
+      "label": "Preventiekampioen",
+      "description": "Je hield je preventieschema 6 weken vol.",
+      "trigger": {
+        "type": "homeLogWeeks",
+        "weeks": 6,
+        "perWeek": 2,
+        "from": "completion"
       }
     }
   ],

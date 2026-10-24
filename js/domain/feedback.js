@@ -40,3 +40,14 @@ export function progressFeedback({ met, total }) {
   const left = total - met;
   return `Je hebt al ${met} van de ${total} stappen behaald. Nog ${left} te gaan.`;
 }
+
+/** Zin bij de streak: positief, zonder druk. */
+export function streakFeedback({ current, longest, hasAny, jokerUsedThisWeek }) {
+  if (!hasAny) return 'Zodra je thuis oefent, zie je hier je reeks.';
+  if (current === 0) {
+    const best = longest > 0 ? ` Je beste reeks is ${longest} ${longest === 1 ? 'dag' : 'dagen'}.` : '';
+    return `Vandaag kan je weer starten. Elke dag die je oefent telt.${best}`;
+  }
+  const joker = jokerUsedThisWeek ? ' Je rustdag-joker van deze week is gebruikt.' : '';
+  return `Je oefende ${current} ${current === 1 ? 'dag' : 'dagen'} na elkaar.${joker}`;
+}
