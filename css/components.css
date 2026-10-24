@@ -1322,3 +1322,104 @@ select.input {
   min-width: var(--touch-min);
   padding: 0 var(--space-3);
 }
+
+/* Testschema en referentiewaarden */
+.collapsible > summary {
+  cursor: pointer;
+  list-style: none;
+  min-height: var(--touch-min);
+  display: flex;
+  align-items: center;
+}
+
+.collapsible > summary::-webkit-details-marker {
+  display: none;
+}
+
+.collapsible > summary h2 {
+  margin: 0;
+}
+
+.collapsible > summary::after {
+  content: "▾";
+  margin-left: auto;
+  color: var(--color-text-muted);
+}
+
+.collapsible:not([open]) > summary::after {
+  content: "▸";
+}
+
+.schedule-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.schedule-row {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: baseline;
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.schedule-row:first-child {
+  border-top: none;
+}
+
+.schedule-week {
+  font-weight: 700;
+}
+
+.schedule-state {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.schedule-gedaan .schedule-state {
+  color: var(--color-success);
+}
+
+.schedule-volgende {
+  background: var(--color-surface-alt);
+  margin: 0 calc(-1 * var(--space-3));
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+  border-radius: var(--radius-sm);
+}
+
+.schedule-volgende .schedule-state {
+  color: var(--color-primary-strong);
+}
+
+.schedule-niet-gemeten .schedule-state,
+.schedule-niet-gemeten .schedule-label {
+  color: var(--color-text-muted);
+}
+
+.reference-group + .reference-group {
+  margin-top: var(--space-4);
+}
+
+.reference-group h3 {
+  margin-bottom: var(--space-2);
+}
+
+.test-reference {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--color-primary-strong);
+}
+
+@media (max-width: 600px) {
+  .schedule-row {
+    grid-template-columns: 72px minmax(0, 1fr);
+  }
+
+  .schedule-state {
+    grid-column: 2;
+  }
+}

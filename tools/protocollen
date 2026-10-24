@@ -1,0 +1,4 @@
+#!/bin/bash
+# Gebruik:  tools/protocollen export        |  tools/protocollen import [--toepassen]
+cd "$(dirname "$0")/.." || exit 1
+exec tools/.venv/bin/python tools/protocollen.py "$@"

@@ -2,6 +2,7 @@
 
 import { CRITERION_TYPES, METRICS, OPERATOR_NAMES } from './criteria.js';
 import { TRIGGER_TYPES } from './milestones.js';
+import { criterionValues, milestoneValues, placeholdersIn } from './text.js';
 
 export const INJURIES = ['vkb', 'enkel'];
 
@@ -40,6 +41,8 @@ export function validateProtocol(protocol, expectedId) {
   if (!problems.length) problems.push(...validateLevels(protocol));
   problems.push(...validateHomeLog(protocol));
   problems.push(...validateValdMapping(protocol));
+  problems.push(...validateSchedule(protocol));
+  problems.push(...validateReferences(protocol));
   if (problems.length) throw new Error(`Protocol ${expectedId} is ongeldig: ${problems.join('; ')}.`);
   return protocol;
 }
@@ -92,6 +95,7 @@ function validateLevels(protocol) {
       if (!criterion.id || ids.has(criterion.id)) problems.push(`${name}: id ontbreekt of komt dubbel voor`);
       ids.add(criterion.id);
       if (!criterion.label) problems.push(`${name}: "label" ontbreekt`);
+      for (const field of ['label', 'patientLabel', 'note']) checkPlaceholders(`${name}.${field}`, criterion[field], criterionValues(criterion), problems);
       if (!CRITERION_TYPES.includes(criterion.type)) problems.push(`${name}: onbekend type "${criterion.type}"`);
       if (criterion.type === 'minTime' && !(criterion.weeks > 0 || criterion.months > 0)) {
         problems.push(`${name}: "weeks" of "months" ontbreekt`);
@@ -121,6 +125,7 @@ function validateMilestones(protocol, criterionIds, tests) {
     if (!milestone.id || ids.has(milestone.id)) problems.push(`${name}: id ontbreekt of komt dubbel voor`);
     ids.add(milestone.id);
     if (!milestone.label) problems.push(`${name}: "label" ontbreekt`);
+    for (const field of ['label', 'description']) checkPlaceholders(`${name}.${field}`, milestone[field], milestoneValues(milestone), problems);
     const trigger = milestone.trigger;
     if (!TRIGGER_TYPES.includes(trigger?.type)) {
       problems.push(`${name}: onbekende trigger "${trigger?.type}"`);
@@ -131,6 +136,46 @@ function validateMilestones(protocol, criterionIds, tests) {
     } else if (trigger.type === 'homeLogWeeks' && !(trigger.weeks > 0 && trigger.perWeek > 0 && trigger.perWeek <= 7)) {
       problems.push(`${name}: "weeks" en "perWeek" (1 tot 7) ontbreken of zijn ongeldig`);
     }
+  }
+  return problems;
+}
+
+/** Een placeholder zoals {threshold} mag enkel staan waar het criterium of de mijlpaal dat getal ook heeft. */
+function checkPlaceholders(where, text, values, problems) {
+  for (const name of new Set(placeholdersIn(text))) {
+    if (!Number.isFinite(values[name])) problems.push(`${where}: {${name}} staat in de tekst, maar er is geen getal "${name}" bij`);
+  }
+}
+
+function validateSchedule(protocol) {
+  const schedule = protocol.testSchedule;
+  if (!schedule) return [];
+  const problems = [];
+  if (!(schedule.toleranceWeeks >= 0 && schedule.toleranceWeeks <= 6)) problems.push('"testSchedule.toleranceWeeks" moet 0 tot 6 zijn');
+  if (!Array.isArray(schedule.moments) || schedule.moments.length === 0) return [...problems, '"testSchedule.moments" ontbreekt'];
+  let previous = 0;
+  for (const moment of schedule.moments) {
+    const name = `testmoment week ${moment.week}`;
+    if (!Number.isInteger(moment.week) || moment.week < 1) problems.push(`${name}: "week" moet een geheel getal vanaf 1 zijn`);
+    else if (moment.week <= previous) problems.push(`${name}: de weken moeten oplopen (week ${previous} staat ervoor)`);
+    if (moment.weekTo !== undefined && !(Number.isInteger(moment.weekTo) && moment.weekTo > moment.week)) problems.push(`${name}: "weekTo" moet groter zijn dan "week"`);
+    if (!moment.label) problems.push(`${name}: "label" ontbreekt`);
+    previous = Number.isInteger(moment.week) ? moment.week : previous;
+  }
+  return problems;
+}
+
+function validateReferences(protocol) {
+  if (!protocol.references) return [];
+  const tests = new Set((protocol.testGroups ?? []).flatMap((group) => group.tests).map((test) => test.id));
+  const problems = [];
+  const ids = new Set();
+  for (const row of protocol.references) {
+    const name = `referentie "${row.id}"`;
+    if (!row.id || ids.has(row.id)) problems.push(`${name}: id ontbreekt of komt dubbel voor`);
+    ids.add(row.id);
+    if (!row.group || !row.label) problems.push(`${name}: "group" en "label" ontbreken`);
+    if (row.testId && !tests.has(row.testId)) problems.push(`${name}: test "${row.testId}" bestaat niet`);
   }
   return problems;
 }
@@ -158,6 +203,7 @@ function validateHomeLog(protocol) {
   if (prevention) {
     if (!(prevention.fromLevel >= 1 && prevention.fromLevel <= (protocol.levels?.length ?? 0))) problems.push('"prevention.fromLevel" is ongeldig');
     if (!(prevention.weeks > 0 && prevention.perWeek > 0 && prevention.perWeek <= 7)) problems.push('"prevention.weeks" en "prevention.perWeek" zijn ongeldig');
+    checkPlaceholders('prevention.patientText', prevention.patientText, prevention, problems);
   }
   return problems;
 }

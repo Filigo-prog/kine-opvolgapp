@@ -5,6 +5,7 @@ import { isIsoDate } from './dates.js';
 
 export const CODE_PATTERN = /^[A-Z]{2,5}-\d{3,4}$/;
 export const SIDES = ['L', 'R'];
+export const SEXES = ['M', 'V'];
 
 /** Volgende vrije code met dit voorvoegsel, bv. VKB-001, VKB-002, … */
 export function suggestCode(prefix, existingCodes) {
@@ -30,6 +31,7 @@ export function normalizePatient(raw) {
     code: text(raw.code).toUpperCase(),
     injury: text(raw.injury),
     side: text(raw.side),
+    sex: text(raw.sex),
     injuryDate: text(raw.injuryDate),
     associatedInjuries: [...new Set((raw.associatedInjuries ?? []).map(text).filter(Boolean))],
     associatedInjuriesOther: text(raw.associatedInjuriesOther),
@@ -62,6 +64,7 @@ export function validatePatient(patient, { protocol, existingCodes = [], isNew =
 
   if (!protocol || patient.injury !== protocol.id) errors.injury = 'Kies het letsel.';
   if (!SIDES.includes(patient.side)) errors.side = 'Kies de aangedane zijde.';
+  if (patient.sex && !SEXES.includes(patient.sex)) errors.sex = 'Kies man of vrouw, of laat leeg.';
 
   if (!isIsoDate(patient.injuryDate)) {
     errors.injuryDate = 'Vul een geldige datum in.';

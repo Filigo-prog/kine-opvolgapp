@@ -2,6 +2,7 @@
 
 import { todayIso } from '../domain/dates.js';
 import { compareSides, parseNumber } from '../domain/lsi.js';
+import { referenceForTest } from '../domain/references.js';
 import { loadProtocol } from '../domain/protocol.js';
 import { buildSession } from '../domain/test-session.js';
 import { getPatient } from '../repo/patients.js';
@@ -78,6 +79,7 @@ export async function testEntryView({ code, id }) {
       h('span', { class: 'test-name' }, test.label),
       test.unit && test.type !== 'choice' && !test.units ? h('span', { class: 'muted' }, ` (${test.unit})`) : null,
       test.hint ? h('span', { class: 'test-hint muted' }, test.hint) : null,
+      referenceForTest(protocol, test.id, patient.sex) ? h('span', { class: 'test-reference' }, `Referentie: ${referenceForTest(protocol, test.id, patient.sex)}`) : null,
     );
     const error = h('p', { class: 'field-error test-error' });
 

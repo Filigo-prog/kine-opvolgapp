@@ -19,7 +19,7 @@
   "prevention": {
     "title": "Preventieschema",
     "fromLevel": 4,
-    "patientText": "Neuromusculaire training houdt je enkel sterk en stabiel. Oefen elke week minstens 2 dagen, dan helpt het je om het niet opnieuw te krijgen.",
+    "patientText": "Neuromusculaire training houdt je enkel sterk en stabiel. Oefen elke week minstens {perWeek} dagen, dan helpt het je om het niet opnieuw te krijgen.",
     "weeks": 6,
     "perWeek": 2
   },
@@ -264,7 +264,7 @@
         },
         {
           "id": "enk-1-pijn",
-          "label": "Pijn in rust ≤ 3/10",
+          "label": "Pijn in rust ≤ {threshold}/10",
           "patientLabel": "Je hebt weinig pijn in rust.",
           "type": "measurement",
           "test": "nprs-rust",
@@ -300,7 +300,7 @@
         },
         {
           "id": "enk-2-wblt",
-          "label": "Weight-bearing lunge test (knie-tot-muur): verschil met de gezonde zijde < 2 cm",
+          "label": "Weight-bearing lunge test (knie-tot-muur): verschil met de gezonde zijde < {threshold} cm",
           "patientLabel": "Je enkel buigt bijna even ver als je andere enkel.",
           "type": "measurement",
           "test": "wblt",
@@ -311,7 +311,7 @@
         },
         {
           "id": "enk-2-calf",
-          "label": "Single-leg calf raises ≥ 80 % van de gezonde zijde",
+          "label": "Single-leg calf raises ≥ {threshold} % van de gezonde zijde",
           "patientLabel": "Je kuit is sterk genoeg: je kan bijna even vaak op je tenen staan als aan je andere been.",
           "type": "measurement",
           "test": "calf-raises",
@@ -321,8 +321,8 @@
         },
         {
           "id": "enk-2-sls",
-          "label": "Single-leg stand 30 s met ogen open, zonder steun",
-          "patientLabel": "Je blijft 30 seconden op één been staan, zonder steun.",
+          "label": "Single-leg stand {threshold} s met ogen open, zonder steun",
+          "patientLabel": "Je blijft {threshold} seconden op één been staan, zonder steun.",
           "type": "measurement",
           "test": "sls-open",
           "metric": "injured",
@@ -331,7 +331,7 @@
         },
         {
           "id": "enk-2-pijn",
-          "label": "Pijn bij dagelijkse activiteiten ≤ 2/10",
+          "label": "Pijn bij dagelijkse activiteiten ≤ {threshold}/10",
           "patientLabel": "Je hebt weinig pijn in het dagelijks leven.",
           "type": "measurement",
           "test": "nprs-adl",
@@ -355,7 +355,7 @@
       "criteria": [
         {
           "id": "enk-3-ybal",
-          "label": "Y-balance test anterior reach: verschil < 4 cm met de gezonde zijde",
+          "label": "Y-balance test anterior reach: verschil < {threshold} cm met de gezonde zijde",
           "patientLabel": "Je reikt op één been bijna even ver als op je andere been.",
           "type": "measurement",
           "test": "ybal-ant",
@@ -366,8 +366,8 @@
         },
         {
           "id": "enk-3-slsdicht",
-          "label": "Single-leg stand 30 s met ogen gesloten",
-          "patientLabel": "Je blijft 30 seconden op één been staan met je ogen dicht.",
+          "label": "Single-leg stand {threshold} s met ogen gesloten",
+          "patientLabel": "Je blijft {threshold} seconden op één been staan met je ogen dicht.",
           "type": "measurement",
           "test": "sls-dicht",
           "metric": "injured",
@@ -377,7 +377,7 @@
         },
         {
           "id": "enk-3-hop",
-          "label": "Hoptests LSI ≥ 85 % (single hop, side hop)",
+          "label": "Hoptests LSI ≥ {threshold} % (single hop, side hop)",
           "patientLabel": "Je hopt bijna even goed op je enkel als op je andere been.",
           "type": "measurement",
           "tests": [
@@ -410,7 +410,7 @@
       "criteria": [
         {
           "id": "enk-4-hop",
-          "label": "Hoptests LSI ≥ 90 %",
+          "label": "Hoptests LSI ≥ {threshold} %",
           "patientLabel": "Je hopt bijna even goed op je enkel als op je andere been.",
           "type": "measurement",
           "tests": [
@@ -423,7 +423,7 @@
         },
         {
           "id": "enk-4-ybal",
-          "label": "Y-balance binnen de normgrens (verschil < 4 cm)",
+          "label": "Y-balance binnen de normgrens (verschil < {threshold} cm)",
           "patientLabel": "Je evenwicht op één been is in orde.",
           "type": "measurement",
           "test": "ybal-ant",
@@ -440,7 +440,7 @@
         },
         {
           "id": "enk-4-vragenlijst",
-          "label": "Vragenlijst: CAIT ≥ 25 (of FAAM sport voldoende)",
+          "label": "Vragenlijst: CAIT ≥ {threshold} (of FAAM sport voldoende)",
           "patientLabel": "Je voelt je enkel stabiel bij het sporten.",
           "type": "measurement",
           "test": "cait",
@@ -514,7 +514,7 @@
     {
       "id": "enk-preventie",
       "label": "Preventiekampioen",
-      "description": "Je hield je preventieschema 6 weken vol.",
+      "description": "Je hield je preventieschema {weeks} weken vol.",
       "trigger": {
         "type": "homeLogWeeks",
         "weeks": 6,

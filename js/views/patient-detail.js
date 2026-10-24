@@ -3,6 +3,9 @@
 import { describeTimeSince, formatDate, todayIso } from '../domain/dates.js';
 import { feedbackNames } from '../domain/milestones.js';
 import { milestoneOverview } from '../domain/milestones.js';
+import { groupedReferences } from '../domain/references.js';
+import { STATES, scheduleStatus, weekLabel } from '../domain/schedule.js';
+import { milestoneText } from '../domain/text.js';
 import { currentStage, isCompleted, levelByNumber, levelProgress, stageLabel } from '../domain/progression.js';
 import { loadProtocol, optionLabel } from '../domain/protocol.js';
 import { findTest } from '../domain/test-session.js';
@@ -49,6 +52,7 @@ export async function patientDetailView({ code }) {
 
   const rows = [
     ['Letsel', `${protocol.name}, ${patient.side === 'L' ? 'links' : 'rechts'}`],
+    patient.sex ? ['Geslacht', patient.sex === 'M' ? 'Man' : 'Vrouw'] : null,
     [protocol.dateLabel, `${formatDate(patient.injuryDate)} (${describeTimeSince(patient.injuryDate)} ${protocol.sinceLabel})`],
     graft ? [protocol.patientFields.graft.label, graft] : null,
     [protocol.patientFields.associatedInjuries?.label ?? 'Bijkomende letsels', associated.length ? associated.join(', ') : 'Geen'],
@@ -129,6 +133,8 @@ export async function patientDetailView({ code }) {
         },
       })
       : null,
+    scheduleCard(protocol, patient, sessions),
+    referencesCard(protocol, patient),
     milestoneCard(protocol, dates, storedMilestones, code),
     h('div', { class: 'card sessions-card' },
       h('h2', {}, 'Testmomenten'),
@@ -175,7 +181,7 @@ function milestoneCard(protocol, dates, stored, code) {
       const isManualEarned = date && stored.get(milestone.id)?.source === 'manual';
       return h('li', { class: 'milestone-admin-item' },
         h('span', {},
-          h('strong', {}, milestone.label),
+          h('strong', {}, milestoneText(milestone, 'label')),
           h('span', { class: 'muted' }, date ? ` · behaald op ${formatDate(date)}` : ' · nog niet behaald')),
         manual && !date
           ? h('button', {
@@ -183,7 +189,7 @@ function milestoneCard(protocol, dates, stored, code) {
             class: 'btn btn-secondary',
             onclick: async () => {
               await setManualMilestone(code, milestone.id, todayIso());
-              showToast(`${milestone.label} geregistreerd.`);
+              showToast(`${milestoneText(milestone, 'label')} geregistreerd.`);
               render();
             },
           }, 'Behaald vandaag')
@@ -200,5 +206,43 @@ function milestoneCard(protocol, dates, stored, code) {
           : null,
       );
     })),
+  );
+}
+
+const STATE_LABELS = {
+  [STATES.DONE]: 'Gedaan',
+  [STATES.NEXT]: 'Volgende',
+  [STATES.PLANNED]: 'Gepland',
+  [STATES.MISSED]: 'Niet gemeten',
+};
+
+/** Het testschema uit het protocol, met de datums voor deze patiënt (operatiedatum + weken). */
+function scheduleCard(protocol, patient, sessions) {
+  if (!protocol.testSchedule) return null;
+  const rows = scheduleStatus(protocol.testSchedule, patient.injuryDate, sessions, todayIso());
+  return h('details', { class: 'card sessions-card collapsible', open: true },
+    h('summary', {}, h('h2', {}, 'Testschema')),
+    h('p', { class: 'muted' }, `Datums vanaf ${formatDate(patient.injuryDate)}. Een moment geldt als gedaan met een testmoment binnen de periode, met ${protocol.testSchedule.toleranceWeeks ?? 0} ${(protocol.testSchedule.toleranceWeeks ?? 0) === 1 ? 'week' : 'weken'} speling ervoor en erna.`),
+    h('ol', { class: 'schedule-list' }, rows.map((row) => h('li', { class: `schedule-row schedule-${row.state}` },
+      h('span', { class: 'schedule-week' }, weekLabel(row.moment)),
+      h('span', { class: 'schedule-label' }, row.moment.label, h('span', { class: 'muted' }, ` · ${formatDate(row.from)}${row.to !== row.from ? ` tot ${formatDate(row.to)}` : ''}`)),
+      h('span', { class: 'schedule-state' }, STATE_LABELS[row.state], row.sessionDate ? h('span', { class: 'muted' }, ` (${formatDate(row.sessionDate)})`) : null),
+    ))),
+  );
+}
+
+/** Referentiewaarden (cutoffs) uit het protocol, voor het geslacht van de patiënt. */
+function referencesCard(protocol, patient) {
+  const groups = groupedReferences(protocol, patient.sex);
+  if (!groups.length) return null;
+  return h('details', { class: 'card sessions-card collapsible' },
+    h('summary', {}, h('h2', {}, 'Referentiewaarden')),
+    h('p', { class: 'muted' }, patient.sex
+      ? `Voor een ${patient.sex === 'M' ? 'man' : 'vrouw'}. De app beslist hier niet mee: het zijn richtwaarden voor jou.`
+      : 'Geslacht is niet ingevuld, dus mannen en vrouwen staan naast elkaar. Vul het geslacht in via "Gegevens bewerken".'),
+    groups.map(({ group, rows }) => h('div', { class: 'reference-group' },
+      h('h3', {}, group),
+      h('dl', { class: 'data-list' }, rows.map(({ row, text }) => [h('dt', {}, row.label), h('dd', {}, text)])),
+    )),
   );
 }

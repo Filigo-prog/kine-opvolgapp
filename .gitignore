@@ -6,3 +6,8 @@ CLAUDE.md
 
 # Echte exportbestanden (kunnen namen bevatten): nooit committen.
 local/
+
+# Python-omgeving voor tools/protocollen.py en tijdelijke Excel-bestanden.
+tools/.venv/
+~$*.xlsx
+__pycache__/

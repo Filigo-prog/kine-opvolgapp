@@ -8,6 +8,7 @@ import { lsiFeedback, lsiSeries, progressFeedback } from '../domain/feedback.js'
 import { milestoneOverview } from '../domain/milestones.js';
 import { currentStage, isCompleted, levelByNumber, levelProgress, statusOf } from '../domain/progression.js';
 import { loadProtocol } from '../domain/protocol.js';
+import { criterionText, fillPlaceholders, milestoneText } from '../domain/text.js';
 import { allTests } from '../domain/test-session.js';
 import { getCriteriaStatuses } from '../repo/criteria-status.js';
 import { getHomeLog } from '../repo/home-log.js';
@@ -43,7 +44,7 @@ export async function patientProgressView({ code }, { preview = false } = {}) {
   async function onLogSaved() {
     const { fresh } = await refreshMilestonesDetailed(code, { protocol, sessions, statuses, history, homeLog });
     if (!fresh.length) return;
-    const names = protocol.milestones.filter((m) => fresh.includes(m.id)).map((m) => m.label);
+    const names = protocol.milestones.filter((m) => fresh.includes(m.id)).map((m) => milestoneText(m, 'label'));
     showToast(`Nieuwe mijlpaal: ${names.join(', ')}!`, 5000);
     render();
   }
@@ -110,7 +111,7 @@ function levelCard(level, protocol, statuses) {
           const done = statusOf(statuses, criterion.id) === STATUS.MET;
           return h('li', { class: `step ${done ? 'step-done' : 'step-todo'}` },
             h('span', { class: 'step-mark', 'aria-hidden': 'true' }, done ? '✓' : ''),
-            h('span', {}, criterion.patientLabel),
+            h('span', {}, criterionText(criterion, 'patientLabel')),
             h('span', { class: 'visually-hidden' }, done ? ' (behaald)' : ' (nog bezig)'));
         })))
       : null,
@@ -136,8 +137,8 @@ function milestoneSection(protocol, dates) {
     h('ul', { class: 'badge-grid' }, overview.map(({ milestone, date }) => h('li', { class: `badge ${date ? 'badge-earned' : 'badge-locked'}` },
       h('span', { class: 'badge-mark', 'aria-hidden': 'true' }, date ? '✓' : ''),
       h('span', { class: 'badge-text' },
-        h('strong', {}, milestone.label),
-        h('span', { class: 'badge-desc' }, milestone.description ?? ''),
+        h('strong', {}, milestoneText(milestone, 'label')),
+        h('span', { class: 'badge-desc' }, milestoneText(milestone, 'description')),
         h('span', { class: 'badge-date' }, date ? `Behaald op ${formatDate(date)}` : 'Nog te behalen')),
     ))),
   );
@@ -191,7 +192,7 @@ function homeLogSection({ patient, protocol, homeLog, stage, completed, onSaved 
       config,
       today: todayIso(),
       title: preventionActive ? prevention.title : config.title,
-      intro: preventionActive ? prevention.patientText : 'Tik op een dag en vul in of je geoefend hebt.',
+      intro: preventionActive ? fillPlaceholders(prevention.patientText, prevention) : 'Tik op een dag en vul in of je geoefend hebt.',
       onSaved,
     }),
   );

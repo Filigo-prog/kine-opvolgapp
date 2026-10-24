@@ -34,6 +34,246 @@
       "metric": "Max Force (N)"
     }
   ],
+  "testSchedule": {
+    "toleranceWeeks": 1,
+    "moments": [
+      {
+        "week": 3,
+        "weekTo": 4,
+        "label": "Submaximale meting (biofeedback)"
+      },
+      {
+        "week": 8,
+        "weekTo": 10,
+        "label": "Eerste maximale meting quads & hamstrings"
+      },
+      {
+        "week": 12,
+        "label": "Opvolgmeting"
+      },
+      {
+        "week": 16,
+        "label": "Opvolgmeting"
+      },
+      {
+        "week": 20,
+        "label": "Opvolgmeting"
+      },
+      {
+        "week": 22,
+        "label": "Eerste jump testing"
+      },
+      {
+        "week": 24,
+        "label": "Opvolgmeting"
+      },
+      {
+        "week": 28,
+        "label": "Opvolgmeting"
+      },
+      {
+        "week": 32,
+        "label": "Opvolgmeting"
+      },
+      {
+        "week": 36,
+        "label": "Opvolgmeting"
+      },
+      {
+        "week": 40,
+        "label": "Opvolgmeting"
+      },
+      {
+        "week": 44,
+        "label": "Opvolgmeting"
+      },
+      {
+        "week": 48,
+        "label": "Opvolgmeting"
+      }
+    ]
+  },
+  "references": [
+    {
+      "id": "ref-pijn",
+      "group": "Klinisch",
+      "label": "Pijn"
+    },
+    {
+      "id": "ref-zwelling-stroke-test",
+      "group": "Klinisch",
+      "label": "Zwelling (stroke test)",
+      "testId": "stroke-test",
+      "text": "< trace"
+    },
+    {
+      "id": "ref-stappen-laatste-maand",
+      "group": "Klinisch",
+      "label": "#Stappen laatste maand"
+    },
+    {
+      "id": "ref-strekken-goniometer",
+      "group": "Mobiliteit",
+      "label": "Strekken goniometer",
+      "testId": "extensie",
+      "text": "0°"
+    },
+    {
+      "id": "ref-strekken-toe-to-floor-distance",
+      "group": "Mobiliteit",
+      "label": "Strekken toe-to-floor distance"
+    },
+    {
+      "id": "ref-plooien-hiel-afstand-in-cm-s-ruglig",
+      "group": "Mobiliteit",
+      "label": "Plooien (hiel afstand in cm's) ruglig",
+      "text": "<5%"
+    },
+    {
+      "id": "ref-plooien-hiel-afstand-naar-zitvlak-buikli",
+      "group": "Mobiliteit",
+      "label": "Plooien (hiel afstand naar zitvlak) buiklig"
+    },
+    {
+      "id": "ref-structuur-quads-omtrek-vergelijking-visu",
+      "group": "Structuur",
+      "label": "Structuur Quads (omtrek + vergelijking visueel)"
+    },
+    {
+      "id": "ref-structuur-kuit",
+      "group": "Structuur",
+      "label": "Structuur Kuit"
+    },
+    {
+      "id": "ref-quadriceps-kracht-90-isometrisch-n",
+      "group": "Maximale kracht",
+      "label": "Quadriceps kracht 90° isometrisch (N)"
+    },
+    {
+      "id": "ref-quadriceps-kracht-90-isometrisch-nm-kg",
+      "group": "Maximale kracht",
+      "label": "Quadriceps kracht 90° isometrisch (Nm/kg)"
+    },
+    {
+      "id": "ref-hamstring-kracht-90-isometrisch-n",
+      "group": "Maximale kracht",
+      "label": "Hamstring kracht 90° isometrisch (N)"
+    },
+    {
+      "id": "ref-hamstring-kracht-90-isometrisch-n-kg",
+      "group": "Maximale kracht",
+      "label": "Hamstring kracht 90° isometrisch (N/kg)"
+    },
+    {
+      "id": "ref-quadriceps-kracht-60-isometrisch-n",
+      "group": "Maximale kracht",
+      "label": "Quadriceps kracht 60° isometrisch (N)"
+    },
+    {
+      "id": "ref-quadriceps-kracht-60-isometrisch-nm-kg",
+      "group": "Maximale kracht",
+      "label": "Quadriceps kracht 60° isometrisch (Nm/kg)",
+      "men": ">3,0-3,4 Nm/kg",
+      "women": "2,3-2,8 Nm/kg"
+    },
+    {
+      "id": "ref-single-leg-calf-strength",
+      "group": "Maximale kracht",
+      "label": "Single leg calf strength"
+    },
+    {
+      "id": "ref-single-leg-seated-soleus-strength",
+      "group": "Maximale kracht",
+      "label": "Single leg seated soleus strength"
+    },
+    {
+      "id": "ref-single-leg-sit-to-stance-30-bpm",
+      "group": "Capaciteit",
+      "label": "Single leg sit-to-stance (30 BPM)",
+      "text": ">15"
+    },
+    {
+      "id": "ref-single-leg-hamstring-bridge-box-30-bpm",
+      "group": "Capaciteit",
+      "label": "Single leg hamstring bridge box (30 BPM)",
+      "text": ">15"
+    },
+    {
+      "id": "ref-single-leg-calf-raise-60-bpm",
+      "group": "Capaciteit",
+      "label": "Single leg calf raise (60 BPM)",
+      "text": ">15"
+    },
+    {
+      "id": "ref-cmj-hoogte-performance-tracker",
+      "group": "Explosieve kracht (jump testing, vanaf 5/6 maanden)",
+      "label": "CMJ hoogte (performance tracker)",
+      "men": "17-25 cm",
+      "women": "10-18 cm"
+    },
+    {
+      "id": "ref-cmj-eccentric-impulse",
+      "group": "Explosieve kracht (jump testing, vanaf 5/6 maanden)",
+      "label": "CMJ eccentric impulse",
+      "text": "<10%"
+    },
+    {
+      "id": "ref-cmj-concentric-impulse",
+      "group": "Explosieve kracht (jump testing, vanaf 5/6 maanden)",
+      "label": "CMJ concentric impulse",
+      "text": "<10%"
+    },
+    {
+      "id": "ref-eccentric-utilization-ratio",
+      "group": "Explosieve kracht (jump testing, vanaf 5/6 maanden)",
+      "label": "Eccentric utilization ratio"
+    },
+    {
+      "id": "ref-single-leg-hop-for-distance-toe-to-heel-",
+      "group": "Explosieve kracht (jump testing, vanaf 5/6 maanden)",
+      "label": "Single leg hop for distance (toe-to-heel, free arms)",
+      "testId": "single-hop",
+      "men": "90% van lengte",
+      "women": "80% van lengte"
+    },
+    {
+      "id": "ref-cmj-rsi",
+      "group": "Reactiviteit",
+      "label": "CMJ RSI"
+    },
+    {
+      "id": "ref-bess-statisch-evenwicht",
+      "group": "Kwaliteit van bewegen",
+      "label": "BESS - statisch evenwicht"
+    },
+    {
+      "id": "ref-deceleration-assessment",
+      "group": "Kwaliteit van bewegen",
+      "label": "Deceleration assessment"
+    },
+    {
+      "id": "ref-cod",
+      "group": "Kwaliteit van bewegen",
+      "label": "COD"
+    },
+    {
+      "id": "ref-acl-rsi",
+      "group": "PROMs",
+      "label": "ACL-RSI",
+      "testId": "acl-rsi"
+    },
+    {
+      "id": "ref-koos",
+      "group": "PROMs",
+      "label": "KOOS"
+    },
+    {
+      "id": "ref-ikdc",
+      "group": "PROMs",
+      "label": "IKDC",
+      "testId": "ikdc"
+    }
+  ],
   "patientFields": {
     "graft": {
       "label": "Transplantaat",
@@ -344,7 +584,7 @@
         },
         {
           "id": "vkb-1-flexie",
-          "label": "Flexie ≥ 120°",
+          "label": "Flexie ≥ {threshold}°",
           "type": "measurement",
           "test": "flexie",
           "metric": "injured",
@@ -380,7 +620,7 @@
         },
         {
           "id": "vkb-1-pijn",
-          "label": "Pijn bij dagelijkse activiteiten ≤ 2/10",
+          "label": "Pijn bij dagelijkse activiteiten ≤ {threshold}/10",
           "type": "measurement",
           "test": "nprs-adl",
           "metric": "value",
@@ -405,7 +645,7 @@
       "criteria": [
         {
           "id": "vkb-2-tijd",
-          "label": "Minimum 12 weken postoperatief",
+          "label": "Minimum {weeks} weken postoperatief",
           "type": "minTime",
           "weeks": 12,
           "note": "Houd rekening met bijkomende letsels, bv. een meniscushechting.",
@@ -413,7 +653,7 @@
         },
         {
           "id": "vkb-2-quad",
-          "label": "Quadriceps isometrische kracht LSI ≥ 80 %",
+          "label": "Quadriceps isometrische kracht LSI ≥ {threshold} %",
           "type": "measurement",
           "test": "quad-iso",
           "metric": "lsi",
@@ -470,7 +710,7 @@
       "criteria": [
         {
           "id": "vkb-3-quad",
-          "label": "Quadriceps LSI ≥ 85 %",
+          "label": "Quadriceps LSI ≥ {threshold} %",
           "type": "measurement",
           "test": "quad-iso",
           "metric": "lsi",
@@ -481,7 +721,7 @@
         },
         {
           "id": "vkb-3-ham",
-          "label": "Hamstrings LSI ≥ 85 %",
+          "label": "Hamstrings LSI ≥ {threshold} %",
           "type": "measurement",
           "test": "ham-iso",
           "metric": "lsi",
@@ -492,7 +732,7 @@
         },
         {
           "id": "vkb-3-hop",
-          "label": "Hoptests LSI ≥ 85 % (single, triple, crossover, 6 m timed hop)",
+          "label": "Hoptests LSI ≥ {threshold} % (single, triple, crossover, 6 m timed hop)",
           "type": "measurement",
           "tests": [
             "single-hop",
@@ -533,14 +773,14 @@
       "criteria": [
         {
           "id": "vkb-4-tijd",
-          "label": "Minimum 9 maanden postoperatief",
+          "label": "Minimum {months} maanden postoperatief",
           "type": "minTime",
           "months": 9,
           "patientLabel": "Je knie heeft de nodige tijd gekregen om sterk te worden."
         },
         {
           "id": "vkb-4-quad",
-          "label": "Quadriceps LSI ≥ 90 %",
+          "label": "Quadriceps LSI ≥ {threshold} %",
           "type": "measurement",
           "test": "quad-iso",
           "metric": "lsi",
@@ -550,7 +790,7 @@
         },
         {
           "id": "vkb-4-ham",
-          "label": "Hamstrings LSI ≥ 90 %",
+          "label": "Hamstrings LSI ≥ {threshold} %",
           "type": "measurement",
           "test": "ham-iso",
           "metric": "lsi",
@@ -560,7 +800,7 @@
         },
         {
           "id": "vkb-4-hop",
-          "label": "Alle hoptests LSI ≥ 90 %",
+          "label": "Alle hoptests LSI ≥ {threshold} %",
           "type": "measurement",
           "tests": [
             "single-hop",
@@ -575,7 +815,7 @@
         },
         {
           "id": "vkb-4-aclrsi",
-          "label": "Psychologische bereidheid: ACL-RSI ≥ 65",
+          "label": "Psychologische bereidheid: ACL-RSI ≥ {threshold}",
           "type": "measurement",
           "test": "acl-rsi",
           "metric": "value",
@@ -644,8 +884,8 @@
     },
     {
       "id": "vkb-lsi80",
-      "label": "Kracht op 80 %",
-      "description": "Je geopereerde been haalt 80 % van de kracht van je andere been.",
+      "label": "Kracht op {threshold} %",
+      "description": "Je geopereerde been haalt {threshold} % van de kracht van je andere been.",
       "trigger": {
         "type": "lsi",
         "test": "quad-iso",
@@ -686,8 +926,8 @@
     },
     {
       "id": "vkb-lsi90",
-      "label": "Kracht op 90 %",
-      "description": "Je geopereerde been haalt 90 % van de kracht van je andere been.",
+      "label": "Kracht op {threshold} %",
+      "description": "Je geopereerde been haalt {threshold} % van de kracht van je andere been.",
       "trigger": {
         "type": "lsi",
         "test": "quad-iso",

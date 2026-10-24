@@ -12,6 +12,7 @@
 
 import { STATUS } from './criteria.js';
 import { weeklyRun } from './home-log.js';
+import { milestoneText } from './text.js';
 import { currentStage, isCompleted } from './progression.js';
 
 export const TRIGGER_TYPES = ['criterion', 'lsi', 'manual', 'completion', 'homeLogWeeks'];
@@ -66,5 +67,5 @@ export function milestoneOverview(protocol, dates) {
 
 /** Namen van mijlpalen bij een lijst id's, bv. voor een melding. */
 export function feedbackNames(protocol, ids) {
-  return (protocol.milestones ?? []).filter((milestone) => ids.includes(milestone.id)).map((milestone) => milestone.label).join(', ');
+  return (protocol.milestones ?? []).filter((milestone) => ids.includes(milestone.id)).map((milestone) => milestoneText(milestone, 'label')).join(', ');
 }

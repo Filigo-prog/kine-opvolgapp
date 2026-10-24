@@ -40,52 +40,63 @@ export const tests = {
       equal(evaluateCriterion(criterion(protocol, id), { patient: right, today, sessions: [] }).suggestion, SUGGESTION.JUDGEMENT, id);
     }
   },
-  'Knie-tot-muur: verschil < 2 cm (aangedaan rechts), ook als de aangedane zijde verder komt': async () => {
+  'Knie-tot-muur: een verschil onder de grens voldoet, op de grens niet, en verder komen telt ook': async () => {
     const protocol = await enkel();
-    const run = async (left, rightValue) => evaluateCriterion(criterion(protocol, 'enk-2-wblt'), {
-      patient: right, today, sessions: await sessionWith(right, { wblt: { left: String(left), right: String(rightValue) } }),
+    const limit = criterion(protocol, 'enk-2-wblt').threshold; // staat in het protocol (en in Excel aan te passen)
+    const run = async (difference) => evaluateCriterion(criterion(protocol, 'enk-2-wblt'), {
+      patient: right, today, sessions: await sessionWith(right, { wblt: { left: '20', right: String(20 - difference) } }),
     }).suggestion;
-    equal(await run(10, 9), SUGGESTION.MET); // verschil 1 cm
-    equal(await run(10, 8), SUGGESTION.NOT_MET); // verschil 2 cm = niet < 2
-    equal(await run(10, 12), SUGGESTION.MET); // aangedane zijde komt verder
+    equal(await run(limit - 0.5), SUGGESTION.MET);
+    equal(await run(limit), SUGGESTION.NOT_MET); // 'verschil < grens': op de grens voldoet niet
+    equal(await run(-3), SUGGESTION.MET); // aangedane zijde komt verder dan de gezonde
   },
-  'Y-balance: verschil < 4 cm': async () => {
+  'Y-balance: een verschil onder de grens voldoet, op de grens niet': async () => {
     const protocol = await enkel();
-    const run = async (healthy, injured) => evaluateCriterion(criterion(protocol, 'enk-3-ybal'), {
-      patient: right, today, sessions: await sessionWith(right, { 'ybal-ant': { left: String(healthy), right: String(injured) } }),
-    }).suggestion;
-    equal(await run('60', '56,5'), SUGGESTION.MET);
-    equal(await run('60', '56'), SUGGESTION.NOT_MET);
+    for (const id of ['enk-3-ybal', 'enk-4-ybal']) {
+      const limit = criterion(protocol, id).threshold;
+      const run = async (difference) => evaluateCriterion(criterion(protocol, id), {
+        patient: right, today, sessions: await sessionWith(right, { 'ybal-ant': { left: '100', right: String(100 - difference) } }),
+      }).suggestion;
+      equal(await run(limit - 0.5), SUGGESTION.MET, id);
+      equal(await run(limit), SUGGESTION.NOT_MET, id);
+    }
   },
-  'Evenwicht 30 s: telt de aangedane zijde, links of rechts': async () => {
+  'Evenwicht: telt de aangedane zijde, links of rechts': async () => {
     const protocol = await enkel();
+    const limit = criterion(protocol, 'enk-2-sls').threshold;
     const left = { side: 'L', injuryDate: '2026-10-01' };
-    const entries = { 'sls-open': { left: '25', right: '30' } };
+    const entries = { 'sls-open': { left: String(limit - 5), right: String(limit) } };
     const run = async (patient) => evaluateCriterion(criterion(protocol, 'enk-2-sls'), {
       patient, today, sessions: await sessionWith(patient, entries),
     }).suggestion;
-    equal(await run(left), SUGGESTION.NOT_MET);
-    equal(await run(right), SUGGESTION.MET);
+    equal(await run(left), SUGGESTION.NOT_MET); // aangedaan links: onder de grens
+    equal(await run(right), SUGGESTION.MET); // aangedaan rechts: op de grens
   },
-  'Hoptests: beide tests moeten de grens halen (85 % en 90 %)': async () => {
+  'Hoptests: beide tests moeten de grens halen': async () => {
     const protocol = await enkel();
-    const entries = { 'single-hop': { left: '180', right: '200' }, 'side-hop': { left: '40', right: '40' } };
-    const sessions = await sessionWith({ side: 'L' }, entries); // 90 % en 100 %
-    const ctx = { patient: { side: 'L', injuryDate: '2026-10-01' }, today, sessions };
-    equal(evaluateCriterion(criterion(protocol, 'enk-3-hop'), ctx).suggestion, SUGGESTION.MET);
-    equal(evaluateCriterion(criterion(protocol, 'enk-4-hop'), ctx).suggestion, SUGGESTION.MET);
-    const weaker = await sessionWith({ side: 'L' }, { 'single-hop': { left: '170', right: '200' }, 'side-hop': { left: '40', right: '40' } }); // 85 %
-    const ctx2 = { ...ctx, sessions: weaker };
-    equal(evaluateCriterion(criterion(protocol, 'enk-3-hop'), ctx2).suggestion, SUGGESTION.MET);
-    equal(evaluateCriterion(criterion(protocol, 'enk-4-hop'), ctx2).suggestion, SUGGESTION.NOT_MET);
+    for (const id of ['enk-3-hop', 'enk-4-hop']) {
+      const limit = criterion(protocol, id).threshold;
+      const lsiEntries = (single, side) => ({
+        'single-hop': { left: String(2 * single), right: '200' }, // aangedaan links: LSI = waarde ÷ 200 × 100
+        'side-hop': { left: String(0.8 * side), right: '80' },
+      });
+      const patient = { side: 'L', injuryDate: '2026-10-01' };
+      const run = async (single, side) => evaluateCriterion(criterion(protocol, id), {
+        patient, today, sessions: await sessionWith(patient, lsiEntries(single, side)),
+      }).suggestion;
+      equal(await run(limit, limit), SUGGESTION.MET, `${id} precies op de grens`);
+      equal(await run(limit - 1, limit), SUGGESTION.NOT_MET, `${id} één test eronder`);
+      equal(await run(limit, limit - 1), SUGGESTION.NOT_MET, `${id} de andere test eronder`);
+    }
   },
-  'Vragenlijst CAIT ≥ 25': async () => {
+  'Vragenlijst CAIT: op de grens voldoet, eronder niet': async () => {
     const protocol = await enkel();
+    const limit = criterion(protocol, 'enk-4-vragenlijst').threshold;
     const run = async (value) => evaluateCriterion(criterion(protocol, 'enk-4-vragenlijst'), {
       patient: right, today, sessions: await sessionWith(right, { cait: { value: String(value) } }),
     }).suggestion;
-    equal(await run(25), SUGGESTION.MET);
-    equal(await run(24), SUGGESTION.NOT_MET);
+    equal(await run(limit), SUGGESTION.MET);
+    equal(await run(limit - 1), SUGGESTION.NOT_MET);
   },
   'Enkelmijlpalen: criteria, handmatig en groen licht': async () => {
     const protocol = await enkel();

@@ -54,6 +54,7 @@ export async function patientFormView({ code } = {}) {
         })
         : h('div', { class: 'field' }, h('span', { class: 'field-label' }, 'Letsel'), h('span', {}, protocols[injury].name)),
       segmented('side', 'Aangedane zijde', [{ value: 'L', label: 'Links' }, { value: 'R', label: 'Rechts' }], values.side),
+      segmented('sex', 'Geslacht (voor de referentiewaarden)', [{ value: '', label: 'Niet ingevuld' }, { value: 'M', label: 'Man' }, { value: 'V', label: 'Vrouw' }], values.sex ?? ''),
     ),
     injurySection,
     h('div', { class: 'card stack' },

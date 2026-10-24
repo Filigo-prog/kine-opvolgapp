@@ -6,6 +6,7 @@ import { formatDate, todayIso } from '../domain/dates.js';
 import { currentStage, isCompleted, levelByNumber, levelProgress, releaseLabel, statusOf } from '../domain/progression.js';
 import { loadProtocol } from '../domain/protocol.js';
 import { findTest } from '../domain/test-session.js';
+import { criterionText } from '../domain/text.js';
 import { getCriteriaStatuses, setCriterionStatus } from '../repo/criteria-status.js';
 import { getLevelHistory, releaseLevel, undoLastRelease } from '../repo/level-history.js';
 import { getPatient } from '../repo/patients.js';
@@ -117,7 +118,7 @@ export async function criteriaChecklistView({ code }) {
       class: 'input criterion-note',
       value: record?.note ?? '',
       placeholder: 'Notitie (optioneel)',
-      'aria-label': `Notitie bij ${criterion.label}`,
+      'aria-label': `Notitie bij ${criterionText(criterion, 'label')}`,
       onchange: () => save(statusOf(statuses, criterion.id), noteInput.value.trim()),
     });
 
@@ -132,14 +133,14 @@ export async function criteriaChecklistView({ code }) {
 
     const item = h('li', { class: 'criterion', 'data-status': statusOf(statuses, criterion.id) },
       h('div', { class: 'criterion-main' },
-        h('p', { class: 'criterion-label' }, criterion.label),
-        criterion.note ? h('p', { class: 'criterion-note-text muted' }, criterion.note) : null,
+        h('p', { class: 'criterion-label' }, criterionText(criterion, 'label')),
+        criterion.note ? h('p', { class: 'criterion-note-text muted' }, criterionText(criterion, 'note')) : null,
         h('p', { class: `suggestion suggestion-${suggestion}` },
           h('strong', {}, SUGGESTION_LABELS[suggestion]),
           suggestionDetail(criterion, details, protocol)),
       ),
       h('fieldset', { class: 'criterion-controls' },
-        h('legend', { class: 'visually-hidden' }, `Status: ${criterion.label}`),
+        h('legend', { class: 'visually-hidden' }, `Status: ${criterionText(criterion, 'label')}`),
         h('div', { class: 'segmented' },
           STATUS_OPTIONS.map((option) => h('label', { class: 'segment' },
             h('input', {

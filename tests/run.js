@@ -8,10 +8,12 @@ import { tests as homeLogTests } from './home-log.test.js';
 import { tests as lsiTests } from './lsi.test.js';
 import { tests as milestoneTests } from './milestones.test.js';
 import { tests as patientTests } from './patient.test.js';
+import { tests as scheduleTests } from './schedule.test.js';
 import { tests as sessionTests } from './test-session.test.js';
+import { tests as textTests } from './text.test.js';
 import { tests as valdTests } from './vald.test.js';
 
-const suites = { backup: backupTests, criteria: criteriaTests, dates: dateTests, enkel: enkelTests, thuislog: homeLogTests, lsi: lsiTests, mijlpalen: milestoneTests, patient: patientTests, testmoment: sessionTests, vald: valdTests };
+const suites = { backup: backupTests, criteria: criteriaTests, dates: dateTests, enkel: enkelTests, thuislog: homeLogTests, lsi: lsiTests, mijlpalen: milestoneTests, patient: patientTests, testschema: scheduleTests, testmoment: sessionTests, tekst: textTests, vald: valdTests };
 const results = document.getElementById('results');
 let passed = 0;
 let failed = 0;

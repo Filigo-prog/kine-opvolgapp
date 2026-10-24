@@ -98,7 +98,9 @@ export const tests = {
   },
   'Protocollen: thuislog, preventie en mijlpaal zijn geldig': async () => {
     const enkel = validateProtocol(await (await fetch('../data/protocol-enkel.json')).json(), 'enkel');
-    equal([enkel.homeLog.tracksSwelling, enkel.prevention.weeks, enkel.prevention.perWeek], [false, 6, 2]);
+    equal(enkel.homeLog.tracksSwelling, false);
+    ok(Number.isInteger(enkel.prevention.weeks) && enkel.prevention.weeks > 0, 'aantal weken');
+    ok(Number.isInteger(enkel.prevention.perWeek) && enkel.prevention.perWeek >= 1 && enkel.prevention.perWeek <= 7, 'dagen per week');
     ok(enkel.milestones.some((m) => m.trigger.type === 'homeLogWeeks'), 'Preventiekampioen');
     const vkb = validateProtocol(await (await fetch('../data/protocol-vkb.json')).json(), 'vkb');
     equal(vkb.homeLog.tracksSwelling, true);
