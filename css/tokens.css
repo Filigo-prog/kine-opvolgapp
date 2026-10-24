@@ -1,0 +1,63 @@
+/* Ontwerptokens: kleuren, typografie, maten. Pas hier aan, niet in de componenten. */
+:root {
+  --color-bg: #f6f7f5;
+  --color-surface: #ffffff;
+  --color-surface-alt: #eef2f0;
+  --color-border: #d5ddd9;
+  --color-text: #1c2624;
+  --color-text-muted: #55625e;
+  --color-primary: #1f6f6b;
+  --color-primary-strong: #175451;
+  --color-on-primary: #ffffff;
+  --color-accent: #f2c14e;
+  --color-success: #2e7d4f;
+  --color-success-bg: #e3f2e8;
+  --color-warning: #8a5a00;
+  --color-warning-bg: #fdf1d6;
+  --color-danger: #b3261e;
+  --color-danger-bg: #fbe5e3;
+  --color-focus: #2f6fd6;
+
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-size-sm: 0.9375rem;
+  --font-size-base: 1.0625rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.625rem;
+  --font-size-xxl: 2.125rem;
+  --line-height: 1.5;
+
+  --touch-min: 44px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 2px 8px rgb(0 0 0 / 0.05);
+  --content-max: 1100px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #131a19;
+    --color-surface: #1c2523;
+    --color-surface-alt: #24302e;
+    --color-border: #354341;
+    --color-text: #e8eeec;
+    --color-text-muted: #a7b4b0;
+    --color-primary: #5fb3ad;
+    --color-primary-strong: #7cc6c0;
+    --color-on-primary: #0f1716;
+    --color-success: #7ccf9d;
+    --color-success-bg: #1d3427;
+    --color-warning: #f0c36a;
+    --color-warning-bg: #3a2f17;
+    --color-danger: #f2928a;
+    --color-danger-bg: #3d1f1d;
+    --color-focus: #8ab4ff;
+    --shadow: none;
+  }
+}

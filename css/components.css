@@ -1,0 +1,180 @@
+/* Knoppen */
+.btn {
+  min-height: var(--touch-min);
+  min-width: var(--touch-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.btn-primary:active:not(:disabled) {
+  background: var(--color-primary-strong);
+}
+
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.btn-secondary:active:not(:disabled) {
+  background: var(--color-surface-alt);
+}
+
+.btn-danger {
+  background: var(--color-danger);
+  color: #ffffff;
+}
+
+/* Kaarten */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space-5);
+}
+
+.card h2,
+.card h3 {
+  margin-bottom: var(--space-3);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-7) var(--space-5);
+}
+
+/* Meldingen */
+.notice {
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.notice-warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.notice-success {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.notice-danger {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+/* Formulieren */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.field label {
+  font-weight: 600;
+}
+
+.input {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.input-pin {
+  font-size: var(--font-size-xl);
+  letter-spacing: 0.5em;
+  text-align: center;
+  max-width: 220px;
+}
+
+/* Voortgangsbalk */
+.progress {
+  height: 14px;
+  background: var(--color-surface-alt);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress > span {
+  display: block;
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: inherit;
+  transition: width 0.4s ease;
+}
+
+/* Dialoogvenster */
+.dialog {
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  width: min(440px, calc(100vw - 2 * var(--space-4)));
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 8px 32px rgb(0 0 0 / 0.25);
+}
+
+.dialog::backdrop {
+  background: rgb(0 0 0 / 0.4);
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+.dialog-error {
+  color: var(--color-danger);
+  min-height: 1.5em;
+  margin: var(--space-2) 0 0;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(var(--space-5), env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  max-width: calc(100vw - 2 * var(--space-4));
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-sm);
+  background: var(--color-text);
+  color: var(--color-bg);
+  box-shadow: var(--shadow);
+  z-index: 100;
+}
+
+/* Patiëntmodus-label in de header */
+body.mode-patient #mode-toggle {
+  background: var(--color-surface-alt);
+}
