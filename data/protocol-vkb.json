@@ -1,6 +1,6 @@
 {
   "id": "vkb",
-  "version": "2026-10-24.2",
+  "version": "2026-10-24.3",
   "status": "concept, te valideren door de therapeut",
   "name": "VKB-reconstructie",
   "codePrefix": "VKB",
@@ -686,7 +686,7 @@
           "type": "minTime",
           "weeks": 12,
           "note": "Houd rekening met bijkomende letsels, bv. een meniscushechting.",
-          "patientLabel": "Je knie heeft genoeg tijd gekregen om te herstellen."
+          "patientLabel": "Je knie is voorbij een biologische herstelgrens"
         },
         {
           "id": "vkb-2-quad",
@@ -697,7 +697,7 @@
           "operator": ">=",
           "threshold": 80,
           "note": "Literatuur: 70–80 %. Grens instelbaar in het protocol.",
-          "patientLabel": "Je dijspier is weer sterk genoeg."
+          "patientLabel": "Je dijspier is weer sterk genoeg. (80% van andere been)"
         },
         {
           "id": "vkb-2-ham",
@@ -813,7 +813,7 @@
           "id": "vkb-3-landing",
           "label": "Landingskwaliteit goed (bv. drop jump zonder dynamische valgus)",
           "type": "judgement",
-          "patientLabel": "Je landt stabiel, met je knie mooi in lijn."
+          "patientLabel": "Je landt stabiel"
         },
         {
           "id": "vkb-3-lopen",
@@ -866,7 +866,7 @@
           "label": "Minimum {months} maanden postoperatief",
           "type": "minTime",
           "months": 9,
-          "patientLabel": "Je knie heeft de nodige tijd gekregen om sterk te worden."
+          "patientLabel": "Je knie is voorbij een biologische herstelgrens"
         },
         {
           "id": "vkb-4-quad",
@@ -876,7 +876,7 @@
           "metric": "lsi",
           "operator": ">=",
           "threshold": 90,
-          "patientLabel": "Je dijspier is bijna even sterk als aan je andere been."
+          "patientLabel": "Je dijspier is bijna even sterk als aan je andere been. (90% van andere been)"
         },
         {
           "id": "vkb-4-ham",
