@@ -412,3 +412,178 @@ select.input {
     margin-bottom: var(--space-2);
   }
 }
+
+/* Testmoment ingeven */
+.test-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.input-date {
+  max-width: 220px;
+}
+
+.textarea {
+  min-height: 88px;
+  padding: var(--space-3);
+  resize: vertical;
+}
+
+.test-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(88px, 0.6fr) minmax(88px, 0.6fr) minmax(0, 1.2fr);
+  grid-template-areas: "label left right result" "error error error error";
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-3) 0;
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 0;
+  min-width: 0;
+}
+
+.test-row > .test-label { grid-area: label; }
+.test-row > .test-error { grid-area: error; }
+
+.test-row-head {
+  border-top: none;
+  padding-top: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.test-row-single,
+.test-row-choice {
+  grid-template-areas: "label control control control" "error error error error";
+}
+
+.test-row-single > .input,
+.test-row-choice > .segmented {
+  grid-area: control;
+  justify-self: start;
+}
+
+.test-row-single > .input {
+  width: 120px;
+}
+
+.test-side-label {
+  display: none;
+}
+
+.test-name {
+  font-weight: 600;
+}
+
+.test-hint {
+  display: block;
+  font-size: var(--font-size-sm);
+}
+
+.input-number {
+  width: 100%;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.test-result-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.test-result {
+  font-weight: 700;
+  color: var(--color-primary-strong);
+}
+
+.test-perkg {
+  font-size: var(--font-size-sm);
+}
+
+@media (max-width: 700px) {
+  .test-row-head {
+    display: none;
+  }
+
+  .test-row {
+    grid-template-columns: max-content minmax(0, 1fr);
+    grid-template-areas: none;
+  }
+
+  .test-row > .test-label,
+  .test-row > .test-result-wrap,
+  .test-row > .test-error,
+  .test-row-single > .input,
+  .test-row-choice > .segmented {
+    grid-area: auto;
+    grid-column: 1 / -1;
+  }
+
+  .test-side-label {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  .test-row .input-number {
+    max-width: 160px;
+  }
+}
+
+.form-actions-left {
+  margin-right: auto;
+}
+
+/* Testmomenten op het patiëntdetail */
+.session-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.session-item {
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-3) 0;
+}
+
+.session-item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.session-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.session-date {
+  font-weight: 700;
+}
+
+.result-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.result-chip {
+  font-size: var(--font-size-sm);
+  padding: 2px var(--space-3);
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+}
+
+.result-chip strong {
+  color: var(--color-primary-strong);
+}
+
+.sessions-card {
+  margin-top: var(--space-4);
+}

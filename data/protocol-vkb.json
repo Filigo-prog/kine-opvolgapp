@@ -10,31 +10,249 @@
     "graft": {
       "label": "Transplantaat",
       "options": [
-        { "value": "HT", "label": "Hamstrings (HT)" },
-        { "value": "BPTB", "label": "Patellapees (BPTB)" },
-        { "value": "QT", "label": "Quadricepspees (QT)" },
-        { "value": "andere", "label": "Andere" }
+        {
+          "value": "HT",
+          "label": "Hamstrings (HT)"
+        },
+        {
+          "value": "BPTB",
+          "label": "Patellapees (BPTB)"
+        },
+        {
+          "value": "QT",
+          "label": "Quadricepspees (QT)"
+        },
+        {
+          "value": "andere",
+          "label": "Andere"
+        }
       ]
     },
     "associatedInjuries": {
       "label": "Bijkomende letsels",
       "options": [
-        { "value": "meniscushechting", "label": "Meniscushechting" },
-        { "value": "meniscectomie", "label": "Partiële meniscectomie" },
-        { "value": "kraakbeen", "label": "Kraakbeenletsel of -herstel" },
-        { "value": "mcl", "label": "Letsel mediale collaterale band" },
-        { "value": "revisie", "label": "Revisiereconstructie" }
+        {
+          "value": "meniscushechting",
+          "label": "Meniscushechting"
+        },
+        {
+          "value": "meniscectomie",
+          "label": "Partiële meniscectomie"
+        },
+        {
+          "value": "kraakbeen",
+          "label": "Kraakbeenletsel of -herstel"
+        },
+        {
+          "value": "mcl",
+          "label": "Letsel mediale collaterale band"
+        },
+        {
+          "value": "revisie",
+          "label": "Revisiereconstructie"
+        }
       ]
     },
     "sportLevel": {
       "label": "Sportniveau",
       "options": [
-        { "value": "I", "label": "I: springen, pivoteren (bv. voetbal, basket, handbal)" },
-        { "value": "II", "label": "II: zijwaartse bewegingen (bv. tennis, skiën)" },
-        { "value": "III", "label": "III: rechtlijnig (bv. lopen, fietsen, zwemmen)" },
-        { "value": "IV", "label": "IV: geen sport" }
+        {
+          "value": "I",
+          "label": "I: springen, pivoteren (bv. voetbal, basket, handbal)"
+        },
+        {
+          "value": "II",
+          "label": "II: zijwaartse bewegingen (bv. tennis, skiën)"
+        },
+        {
+          "value": "III",
+          "label": "III: rechtlijnig (bv. lopen, fietsen, zwemmen)"
+        },
+        {
+          "value": "IV",
+          "label": "IV: geen sport"
+        }
       ]
     }
   },
+  "testGroups": [
+    {
+      "id": "beweeglijkheid",
+      "label": "Beweeglijkheid",
+      "tests": [
+        {
+          "id": "extensie",
+          "label": "Extensie",
+          "type": "bilateral",
+          "unit": "°",
+          "compare": "difference",
+          "min": -60,
+          "max": 30,
+          "decimals": 0,
+          "hint": "0 = neutraal, hyperextensie positief, extensiedeficit negatief."
+        },
+        {
+          "id": "flexie",
+          "label": "Flexie",
+          "type": "bilateral",
+          "unit": "°",
+          "compare": "difference",
+          "min": 0,
+          "max": 170,
+          "decimals": 0
+        }
+      ]
+    },
+    {
+      "id": "zwelling-pijn",
+      "label": "Zwelling en pijn",
+      "tests": [
+        {
+          "id": "stroke-test",
+          "label": "Stroke test",
+          "type": "choice",
+          "options": [
+            {
+              "value": "0",
+              "label": "0"
+            },
+            {
+              "value": "spoor",
+              "label": "Spoor"
+            },
+            {
+              "value": "1+",
+              "label": "1+"
+            },
+            {
+              "value": "2+",
+              "label": "2+"
+            },
+            {
+              "value": "3+",
+              "label": "3+"
+            }
+          ]
+        },
+        {
+          "id": "nprs-adl",
+          "label": "Pijn bij dagelijkse activiteiten (NPRS)",
+          "type": "single",
+          "unit": "/10",
+          "min": 0,
+          "max": 10,
+          "decimals": 0
+        }
+      ]
+    },
+    {
+      "id": "kracht",
+      "label": "Kracht",
+      "tests": [
+        {
+          "id": "quad-iso",
+          "label": "Quadriceps isometrisch",
+          "type": "bilateral",
+          "unit": "Nm",
+          "compare": "lsi",
+          "min": 0,
+          "max": 1000,
+          "decimals": 0,
+          "relativeToBodyWeight": true
+        },
+        {
+          "id": "ham-iso",
+          "label": "Hamstrings isometrisch",
+          "type": "bilateral",
+          "unit": "Nm",
+          "compare": "lsi",
+          "min": 0,
+          "max": 1000,
+          "decimals": 0,
+          "relativeToBodyWeight": true
+        }
+      ]
+    },
+    {
+      "id": "hoptests",
+      "label": "Hoptests",
+      "tests": [
+        {
+          "id": "single-hop",
+          "label": "Single hop",
+          "type": "bilateral",
+          "unit": "cm",
+          "compare": "lsi",
+          "min": 0,
+          "max": 400,
+          "decimals": 0
+        },
+        {
+          "id": "triple-hop",
+          "label": "Triple hop",
+          "type": "bilateral",
+          "unit": "cm",
+          "compare": "lsi",
+          "min": 0,
+          "max": 1200,
+          "decimals": 0
+        },
+        {
+          "id": "crossover-hop",
+          "label": "Crossover hop",
+          "type": "bilateral",
+          "unit": "cm",
+          "compare": "lsi",
+          "min": 0,
+          "max": 1200,
+          "decimals": 0
+        },
+        {
+          "id": "timed-hop",
+          "label": "6 m timed hop",
+          "type": "bilateral",
+          "unit": "s",
+          "compare": "lsi-inverse",
+          "min": 0,
+          "max": 20,
+          "decimals": 2,
+          "hint": "Tijd: lager is beter, de LSI wordt omgekeerd berekend."
+        }
+      ]
+    },
+    {
+      "id": "vragenlijsten",
+      "label": "Vragenlijsten",
+      "tests": [
+        {
+          "id": "acl-rsi",
+          "label": "ACL-RSI",
+          "type": "single",
+          "unit": "/100",
+          "min": 0,
+          "max": 100,
+          "decimals": 1
+        },
+        {
+          "id": "ikdc",
+          "label": "IKDC subjective",
+          "type": "single",
+          "unit": "/100",
+          "min": 0,
+          "max": 100,
+          "decimals": 1
+        },
+        {
+          "id": "koos-sport",
+          "label": "KOOS sport/rec",
+          "type": "single",
+          "unit": "/100",
+          "min": 0,
+          "max": 100,
+          "decimals": 1
+        }
+      ]
+    }
+  ],
   "levels": []
 }

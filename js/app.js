@@ -7,11 +7,14 @@ import { patientFormView } from './views/patient-form.js';
 import { patientHomeView } from './views/patient-home.js';
 import { patientListView } from './views/patient-list.js';
 import { settingsView } from './views/settings.js';
+import { testEntryView } from './views/test-entry.js';
 
 const routes = [
   { path: '/patienten', view: patientListView, therapistOnly: true },
   { path: '/patient/nieuw', view: () => patientFormView(), therapistOnly: true },
   { path: '/patient/:code/bewerken', view: patientFormView, therapistOnly: true },
+  { path: '/patient/:code/test/nieuw', view: ({ code }) => testEntryView({ code }), therapistOnly: true },
+  { path: '/patient/:code/test/:id', view: testEntryView, therapistOnly: true },
   { path: '/patient/:code', view: patientDetailView, therapistOnly: true },
   { path: '/instellingen', view: settingsView, therapistOnly: true },
   { path: '/start', view: patientHomeView },

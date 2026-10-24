@@ -10,21 +10,184 @@
     "associatedInjuries": {
       "label": "Bijkomende letsels en voorgeschiedenis",
       "options": [
-        { "value": "syndesmose", "label": "Syndesmoseletsel" },
-        { "value": "mediaal", "label": "Mediaal ligamentair letsel" },
-        { "value": "recidief", "label": "Eerdere verstuiking(en) van deze enkel" },
-        { "value": "instabiliteit", "label": "Gekende chronische instabiliteit" }
+        {
+          "value": "syndesmose",
+          "label": "Syndesmoseletsel"
+        },
+        {
+          "value": "mediaal",
+          "label": "Mediaal ligamentair letsel"
+        },
+        {
+          "value": "recidief",
+          "label": "Eerdere verstuiking(en) van deze enkel"
+        },
+        {
+          "value": "instabiliteit",
+          "label": "Gekende chronische instabiliteit"
+        }
       ]
     },
     "sportLevel": {
       "label": "Sportniveau",
       "options": [
-        { "value": "I", "label": "I: springen, pivoteren (bv. voetbal, basket, volleybal)" },
-        { "value": "II", "label": "II: zijwaartse bewegingen (bv. tennis, skiën)" },
-        { "value": "III", "label": "III: rechtlijnig (bv. lopen, fietsen, zwemmen)" },
-        { "value": "IV", "label": "IV: geen sport" }
+        {
+          "value": "I",
+          "label": "I: springen, pivoteren (bv. voetbal, basket, volleybal)"
+        },
+        {
+          "value": "II",
+          "label": "II: zijwaartse bewegingen (bv. tennis, skiën)"
+        },
+        {
+          "value": "III",
+          "label": "III: rechtlijnig (bv. lopen, fietsen, zwemmen)"
+        },
+        {
+          "value": "IV",
+          "label": "IV: geen sport"
+        }
       ]
     }
   },
+  "testGroups": [
+    {
+      "id": "beweeglijkheid",
+      "label": "Beweeglijkheid",
+      "tests": [
+        {
+          "id": "wblt",
+          "label": "Weight-bearing lunge test (knie-tot-muur)",
+          "type": "bilateral",
+          "unit": "cm",
+          "compare": "difference",
+          "min": 0,
+          "max": 25,
+          "decimals": 1
+        }
+      ]
+    },
+    {
+      "id": "pijn",
+      "label": "Pijn",
+      "tests": [
+        {
+          "id": "nprs-rust",
+          "label": "Pijn in rust (NPRS)",
+          "type": "single",
+          "unit": "/10",
+          "min": 0,
+          "max": 10,
+          "decimals": 0
+        },
+        {
+          "id": "nprs-adl",
+          "label": "Pijn bij dagelijkse activiteiten (NPRS)",
+          "type": "single",
+          "unit": "/10",
+          "min": 0,
+          "max": 10,
+          "decimals": 0
+        }
+      ]
+    },
+    {
+      "id": "kracht-evenwicht",
+      "label": "Kracht en evenwicht",
+      "tests": [
+        {
+          "id": "calf-raises",
+          "label": "Single-leg calf raises",
+          "type": "bilateral",
+          "unit": "herh.",
+          "compare": "lsi",
+          "min": 0,
+          "max": 100,
+          "decimals": 0
+        },
+        {
+          "id": "sls-open",
+          "label": "Single-leg stand, ogen open",
+          "type": "bilateral",
+          "unit": "s",
+          "compare": "lsi",
+          "min": 0,
+          "max": 60,
+          "decimals": 0,
+          "hint": "Maximaal 30 s is gebruikelijk."
+        },
+        {
+          "id": "sls-dicht",
+          "label": "Single-leg stand, ogen gesloten",
+          "type": "bilateral",
+          "unit": "s",
+          "compare": "lsi",
+          "min": 0,
+          "max": 60,
+          "decimals": 0
+        },
+        {
+          "id": "ybal-ant",
+          "label": "Y-balance anterior reach",
+          "type": "bilateral",
+          "unit": "cm",
+          "compare": "difference",
+          "min": 0,
+          "max": 150,
+          "decimals": 1
+        }
+      ]
+    },
+    {
+      "id": "hoptests",
+      "label": "Hoptests",
+      "tests": [
+        {
+          "id": "single-hop",
+          "label": "Single hop",
+          "type": "bilateral",
+          "unit": "cm",
+          "compare": "lsi",
+          "min": 0,
+          "max": 400,
+          "decimals": 0
+        },
+        {
+          "id": "side-hop",
+          "label": "Side hop",
+          "type": "bilateral",
+          "unit": "herh.",
+          "compare": "lsi",
+          "min": 0,
+          "max": 100,
+          "decimals": 0
+        }
+      ]
+    },
+    {
+      "id": "vragenlijsten",
+      "label": "Vragenlijsten",
+      "tests": [
+        {
+          "id": "faam-sport",
+          "label": "FAAM sport",
+          "type": "single",
+          "unit": "%",
+          "min": 0,
+          "max": 100,
+          "decimals": 1
+        },
+        {
+          "id": "cait",
+          "label": "CAIT",
+          "type": "single",
+          "unit": "/30",
+          "min": 0,
+          "max": 30,
+          "decimals": 0
+        }
+      ]
+    }
+  ],
   "levels": []
 }

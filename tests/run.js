@@ -1,9 +1,11 @@
 // Minimale testrunner in de browser. Open tests/index.html via de lokale server.
 
 import { tests as dateTests } from './dates.test.js';
+import { tests as lsiTests } from './lsi.test.js';
 import { tests as patientTests } from './patient.test.js';
+import { tests as sessionTests } from './test-session.test.js';
 
-const suites = { dates: dateTests, patient: patientTests };
+const suites = { dates: dateTests, lsi: lsiTests, patient: patientTests, testmoment: sessionTests };
 const results = document.getElementById('results');
 let passed = 0;
 let failed = 0;
