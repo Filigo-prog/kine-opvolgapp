@@ -14,7 +14,7 @@ import { listTestSessions } from '../repo/test-sessions.js';
 import { render } from '../router.js';
 import { confirmDialog } from '../ui/dialog.js';
 import { h, showToast } from '../ui/dom.js';
-import { describeSingle, formatDifference, formatLsi, formatNumber, withUnit } from '../ui/format.js';
+import { describeSingle, formatAsymmetry, formatDifference, formatLsi, formatNumber, withUnit } from '../ui/format.js';
 import { notFound } from '../ui/not-found.js';
 
 const STATUS_OPTIONS = [
@@ -28,6 +28,7 @@ const SUGGESTION_LABELS = {
   [SUGGESTION.NOT_MET]: 'Lijkt nog niet voldaan',
   [SUGGESTION.NO_DATA]: 'Nog geen meting',
   [SUGGESTION.JUDGEMENT]: 'Jouw oordeel',
+  [SUGGESTION.NO_BASELINE]: 'Geen baseline',
 };
 
 export async function criteriaChecklistView({ code }) {
@@ -74,7 +75,7 @@ export async function criteriaChecklistView({ code }) {
   }
 
   const level = levelByNumber(protocol, stage);
-  const context = { patient, sessions, today };
+  const context = { patient, sessions, today, protocol };
 
   const progressText = h('p', { class: 'progress-text' });
   const progressBar = h('span');
@@ -138,6 +139,11 @@ export async function criteriaChecklistView({ code }) {
         h('p', { class: `suggestion suggestion-${suggestion}` },
           h('strong', {}, SUGGESTION_LABELS[suggestion]),
           suggestionDetail(criterion, details, protocol)),
+        criterion.evidence || criterion.ifNotMet
+          ? h('p', { class: 'criterion-help muted' },
+            criterion.evidence ? h('span', { class: 'evidence-tag', title: 'Evidentieniveau (A = RCT of consensus, D = geleend uit een aangrenzend kader)' }, `Niveau ${criterion.evidence}`) : null,
+            criterion.ifNotMet ? [h('strong', {}, 'Bij niet halen: '), criterion.ifNotMet] : null)
+          : null,
       ),
       h('fieldset', { class: 'criterion-controls' },
         h('legend', { class: 'visually-hidden' }, `Status: ${criterionText(criterion, 'label')}`),
@@ -196,6 +202,8 @@ function suggestionDetail(criterion, details, protocol) {
   const parts = details.map((detail) => {
     const test = findTest(protocol, detail.testId);
     const name = test?.label ?? detail.testId;
+    if (detail.noBaseline) return `${name}: geen baseline ingevuld (vul ze in bij "Baseline" op het patiëntdetail, of kies "geen baseline")`;
+    if (detail.unitMismatch) return `${name}: gemeten in ${detail.unit}, baseline in ${detail.baselineUnit}`;
     if (detail.value === null) return `${name}: niet gemeten`;
     return `${name}: ${formatMetric(criterion.metric, detail.value, test)} (${formatDate(detail.date)})`;
   });
@@ -206,6 +214,8 @@ function formatMetric(metric, value, test) {
   switch (metric) {
     case 'lsi': return formatLsi(value);
     case 'difference': return formatDifference(value, test);
+    case 'asymmetry': return formatAsymmetry(value);
+    case 'baselinePct': return `${formatNumber(value, 0)} % van baseline`;
     case 'injured': return `aangedane zijde ${withUnit(formatNumber(value, test.decimals), test.unit)}`;
     default: return describeSingle(test, { value });
   }

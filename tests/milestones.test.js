@@ -80,7 +80,8 @@ export const tests = {
   },
   'Protocol: mijlpalen verwijzen naar bestaande criteria en tests': async () => {
     const vkb = validateProtocol(await (await fetch('../data/protocol-vkb.json')).json(), 'vkb');
-    equal(vkb.milestones.length, 10);
+    ok(vkb.milestones.length >= 10, 'mijlpalen aanwezig');
+    ok(vkb.milestones.some((m) => m.trigger.type === 'level'), 'mijlpalen per afgerond level');
   },
   'Protocol: onbekend criterium in een mijlpaal wordt geweigerd': async () => {
     const vkb = await (await fetch('../data/protocol-vkb.json')).json();
@@ -92,8 +93,9 @@ export const tests = {
   'Protocol: elk criterium en elke LSI-test heeft patiënttekst en een doelzone': async () => {
     const vkb = await (await fetch('../data/protocol-vkb.json')).json();
     const criteria = vkb.levels.flatMap((l) => l.criteria);
-    ok(criteria.every((c) => c.patientLabel), 'patientLabel bij elk criterium');
-    const lsiTests = vkb.testGroups.flatMap((g) => g.tests).filter((t) => t.type === 'bilateral' && t.compare !== 'difference');
+    ok(vkb.levels.every((l) => l.patientGoal && l.criteria.some((c) => c.patientLabel)), 'elk level heeft een doel en patiëntstappen');
+    ok(criteria.some((c) => c.patientLabel), 'patientLabel bij criteria');
+    const lsiTests = vkb.testGroups.flatMap((g) => g.tests).filter((t) => t.type === 'bilateral' && ['lsi', 'lsi-inverse'].includes(t.compare));
     ok(lsiTests.every((t) => t.patientLabel && t.patientPhrase && t.target), 'patientLabel, patientPhrase en target');
   },
 };

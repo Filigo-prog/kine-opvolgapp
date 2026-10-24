@@ -78,7 +78,7 @@ class Opbouw(Base):
     def test_werkboek_heeft_de_bladen_een_verborgen_kopie_en_bescherming(self):
         self.export()
         wb = load_workbook(self.xlsx)
-        self.assertEqual(wb.sheetnames, ["Leesmij", "Testschema", "Referenties", "Criteria", "Levels", "Tests", "Mijlpalen", "Instellingen", "_origineel"])
+        self.assertEqual(wb.sheetnames, ["Leesmij", "Testschema", "Referenties", "Criteria", "Levels", "Tests", "Mijlpalen", "Stopregels", "Instellingen", "_origineel"])
         self.assertEqual(wb["_origineel"].sheet_state, "hidden")
         self.assertTrue(all(wb[name].protection.sheet for name in wb.sheetnames if name != "_origineel"))
 
@@ -86,13 +86,13 @@ class Opbouw(Base):
         self.export()
         ws = load_workbook(self.xlsx)["Criteria"]
         unlocked = {ws.cell(row=3, column=c).value for r in range(4, ws.max_row + 1) for c in range(1, ws.max_column + 1) if not ws.cell(row=r, column=c).protection.locked}
-        self.assertEqual(unlocked, {"Omschrijving", "Tekst voor de patiënt", "Grens", "Notitie"})
+        self.assertEqual(unlocked, {"Omschrijving", "Tekst voor de patiënt", "Grens", "Niveau (A–D)", "Bij niet halen", "Notitie"})
 
     def test_grens_en_omschrijving_van_een_criterium_staan_in_het_werkboek(self):
         self.export()
-        self.assertEqual(self.cell("Criteria", "vkb-2-quad", "Grens", read=True), 80)
-        self.assertIn("{threshold}", self.cell("Criteria", "vkb-2-quad", "Omschrijving", read=True))
-        formula = self.cell("Criteria", "vkb-2-quad", "Zo ziet het eruit", read=True)
+        self.assertEqual(self.cell("Criteria", "vkb-6-quad", "Grens", read=True), 80)
+        self.assertIn("{threshold}", self.cell("Criteria", "vkb-6-quad", "Omschrijving", read=True))
+        formula = self.cell("Criteria", "vkb-6-quad", "Zo ziet het eruit", read=True)
         self.assertTrue(formula.startswith("=SUBSTITUTE("))
 
     def test_zonder_wijziging_staat_er_niets_te_verwerken(self):
@@ -109,18 +109,18 @@ class Wijzigen(Base):
         v_before = self.cache_version()
         enkel_before = (self.data / "protocol-enkel.json").read_bytes()
         version_before = self.protocol()["version"]
-        self.cell("Criteria", "vkb-2-quad", "Grens", 75)
+        self.cell("Criteria", "vkb-6-quad", "Grens", 75)
 
         code, text = self.importing()  # alleen controleren
         self.assertEqual(code, 0, text)
-        self.assertIn("vkb-2-quad", text)
+        self.assertIn("vkb-6-quad", text)
         self.assertIn("80 → 75", text)
-        self.assertEqual(self.criterion("vkb-2-quad")["threshold"], 80, "dry-run verandert niets")
+        self.assertEqual(self.criterion("vkb-6-quad")["threshold"], 80, "dry-run verandert niets")
         self.assertEqual((self.tmp / "sw.js").read_text(), sw_before)
 
         code, text = self.importing(apply=True)
         self.assertEqual(code, 0, text)
-        crit = self.criterion("vkb-2-quad")
+        crit = self.criterion("vkb-6-quad")
         self.assertEqual(crit["threshold"], 75)
         self.assertIn("{threshold}", crit["label"], "de omschrijving blijft een sjabloon")
         self.assertEqual(self.protocol()["version"], tool.bump_version(version_before, self.today))
@@ -161,13 +161,26 @@ class Wijzigen(Base):
 
     def test_een_optionele_cel_leegmaken_haalt_de_waarde_weg(self):
         self.export()
-        self.assertIn("note", self.criterion("vkb-2-quad"))
-        self.cell("Criteria", "vkb-2-quad", "Notitie", None)
+        self.assertIn("ifNotMet", self.criterion("vkb-6-quad"))
+        self.cell("Criteria", "vkb-6-quad", "Bij niet halen", None)
         self.cell("Tests", "quad-iso", "Doelzone (%)", None)
         self.assertEqual(self.importing(apply=True)[0], 0)
-        self.assertNotIn("note", self.criterion("vkb-2-quad"))
+        self.assertNotIn("ifNotMet", self.criterion("vkb-6-quad"))
         test = next(t for g in self.protocol()["testGroups"] for t in g["tests"] if t["id"] == "quad-iso")
         self.assertNotIn("target", test)
+
+    def test_niveau_en_stopregel_aanpassen_en_een_ongeldig_niveau_weigeren(self):
+        self.export()
+        self.cell("Criteria", "vkb-6-quad", "Niveau (A–D)", "B/C")
+        self.cell("Stopregels", 1, "Actie", "Nieuwe actie.", id_header="Nr")
+        self.assertEqual(self.importing(apply=True)[0], 0)
+        self.assertEqual(self.criterion("vkb-6-quad")["evidence"], "B/C")
+        self.assertEqual(self.protocol()["stopRules"][0]["action"], "Nieuwe actie.")
+        self.export()
+        self.cell("Criteria", "vkb-6-quad", "Niveau (A–D)", "E")
+        code, text = self.importing(apply=True)
+        self.assertEqual(code, 1, text)
+        self.assertIn("A, B, C of D", text)
 
     def test_een_referentiewaarde_aanpassen_voor_man_en_vrouw(self):
         self.export()
@@ -208,20 +221,20 @@ class Wijzigen(Base):
         wb = load_workbook(self.xlsx)
         ws = wb["Testschema"]
         last = next(r for r in range(4, ws.max_row + 1) if ws.cell(row=r, column=2).value is None)
-        ws.cell(row=last, column=2).value = 52
+        ws.cell(row=last, column=2).value = 130
         ws.cell(row=last, column=4).value = "Afsluitende meting"
         ws.cell(row=5, column=4).value = "Eerste maximale meting (aangepast)"
         wb.save(self.xlsx)
         code, text = self.importing(apply=True)
         self.assertEqual(code, 0, text)
-        self.assertIn("toegevoegd: week 52: Afsluitende meting", text)
+        self.assertIn("toegevoegd: week 130: Afsluitende meting", text)
         self.assertNotIn("week 48: Opvolgmeting; ", text, "geen volledige lijst in de uitvoer")
         moments = self.protocol()["testSchedule"]["moments"]
-        self.assertEqual(moments[-1], {"week": 52, "label": "Afsluitende meting"})
+        self.assertEqual(moments[-1], {"week": 130, "label": "Afsluitende meting"})
         self.assertEqual(tool.moment_changes([(8, 10, "a"), (12, None, "b")], [(8, 10, "a2"), (52, None, "c")]),
                          ["week 8-10: 'a' → 'a2'", "verwijderd: week 12: b", "toegevoegd: week 52: c"])
         self.assertEqual(moments[1], {"week": 8, "weekTo": 10, "label": "Eerste maximale meting (aangepast)"})
-        self.assertEqual(len(moments), 14)
+        self.assertEqual(len(moments), 17)
 
     def test_versie_krijgt_een_datum_en_op_dezelfde_dag_een_volgnummer(self):
         self.assertEqual(tool.bump_version("2026-10-01", "2026-10-24"), "2026-10-24")
@@ -230,11 +243,11 @@ class Wijzigen(Base):
         self.assertEqual(tool.bump_version("", "2026-10-24"), "2026-10-24")
         # in de praktijk: twee keer na elkaar toepassen verhoogt telkens
         self.export()
-        self.cell("Criteria", "vkb-2-quad", "Grens", 75)
+        self.cell("Criteria", "vkb-6-quad", "Grens", 75)
         self.importing(apply=True)
         first = self.protocol()["version"]
         self.export()
-        self.cell("Criteria", "vkb-2-quad", "Grens", 70)
+        self.cell("Criteria", "vkb-6-quad", "Grens", 70)
         self.importing(apply=True)
         self.assertEqual(self.protocol()["version"], tool.bump_version(first, self.today))
         self.assertNotEqual(self.protocol()["version"], first)
@@ -252,12 +265,12 @@ class Veiligheid(Base):
 
     def test_geen_getal_in_een_getalcel(self):
         self.export()
-        self.cell("Criteria", "vkb-2-quad", "Grens", "veel")
+        self.cell("Criteria", "vkb-6-quad", "Grens", "veel")
         self.assert_geweigerd("geen geldig getal")
 
     def test_lsi_boven_150_procent(self):
         self.export()
-        self.cell("Criteria", "vkb-2-quad", "Grens", 200)
+        self.cell("Criteria", "vkb-6-quad", "Grens", 200)
         self.assert_geweigerd("moet tussen 0 en 150")
 
     def test_een_termijn_moet_een_geheel_getal_zijn(self):
@@ -293,10 +306,10 @@ class Veiligheid(Base):
         d = self.protocol()
         for lv in d["levels"]:
             for c in lv["criteria"]:
-                if c["id"] == "vkb-2-quad":
+                if c["id"] == "vkb-6-quad":
                     c["threshold"] = 82  # iemand anders (bv. Claude) paste dit aan na de export
         path.write_text(json.dumps(d, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        self.cell("Criteria", "vkb-2-quad", "Grens", 75)
+        self.cell("Criteria", "vkb-6-quad", "Grens", 75)
         self.assert_geweigerd("in het protocol staat nu 82")
 
     def test_andere_wijzigingen_in_het_protocol_geven_geen_conflict(self):
@@ -304,14 +317,14 @@ class Veiligheid(Base):
         d = self.protocol()
         d["levels"][0]["title"] = "Nieuwe titel intussen"  # een ander veld dan wat je in Excel aanpast
         (self.data / "protocol-vkb.json").write_text(json.dumps(d, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        self.cell("Criteria", "vkb-2-quad", "Grens", 75)
+        self.cell("Criteria", "vkb-6-quad", "Grens", 75)
         self.assertEqual(self.importing(apply=True)[0], 0)
         self.assertEqual(self.protocol()["levels"][0]["title"], "Nieuwe titel intussen", "de nieuwere wijziging blijft staan")
-        self.assertEqual(self.criterion("vkb-2-quad")["threshold"], 75)
+        self.assertEqual(self.criterion("vkb-6-quad")["threshold"], 75)
 
     def test_opnieuw_inlezen_van_een_reeds_doorgevoerd_bestand_is_geen_conflict(self):
         self.export()
-        self.cell("Criteria", "vkb-2-quad", "Grens", 75)
+        self.cell("Criteria", "vkb-6-quad", "Grens", 75)
         self.assertEqual(self.importing(apply=True)[0], 0)
         code, text = self.importing()
         self.assertEqual(code, 0, text)
@@ -319,8 +332,8 @@ class Veiligheid(Base):
 
     def test_een_waarschuwing_als_de_omschrijving_nog_het_oude_getal_bevat(self):
         self.export()
-        self.cell("Criteria", "vkb-2-quad", "Omschrijving", "Quadriceps LSI ≥ 80 %")  # vast getal in plaats van {threshold}
-        self.cell("Criteria", "vkb-2-quad", "Grens", 75)
+        self.cell("Criteria", "vkb-6-quad", "Omschrijving", "Quadriceps LSI ≥ 80 %")  # vast getal in plaats van {threshold}
+        self.cell("Criteria", "vkb-6-quad", "Grens", 75)
         code, text = self.importing()
         self.assertEqual(code, 0, text)
         self.assertIn("LET OP", text)

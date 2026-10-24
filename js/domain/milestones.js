@@ -8,6 +8,7 @@
 //   lsi:        een meting van `test` haalde minstens `threshold` % LSI
 //   manual:     de therapeut registreert het zelf (bv. "Eerste loopsessie")
 //   completion: de therapeut bevestigde de return to sport
+//   level:      de therapeut gaf level `level` vrij (de criteria van dat level zijn gehaald)
 //   homeLogWeeks: `weeks` opeenvolgende weken met minstens `perWeek` oefendagen, vanaf de return to sport
 
 import { STATUS } from './criteria.js';
@@ -15,7 +16,7 @@ import { weeklyRun } from './home-log.js';
 import { milestoneText } from './text.js';
 import { currentStage, isCompleted } from './progression.js';
 
-export const TRIGGER_TYPES = ['criterion', 'lsi', 'manual', 'completion', 'homeLogWeeks'];
+export const TRIGGER_TYPES = ['criterion', 'lsi', 'manual', 'completion', 'homeLogWeeks', 'level'];
 
 /**
  * Behaalde mijlpalen: [{ id, date }].
@@ -44,6 +45,10 @@ function earnedDate(trigger, { protocol, byDate, statuses, history, manual, home
     }
     case 'manual':
       return manual.get(id)?.date ?? null;
+    case 'level': {
+      const reached = history.find((entry) => entry.level === trigger.level + 1);
+      return reached ? reached.date : null;
+    }
     case 'completion':
       return isCompleted(currentStage(history), protocol) ? (history.at(-1)?.date ?? null) : null;
     case 'homeLogWeeks': {

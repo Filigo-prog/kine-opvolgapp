@@ -15,7 +15,7 @@ import { getSetting, setSetting } from '../repo/settings.js';
 import { getValdMappings, saveValdMappings } from '../repo/vald-mappings.js';
 import { navigate } from '../router.js';
 import { h, showToast } from '../ui/dom.js';
-import { describePerKg, formatDifference, formatLsi, formatNumber, withUnit } from '../ui/format.js';
+import { describePerKg, formatComparison, formatNumber, withUnit } from '../ui/format.js';
 import { notFound } from '../ui/not-found.js';
 import { CODE_PATTERN } from '../domain/patient.js';
 
@@ -240,7 +240,7 @@ export async function valdImportView({ code }) {
       unitNote.hidden = true;
       if (test) {
         const comparison = compareSides(test, value.left, value.right, patient.side);
-        text += ` → ${test.compare === 'difference' ? formatDifference(comparison.difference, test) : formatLsi(comparison.lsi)}`;
+        text += ` → ${formatComparison(test, comparison)}`;
         const allowed = testUnits(test).map((entry) => entry.unit);
         const perKg = describePerKg(test, value.left, value.right, patient.side, patient.bodyWeightKg, unit ?? test.unit);
         if (perKg) text += ` · ${perKg}`;

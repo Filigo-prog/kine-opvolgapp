@@ -1,6 +1,7 @@
 // Overzicht van één patiënt in de therapeutmodus. Vertrekpunt voor testmomenten en criteria.
 
 import { describeTimeSince, formatDate, todayIso } from '../domain/dates.js';
+import { baselineProblems } from '../domain/patient.js';
 import { feedbackNames } from '../domain/milestones.js';
 import { milestoneOverview } from '../domain/milestones.js';
 import { groupedReferences } from '../domain/references.js';
@@ -8,12 +9,12 @@ import { STATES, scheduleStatus, weekLabel } from '../domain/schedule.js';
 import { milestoneText } from '../domain/text.js';
 import { currentStage, isCompleted, levelByNumber, levelProgress, stageLabel } from '../domain/progression.js';
 import { loadProtocol, optionLabel } from '../domain/protocol.js';
-import { findTest } from '../domain/test-session.js';
+import { allTests, findTest, testUnits } from '../domain/test-session.js';
 import { getCriteriaStatuses } from '../repo/criteria-status.js';
 import { getLevelHistory } from '../repo/level-history.js';
 import { getHomeLog } from '../repo/home-log.js';
 import { getMilestones, refreshMilestonesDetailed, removeManualMilestone, setManualMilestone } from '../repo/milestones.js';
-import { deletePatient, getPatient } from '../repo/patients.js';
+import { deletePatient, getPatient, updatePatient } from '../repo/patients.js';
 import { listTestSessions } from '../repo/test-sessions.js';
 import { navigate, render } from '../router.js';
 import { confirmDialog } from '../ui/dialog.js';
@@ -133,7 +134,10 @@ export async function patientDetailView({ code }) {
         },
       })
       : null,
+    baselineCard(protocol, patient, code),
     scheduleCard(protocol, patient, sessions),
+    stopRulesCard(protocol),
+    afterReturnCard(protocol),
     referencesCard(protocol, patient),
     milestoneCard(protocol, dates, storedMilestones, code),
     h('div', { class: 'card sessions-card' },
@@ -244,5 +248,100 @@ function referencesCard(protocol, patient) {
       h('h3', {}, group),
       h('dl', { class: 'data-list' }, rows.map(({ row, text }) => [h('dt', {}, row.label), h('dd', {}, text)])),
     )),
+  );
+}
+
+/**
+ * Baseline: de waarde van vóór het letsel, per test. Zonder baseline kan een criterium "x % van baseline" niet
+ * beoordeeld worden. "Geen baseline" expliciet aanvinken, zodat een ontbrekend vertrekpunt later te onderscheiden
+ * is van een meetfout.
+ */
+function baselineCard(protocol, patient, code) {
+  const tests = allTests(protocol).filter((test) => test.baselineable);
+  if (!tests.length) return null;
+  const saved = patient.baselines ?? {};
+  const error = h('p', { class: 'field-error', role: 'alert' });
+
+  const rows = tests.map((test) => {
+    const units = testUnits(test);
+    const current = saved[test.id];
+    const valueInput = h('input', {
+      class: 'input input-number', inputmode: 'decimal', autocomplete: 'off', 'aria-label': `Baseline ${test.label}`,
+      value: current?.value != null ? String(current.value).replace('.', ',') : '',
+    });
+    const unitSelect = units.length > 1
+      ? h('select', { class: 'input input-unit', 'aria-label': `Eenheid van de baseline van ${test.label}` },
+        units.map((entry) => h('option', { value: entry.unit, selected: entry.unit === (current?.unit ?? test.unit) }, entry.unit)))
+      : h('span', { class: 'muted' }, units[0].unit);
+    const none = h('input', { type: 'checkbox', checked: current?.none === true, onchange: sync });
+    function sync() {
+      valueInput.disabled = none.checked;
+      if (unitSelect.tagName === 'SELECT') unitSelect.disabled = none.checked;
+    }
+    sync();
+    return {
+      test,
+      read() {
+        if (none.checked) return { none: true };
+        const text = valueInput.value.trim().replace(',', '.');
+        if (text === '') return undefined;
+        return { value: Number(text), unit: unitSelect.tagName === 'SELECT' ? unitSelect.value : units[0].unit };
+      },
+      node: h('div', { class: 'baseline-row' },
+        h('strong', { class: 'baseline-test' }, test.label),
+        h('div', { class: 'baseline-fields' }, valueInput, unitSelect,
+          h('label', { class: 'checkbox' }, none, h('span', {}, 'Geen baseline'))),
+      ),
+    };
+  });
+
+  async function onSave() {
+    error.textContent = '';
+    const baselines = {};
+    for (const row of rows) {
+      const value = row.read();
+      if (value !== undefined) baselines[row.test.id] = value;
+    }
+    const problems = baselineProblems(protocol, baselines);
+    if (problems.length) {
+      error.textContent = problems.join(' ');
+      return;
+    }
+    await updatePatient(code, { baselines });
+    showToast('Baseline opgeslagen.');
+    render();
+  }
+
+  const filled = Object.keys(saved).length;
+  return h('details', { class: 'card sessions-card collapsible', open: filled === 0 },
+    h('summary', {}, h('h2', {}, 'Baseline (vóór het letsel)')),
+    h('p', { class: 'muted' }, 'De waarde van het aangedane been van vóór het letsel, of een vroege meting van het andere been. Nodig voor criteria zoals "≥ 70 % van baseline". Heb je geen vertrekpunt, vink dan "Geen baseline" aan in plaats van het leeg te laten.'),
+    rows.map((row) => row.node),
+    error,
+    h('div', { class: 'form-actions' }, h('button', { type: 'button', class: 'btn btn-secondary', onclick: onSave }, 'Baseline opslaan')),
+  );
+}
+
+/** Stop- en regressieregels uit het protocol: wat doe je bij een terugval, ongeacht de fase. */
+function stopRulesCard(protocol) {
+  if (!protocol.stopRules?.length) return null;
+  return h('details', { class: 'card sessions-card collapsible' },
+    h('summary', {}, h('h2', {}, 'Stop- en regressieregels')),
+    protocol.stopRulesIntro ? h('p', { class: 'muted' }, protocol.stopRulesIntro) : null,
+    h('dl', { class: 'rule-list' }, protocol.stopRules.map((rule) => [h('dt', {}, rule.finding), h('dd', {}, rule.action)])),
+    protocol.stopRulesNote ? h('p', { class: 'muted' }, protocol.stopRulesNote) : null,
+  );
+}
+
+/** Na de terugkeer: hertests, doorlopend programma en ontslagcriteria. */
+function afterReturnCard(protocol) {
+  const after = protocol.afterReturn;
+  if (!after) return null;
+  return h('details', { class: 'card sessions-card collapsible' },
+    h('summary', {}, h('h2', {}, after.title)),
+    after.intro ? h('p', { class: 'muted' }, after.intro) : null,
+    h('ul', { class: 'plain-list' }, after.ongoing.map((item) => h('li', {}, h('strong', {}, `${item.title}. `), item.text))),
+    after.discharge ? h('p', {}, h('strong', {}, 'Ontslag uit begeleiding. '), after.discharge) : null,
+    after.retestNote ? h('p', { class: 'muted' }, after.retestNote) : null,
   );
 }

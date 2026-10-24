@@ -4,13 +4,14 @@
 // als de therapeut het afvinkt. Deze module wijzigt nooit een status.
 
 import { addDays, addMonths, daysBetween } from './dates.js';
-import { injuredAndHealthy } from './lsi.js';
+import { injuredAndHealthy, round } from './lsi.js';
 
 export const SUGGESTION = {
   MET: 'lijkt-voldaan',
   NOT_MET: 'lijkt-niet-voldaan',
   NO_DATA: 'geen-meting',
   JUDGEMENT: 'oordeel',
+  NO_BASELINE: 'geen-baseline',
 };
 
 export const STATUS = {
@@ -27,7 +28,7 @@ const OPERATORS = {
 };
 
 export const CRITERION_TYPES = ['measurement', 'minTime', 'judgement'];
-export const METRICS = ['lsi', 'difference', 'injured', 'value'];
+export const METRICS = ['lsi', 'difference', 'injured', 'value', 'asymmetry', 'baselinePct'];
 export const OPERATOR_NAMES = [...Object.keys(OPERATORS), 'in'];
 
 export function criterionTests(criterion) {
@@ -49,8 +50,22 @@ export function metricValue(measurement, metric, side) {
     case 'difference': return measurement.difference ?? null;
     case 'injured': return injuredAndHealthy(measurement.left, measurement.right, side).injured ?? null;
     case 'value': return measurement.value ?? null;
+    case 'asymmetry': return measurement.asymmetry ?? null;
     default: return null;
   }
+}
+
+/**
+ * Huidige waarde van het aangedane been als % van de baseline (de waarde van vóór het letsel).
+ * baseline = { value, unit } of { none: true }. Geeft { value } of een reden waarom het niet kan.
+ */
+export function baselinePercent(measurement, baseline, side, defaultUnit = null) {
+  if (!baseline || baseline.none) return { noBaseline: true };
+  const unit = measurement.unit ?? defaultUnit;
+  if (baseline.unit && unit && baseline.unit !== unit) return { unitMismatch: true, unit, baselineUnit: baseline.unit };
+  const { injured } = injuredAndHealthy(measurement.left, measurement.right, side);
+  if (!Number.isFinite(injured) || !(baseline.value > 0)) return { value: null };
+  return { value: round((injured / baseline.value) * 100, 1) };
 }
 
 export function compareValue(value, criterion) {
@@ -68,12 +83,12 @@ export function minTimeReachedOn(criterion, injuryDate) {
 
 /**
  * Suggestie voor één criterium.
- * ctx = { patient, sessions (nieuwste eerst), today }
+ * ctx = { patient, sessions (nieuwste eerst), today, protocol? }  (protocol: voor de standaardeenheid van een test)
  * → { suggestion, details }
  *   measurement: details = [{ testId, value, date, pass }]   (value null = niet gemeten)
  *   minTime:     details = { reachedOn, daysLeft }
  */
-export function evaluateCriterion(criterion, { patient, sessions, today }) {
+export function evaluateCriterion(criterion, { patient, sessions, today, protocol = null }) {
   if (criterion.type === 'judgement') return { suggestion: SUGGESTION.JUDGEMENT, details: null };
 
   if (criterion.type === 'minTime') {
@@ -88,12 +103,20 @@ export function evaluateCriterion(criterion, { patient, sessions, today }) {
   const details = criterionTests(criterion).map((testId) => {
     const latest = latestMeasurement(sessions, testId);
     if (!latest) return { testId, value: null, date: null, pass: false };
+    if (criterion.metric === 'baselinePct') {
+      const defaultUnit = protocol?.testGroups?.flatMap((g) => g.tests).find((t) => t.id === testId)?.unit ?? null;
+      const result = baselinePercent(latest.measurement, patient.baselines?.[testId], patient.side, defaultUnit);
+      const value = result.value ?? null;
+      return { testId, value, date: latest.date, pass: compareValue(value, criterion), ...(value === null ? result : {}) };
+    }
     const value = metricValue(latest.measurement, criterion.metric, patient.side);
     return { testId, value, date: latest.date, pass: compareValue(value, criterion) };
   });
 
   let suggestion;
-  if (details.some((d) => d.value === null)) suggestion = SUGGESTION.NO_DATA;
+  if (details.some((d) => d.date === null)) suggestion = SUGGESTION.NO_DATA;
+  else if (details.some((d) => d.noBaseline)) suggestion = SUGGESTION.NO_BASELINE;
+  else if (details.some((d) => d.value === null)) suggestion = SUGGESTION.NO_DATA;
   else suggestion = details.every((d) => d.pass) ? SUGGESTION.MET : SUGGESTION.NOT_MET;
   return { suggestion, details };
 }

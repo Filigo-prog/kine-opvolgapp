@@ -66,6 +66,7 @@ export async function patientProgressView({ code }, { preview = false } = {}) {
     homeLogSection({ patient, protocol, homeLog, stage, completed, onSaved: onLogSaved }),
     milestoneSection(protocol, dates),
     chartSection(protocol, patient, sessions),
+    guideSection(protocol),
   );
 }
 
@@ -74,7 +75,7 @@ function levelPath(protocol, stage, completed) {
   const steps = [
     ...protocol.levels.map((level) => ({
       key: level.number,
-      title: level.title,
+      title: level.shortTitle ?? level.title,
       state: level.number < stage ? 'done' : (level.number === stage && !completed ? 'current' : 'todo'),
     })),
     { key: 'end', title: protocol.completion?.title ?? 'Klaar', state: completed ? 'done' : 'todo' },
@@ -148,7 +149,7 @@ function chartSection(protocol, patient, sessions) {
   const labels = protocol.patientSideLabels ?? { injured: 'Aangedaan been', healthy: 'Ander been' };
   const sideLabels = { ...labels, side: patient.side };
   const cards = allTests(protocol)
-    .filter((test) => test.type === 'bilateral' && test.compare !== 'difference')
+    .filter((test) => test.type === 'bilateral' && ['lsi', 'lsi-inverse'].includes(test.compare))
     .map((test) => ({ test, series: lsiSeries(sessions, test.id) }))
     .filter(({ series }) => series.length)
     .map(({ test, series }) => lsiChartCard({
@@ -195,5 +196,29 @@ function homeLogSection({ patient, protocol, homeLog, stage, completed, onSaved 
       intro: preventionActive ? fillPlaceholders(prevention.patientText, prevention) : 'Tik op een dag en vul in of je geoefend hebt.',
       onSaved,
     }),
+  );
+}
+
+/** Uitleg voor de patiënt (uit de patiëntversie van het protocol): secties met alinea's, lijsten, tabellen en veelgestelde vragen. */
+function guideSection(protocol) {
+  const sections = protocol.patientGuide?.sections;
+  if (!sections?.length) return null;
+  const block = (b) => {
+    switch (b.type) {
+      case 'p': return h('p', {}, b.text);
+      case 'ul': return h('ul', { class: 'focus-list' }, b.items.map((item) => h('li', {}, item)));
+      case 'table':
+        return h('div', { class: 'table-scroll' }, h('table', { class: 'guide-table' },
+          h('thead', {}, h('tr', {}, b.header.map((cell) => h('th', { scope: 'col' }, cell)))),
+          h('tbody', {}, b.rows.map((row) => h('tr', {}, row.map((cell) => h('td', {}, cell)))))));
+      default:
+        return h('div', {}, b.items.map((item) => h('details', { class: 'faq-item' }, h('summary', {}, item.q), h('p', {}, item.a))));
+    }
+  };
+  return h('section', { class: 'guide-section' },
+    h('h2', {}, protocol.patientGuide.title ?? 'Goed om te weten'),
+    sections.map((section) => h('details', { class: 'card collapsible' },
+      h('summary', {}, h('h3', {}, section.title)),
+      section.blocks.map(block))),
   );
 }

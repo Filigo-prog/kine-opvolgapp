@@ -23,6 +23,23 @@ function formatCode(prefix, number) {
   return `${prefix}-${String(number).padStart(3, '0')}`;
 }
 
+/**
+ * Baseline = de waarde van vóór het letsel, per test: { value, unit } of { none: true } ("geen baseline").
+ * Geeft een lijst met problemen terug (leeg = geldig).
+ */
+export function baselineProblems(protocol, baselines) {
+  const tests = new Map((protocol?.testGroups ?? []).flatMap((group) => group.tests).map((test) => [test.id, test]));
+  return Object.entries(baselines ?? {}).flatMap(([testId, baseline]) => {
+    const test = tests.get(testId);
+    if (!test?.baselineable) return [`${testId}: geen test met baseline`];
+    if (baseline?.none === true) return [];
+    const units = (test.units ?? [{ unit: test.unit }]).map((entry) => entry.unit);
+    if (!(Number.isFinite(baseline?.value) && baseline.value > 0)) return [`${test.label}: geef een getal groter dan 0 in, of kies "geen baseline"`];
+    if (!units.includes(baseline.unit)) return [`${test.label}: onbekende eenheid`];
+    return [];
+  });
+}
+
 /** Ruwe formulierwaarden → patiëntobject. */
 export function normalizePatient(raw) {
   const text = (value) => String(value ?? '').trim();
@@ -41,6 +58,7 @@ export function normalizePatient(raw) {
     bodyWeightKg: weight === '' ? null : Number(weight),
   };
   patient.sportSupport = text(raw.sportSupport);
+  if (raw.baselines !== undefined) patient.baselines = raw.baselines;
   if (patient.injury === 'vkb') {
     patient.graft = text(raw.graft);
     patient.graftOther = patient.graft === 'andere' ? text(raw.graftOther) : '';
@@ -80,6 +98,11 @@ export function validatePatient(patient, { protocol, existingCodes = [], isNew =
   const allowedInjuries = options('associatedInjuries');
   if (patient.associatedInjuries.some((value) => !allowedInjuries.includes(value))) {
     errors.associatedInjuries = 'Onbekende keuze bij bijkomende letsels.';
+  }
+
+  if (patient.baselines !== undefined) {
+    const problems = baselineProblems(protocol, patient.baselines);
+    if (problems.length) errors.baselines = problems.join('; ');
   }
 
   if (patient.sportSupport && !options('sportSupport').includes(patient.sportSupport)) {

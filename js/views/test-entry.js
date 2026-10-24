@@ -10,7 +10,7 @@ import { deleteTestSession, getTestSession, listTestSessions, saveTestSession } 
 import { navigate } from '../router.js';
 import { confirmDialog } from '../ui/dialog.js';
 import { h, showToast } from '../ui/dom.js';
-import { describePerKg, formatDifference, formatLsi, toInputValue } from '../ui/format.js';
+import { describePerKg, formatComparison, toInputValue } from '../ui/format.js';
 import { notFound } from '../ui/not-found.js';
 
 export async function testEntryView({ code, id }) {
@@ -117,9 +117,7 @@ export async function testEntryView({ code, id }) {
           return;
         }
         const comparison = compareSides(test, l, r, patient.side);
-        result.textContent = test.compare === 'difference'
-          ? formatDifference(comparison.difference, test)
-          : formatLsi(comparison.lsi);
+        result.textContent = formatComparison(test, comparison);
         perKgLine.textContent = describePerKg(test, l, r, patient.side, patient.bodyWeightKg, unit) ?? '';
       }
       update();

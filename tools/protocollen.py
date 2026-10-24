@@ -153,13 +153,21 @@ def criterion_unit(criterion, test_by_id):
         return "weken" if "weeks" in criterion else "maanden"
     if criterion["type"] != "measurement":
         return ""
-    if criterion.get("metric") == "lsi":
+    if criterion.get("metric") in ("lsi", "asymmetry", "baselinePct"):
         return "%"
     test = test_by_id.get(criterion.get("test") or (criterion.get("tests") or [""])[0], {})
     return test.get("unit", "")
 
 
-METRIC_LABELS = {"lsi": "LSI", "difference": "verschil", "injured": "aangedane zijde", "value": "waarde"}
+METRIC_LABELS = {"lsi": "LSI", "difference": "verschil", "injured": "aangedane zijde", "value": "waarde",
+                 "asymmetry": "asymmetrie", "baselinePct": "% van baseline"}
+
+
+def check_evidence(value):
+    """Evidentieniveau A tot D, of een combinatie zoals B/C; leeg mag."""
+    if value in (None, ""):
+        return None
+    return None if re.fullmatch(r"[A-D](/[A-D])?", str(value)) else "moet A, B, C of D zijn (of een combinatie zoals B/C)"
 TYPE_LABELS = {"measurement": "meting", "minTime": "minimumtermijn", "judgement": "jouw oordeel"}
 
 
@@ -181,13 +189,15 @@ def build_sheets(P):
 
     # ---- Criteria ----
     cr = Sheet("Criteria", "1F6F6B", [("Protocol", 11), ("Level", 8), ("ID", 20), ("Omschrijving", 52), ("Zo ziet het eruit", 52), ("Tekst voor de patiënt", 44),
-                                      ("Type", 15), ("Test", 30), ("Meetwaarde", 16), ("Vergelijking", 12), ("Grens", 10), ("Eenheid", 10), ("Notitie", 40)],
+                                      ("Type", 15), ("Test", 30), ("Meetwaarde", 16), ("Vergelijking", 12), ("Grens", 10), ("Eenheid", 10), ("Niveau (A–D)", 12),
+                                      ("Bij niet halen", 52), ("Notitie", 40)],
                ["Protocol", "ID"], "De criteria om naar het volgende level te gaan. Pas de gele cel 'Grens' aan; schrijf {threshold} in de omschrijving "
-                                   "waar de grens moet verschijnen ({weeks} of {months} bij een minimumtermijn). 'Zo ziet het eruit' rekent dat meteen voor je uit.")
+                                   "waar de grens moet verschijnen ({weeks} of {months} bij een minimumtermijn). 'Zo ziet het eruit' rekent dat meteen voor je uit. "
+                                   "'Niveau' is het evidentieniveau (A tot D) van de grens; 'Bij niet halen' is wat je doet als het criterium niet gehaald wordt.")
     sheets[cr.name] = cr
 
     # ---- Levels ----
-    lv = Sheet("Levels", "1F6F6B", [("Protocol", 11), ("Level", 8), ("Titel", 30), ("Ondertitel", 30), ("Doel voor de patiënt", 50), ("Focus (voor jou)", 50),
+    lv = Sheet("Levels", "1F6F6B", [("Protocol", 11), ("Level", 8), ("Titel", 30), ("Korte titel", 18), ("Ondertitel", 30), ("Doel voor de patiënt", 50), ("Focus (voor jou)", 50),
                                     ("Wat doen we nu? (patiënt, één regel per zin)", 60)],
                ["Protocol", "Level"], "De titels en teksten per level. In de laatste kolom zet je elke zin op een nieuwe regel (Alt+Enter in Excel).")
     sheets[lv.name] = lv
@@ -202,6 +212,11 @@ def build_sheets(P):
     ml = Sheet("Mijlpalen", "1F6F6B", [("Protocol", 11), ("ID", 18), ("Soort", 14), ("Naam", 30), ("Uitleg voor de patiënt", 56), ("Grens", 10), ("Dagen per week", 15)],
                ["Protocol", "ID"], "De mijlpalen. Bij 'kracht' is de grens een LSI in %, bij 'oefenreeks' het aantal weken. Gebruik {threshold}, {weeks} of {perWeek} in de tekst.")
     sheets[ml.name] = ml
+
+    # ---- Stopregels ----
+    sr = Sheet("Stopregels", "1F6F6B", [("Protocol", 11), ("Nr", 6), ("Bevinding", 52), ("Actie", 60)],
+               ["Protocol", "Nr"], "De stop- en regressieregels: wat doe je bij een bevinding, ongeacht de fase. Je kan de tekst aanpassen; regels toevoegen of schrappen kan via Claude.")
+    sheets[sr.name] = sr
 
     # ---- Instellingen ----
     st = Sheet("Instellingen", "1F6F6B", [("Protocol", 11), ("Instelling", 38), ("Waarde", 50), ("Uitleg", 60)],
@@ -238,6 +253,7 @@ def build_sheets(P):
             lv.rows.append({
                 "Protocol": ("L", proto), "Level": ("L", num),
                 "Titel": ("E", attr_field(lk("Titel"), where, "Titel", "text", lloc, "title", required)),
+                "Korte titel": ("E", attr_field(lk("Korte titel"), where, "Korte titel", "text", lloc, "shortTitle", optional=True)),
                 "Ondertitel": ("E", attr_field(lk("Ondertitel"), where, "Ondertitel", "text", lloc, "subtitle", optional=True)),
                 "Doel voor de patiënt": ("E", attr_field(lk("Doel voor de patiënt"), where, "Doel voor de patiënt", "text", lloc, "patientGoal", optional=True)),
                 "Focus (voor jou)": ("E", attr_field(lk("Focus (voor jou)"), where, "Focus (voor jou)", "text", lloc, "focus", optional=True)),
@@ -259,6 +275,8 @@ def build_sheets(P):
                     "Meetwaarde": ("L", METRIC_LABELS.get(crit.get("metric"), "")),
                     "Vergelijking": ("L", {"in": "een van"}.get(crit.get("operator"), crit.get("operator", ""))),
                     "Eenheid": ("L", criterion_unit(crit, test_by_id)),
+                    "Niveau (A–D)": ("E", attr_field(ck("Niveau (A–D)"), cwhere, "Niveau", "text", cloc, "evidence", check_evidence, optional=True)),
+                    "Bij niet halen": ("E", attr_field(ck("Bij niet halen"), cwhere, "Bij niet halen", "text", cloc, "ifNotMet", optional=True)),
                     "Notitie": ("E", attr_field(ck("Notitie"), cwhere, "Notitie", "text", cloc, "note", optional=True)),
                 }
                 if crit["type"] == "minTime":
@@ -322,7 +340,7 @@ def build_sheets(P):
             mtrig = (lambda P, proto=proto, mid=mid: by_id(P[proto]["milestones"], "id", mid)["trigger"])
             mk = lambda col, proto=proto, mid=mid: f"Mijlpalen|{proto}|{mid}|{col}"
             mwhere = f"{label} · Mijlpaal {mid}"
-            soort = {"criterion": "criterium", "lsi": "kracht (LSI)", "manual": "door jou", "completion": "afronding", "homeLogWeeks": "oefenreeks"}.get(trig["type"], trig["type"])
+            soort = {"criterion": "criterium", "lsi": "kracht (LSI)", "manual": "door jou", "completion": "afronding", "homeLogWeeks": "oefenreeks", "level": "level afgerond"}.get(trig["type"], trig["type"])
             row = {
                 "Protocol": ("L", proto), "ID": ("L", mid), "Soort": ("L", soort),
                 "Naam": ("E", attr_field(mk("Naam"), mwhere, "Naam", "text", mloc, "label", required)),
@@ -335,6 +353,16 @@ def build_sheets(P):
                 row["Grens"] = ("E", attr_field(mk("Grens"), mwhere, "Grens (weken)", "int", mtrig, "weeks", in_range(1, 104)))
                 row["Dagen per week"] = ("E", attr_field(mk("Dagen per week"), mwhere, "Dagen per week", "int", mtrig, "perWeek", in_range(1, 7)))
             ml.rows.append(row)
+
+        for index, rule in enumerate(d.get("stopRules", [])):
+            rloc = (lambda P, proto=proto, index=index: P[proto]["stopRules"][index])
+            rk = lambda col, proto=proto, index=index: f"Stopregels|{proto}|{index + 1}|{col}"
+            rwhere = f"{label} · Stopregel {index + 1}"
+            sr.rows.append({
+                "Protocol": ("L", proto), "Nr": ("L", index + 1),
+                "Bevinding": ("E", attr_field(rk("Bevinding"), rwhere, "Bevinding", "text", rloc, "finding", required)),
+                "Actie": ("E", attr_field(rk("Actie"), rwhere, "Actie", "text", rloc, "action", required)),
+            })
 
         def setting(name, where_key, kind, locate, attr, check, explanation, proto=proto):
             sk = f"Instellingen|{proto}|{name}|Waarde"

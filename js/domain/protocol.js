@@ -42,13 +42,15 @@ export function validateProtocol(protocol, expectedId) {
   problems.push(...validateHomeLog(protocol));
   problems.push(...validateValdMapping(protocol));
   problems.push(...validateSchedule(protocol));
+  problems.push(...validateTexts(protocol));
   problems.push(...validateReferences(protocol));
   if (problems.length) throw new Error(`Protocol ${expectedId} is ongeldig: ${problems.join('; ')}.`);
   return protocol;
 }
 
 const TEST_TYPES = ['bilateral', 'single', 'choice'];
-const COMPARE_TYPES = ['lsi', 'lsi-inverse', 'difference'];
+const COMPARE_TYPES = ['lsi', 'lsi-inverse', 'difference', 'asymmetry'];
+const EVIDENCE = /^[A-D](\/[A-D])?$/;
 
 function validateTestGroups(groups) {
   if (!Array.isArray(groups)) return ['"testGroups" ontbreekt'];
@@ -77,6 +79,9 @@ function validateTestGroups(groups) {
       if (test.type === 'choice' && !(Array.isArray(test.options) && test.options.length)) {
         problems.push(`${name}: "options" ontbreekt`);
       }
+      if (test.baselineable !== undefined && !(test.baselineable === true && test.type === 'bilateral')) {
+        problems.push(`${name}: "baselineable" kan enkel true zijn bij een test met links en rechts`);
+      }
     }
   }
   return problems;
@@ -90,11 +95,14 @@ function validateLevels(protocol) {
   protocol.levels.forEach((level, index) => {
     if (level.number !== index + 1) problems.push(`level ${index + 1}: "number" moet ${index + 1} zijn`);
     if (!level.title) problems.push(`level ${index + 1}: "title" ontbreekt`);
+    if (level.shortTitle !== undefined && !String(level.shortTitle).trim()) problems.push(`level ${index + 1}: "shortTitle" mag niet leeg zijn`);
     for (const criterion of level.criteria ?? []) {
       const name = `criterium "${criterion.id}"`;
       if (!criterion.id || ids.has(criterion.id)) problems.push(`${name}: id ontbreekt of komt dubbel voor`);
       ids.add(criterion.id);
       if (!criterion.label) problems.push(`${name}: "label" ontbreekt`);
+      if (criterion.evidence !== undefined && !EVIDENCE.test(criterion.evidence)) problems.push(`${name}: "evidence" moet A, B, C of D zijn (of een combinatie zoals B/C)`);
+      if (criterion.ifNotMet !== undefined && !String(criterion.ifNotMet).trim()) problems.push(`${name}: "ifNotMet" mag niet leeg zijn`);
       for (const field of ['label', 'patientLabel', 'note']) checkPlaceholders(`${name}.${field}`, criterion[field], criterionValues(criterion), problems);
       if (!CRITERION_TYPES.includes(criterion.type)) problems.push(`${name}: onbekend type "${criterion.type}"`);
       if (criterion.type === 'minTime' && !(criterion.weeks > 0 || criterion.months > 0)) {
@@ -106,6 +114,14 @@ function validateLevels(protocol) {
           if (!tests.has(testId)) problems.push(`${name}: test "${testId}" bestaat niet`);
         }
         if (!METRICS.includes(criterion.metric)) problems.push(`${name}: onbekende "metric" "${criterion.metric}"`);
+        if (criterion.metric === 'baselinePct') {
+          if (testIds.length !== 1 || !tests.get(testIds[0])?.baselineable) problems.push(`${name}: "baselinePct" werkt enkel met één test die "baselineable" is`);
+        }
+        if (criterion.metric === 'asymmetry') {
+          for (const testId of testIds) {
+            if (tests.get(testId) && tests.get(testId).compare !== 'asymmetry') problems.push(`${name}: test "${testId}" heeft geen "compare": "asymmetry"`);
+          }
+        }
         if (!OPERATOR_NAMES.includes(criterion.operator)) problems.push(`${name}: onbekende "operator" "${criterion.operator}"`);
         if (criterion.operator === 'in' ? !Array.isArray(criterion.values) : !Number.isFinite(criterion.threshold)) {
           problems.push(`${name}: "threshold" of "values" ontbreekt`);
@@ -133,6 +149,8 @@ function validateMilestones(protocol, criterionIds, tests) {
       problems.push(`${name}: criterium "${trigger.criterion}" bestaat niet`);
     } else if (trigger.type === 'lsi' && !(tests.has(trigger.test) && Number.isFinite(trigger.threshold))) {
       problems.push(`${name}: "test" of "threshold" ontbreekt of is ongeldig`);
+    } else if (trigger.type === 'level' && !(Number.isInteger(trigger.level) && trigger.level >= 1 && trigger.level <= (protocol.levels?.length ?? 0))) {
+      problems.push(`${name}: "level" moet een level van dit protocol zijn`);
     } else if (trigger.type === 'homeLogWeeks' && !(trigger.weeks > 0 && trigger.perWeek > 0 && trigger.perWeek <= 7)) {
       problems.push(`${name}: "weeks" en "perWeek" (1 tot 7) ontbreken of zijn ongeldig`);
     }
@@ -145,6 +163,34 @@ function checkPlaceholders(where, text, values, problems) {
   for (const name of new Set(placeholdersIn(text))) {
     if (!Number.isFinite(values[name])) problems.push(`${where}: {${name}} staat in de tekst, maar er is geen getal "${name}" bij`);
   }
+}
+
+/** Vormcontrole van de losse tekstonderdelen: stopregels, na terugkeer en de pati\u00ebntuitleg. */
+function validateTexts(protocol) {
+  const problems = [];
+  if (protocol.stopRules !== undefined) {
+    const ok = Array.isArray(protocol.stopRules) && protocol.stopRules.length > 0
+      && protocol.stopRules.every((rule) => rule.finding && rule.action);
+    if (!ok) problems.push('"stopRules" moet een lijst zijn met "finding" en "action" per regel');
+  }
+  if (protocol.afterReturn !== undefined) {
+    const after = protocol.afterReturn;
+    if (!(after && after.title && Array.isArray(after.ongoing) && after.ongoing.every((item) => item.title && item.text))) {
+      problems.push('"afterReturn" heeft een "title" en een lijst "ongoing" met "title" en "text" nodig');
+    }
+  }
+  if (protocol.patientGuide !== undefined) {
+    const guide = protocol.patientGuide;
+    const blockOk = (block) => ['p', 'ul', 'table', 'faq'].includes(block.type) && (
+      (block.type === 'p' && block.text)
+      || (block.type === 'ul' && Array.isArray(block.items) && block.items.length)
+      || (block.type === 'table' && Array.isArray(block.header) && Array.isArray(block.rows) && block.rows.every((row) => row.length === block.header.length))
+      || (block.type === 'faq' && Array.isArray(block.items) && block.items.every((item) => item.q && item.a)));
+    if (!(Array.isArray(guide?.sections) && guide.sections.every((section) => section.id && section.title && Array.isArray(section.blocks) && section.blocks.every(blockOk)))) {
+      problems.push('"patientGuide" heeft secties nodig met "id", "title" en geldige "blocks" (p, ul, table of faq)');
+    }
+  }
+  return problems;
 }
 
 function validateSchedule(protocol) {

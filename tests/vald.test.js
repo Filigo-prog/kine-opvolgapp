@@ -135,7 +135,9 @@ export const tests = {
     const strength = protocol.testGroups.flatMap((g) => g.tests).filter((t) => ['quad-iso', 'ham-iso'].includes(t.id));
     equal(strength.map((t) => t.unit), ['Nm', 'Nm']);
     equal(strength.map((t) => t.units.map((u) => u.unit)), [['Nm', 'N'], ['Nm', 'N']]);
-    equal(protocol.valdMapping.map((m) => m.test), ['quad-iso', 'ham-iso']);
+    ok(['quad-iso', 'ham-iso'].every((id) => protocol.valdMapping.some((m) => m.test === id)), 'quad en hamstrings gekoppeld');
+    const ids = new Set(protocol.testGroups.flatMap((g) => g.tests).map((t) => t.id));
+    ok(protocol.valdMapping.every((m) => ids.has(m.test)), 'elke koppeling verwijst naar een bestaande test');
   },
   'Import van een N-meting: de eenheid gaat mee naar het testmoment': async () => {
     const protocol = validateProtocol(await (await fetch('../data/protocol-vkb.json')).json(), 'vkb');

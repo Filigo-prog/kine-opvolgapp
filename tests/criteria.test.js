@@ -97,9 +97,9 @@ export const tests = {
     equal(stageLabel(protocol, 5), 'Groen licht');
     equal(stageLabel(protocol, 2), 'Level 2');
   },
-  'VKB-protocol: 4 levels, criteria verwijzen naar bestaande tests': async () => {
+  'VKB-protocol: 9 levels (één per poort), elk met criteria': async () => {
     const protocol = validateProtocol(await (await fetch('../data/protocol-vkb.json')).json(), 'vkb');
-    equal(protocol.levels.length, 4);
+    equal(protocol.levels.length, 9);
     ok(protocol.levels.every((level) => level.criteria.length > 0), 'elk level heeft criteria');
   },
   'validateProtocol weigert een criterium met een onbekende test': () => {

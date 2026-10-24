@@ -24,6 +24,13 @@ export function ratioPercent(numerator, denominator) {
   return round((numerator / denominator) * 100, 1);
 }
 
+/** |links − rechts| ÷ de hoogste zijde × 100, op 1 decimaal; null als het niet te berekenen is. */
+export function asymmetryPercent(left, right) {
+  if (!Number.isFinite(left) || !Number.isFinite(right) || left < 0 || right < 0) return null;
+  const high = Math.max(left, right);
+  return high > 0 ? round((Math.abs(left - right) / high) * 100, 1) : null;
+}
+
 export function injuredAndHealthy(left, right, side) {
   return side === 'L'
     ? { injured: left, healthy: right }
@@ -35,6 +42,7 @@ export function injuredAndHealthy(left, right, side) {
  * - 'lsi':          aangedaan ÷ gezond × 100
  * - 'lsi-inverse':  gezond ÷ aangedaan × 100 (tijdtests)
  * - 'difference':   gezond − aangedaan, in de eenheid van de test (bv. ROM, knie-tot-muur)
+ * - 'asymmetry':    verschil tussen de zijden als % van de hoogste zijde (zijde-onafhankelijk)
  * Geeft { lsi, difference } terug; wat niet van toepassing is, is null.
  */
 export function compareSides(test, left, right, side) {
@@ -51,6 +59,9 @@ export function compareSides(test, left, right, side) {
           ? round(healthy - injured, Math.max(test.decimals ?? 0, 1))
           : null,
       };
+    case 'asymmetry':
+      // Verschil tussen de zijden als % van de hoogste zijde (bv. peak landing force asymmetrie).
+      return { lsi: null, difference: null, asymmetry: asymmetryPercent(left, right) };
     default:
       throw new Error(`Onbekende vergelijking "${test.compare}" bij test ${test.id}.`);
   }

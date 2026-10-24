@@ -19,6 +19,17 @@ export function toInputValue(value) {
   return Number.isFinite(value) ? String(value).replace('.', ',') : '';
 }
 
+export function formatAsymmetry(value) {
+  return Number.isFinite(value) ? `Asymmetrie ${formatNumber(value, 1)} %` : 'Asymmetrie –';
+}
+
+/** Het resultaat van een bilaterale meting in woorden: LSI, verschil of asymmetrie. */
+export function formatComparison(test, comparison) {
+  if (test.compare === 'difference') return formatDifference(comparison.difference, test);
+  if (test.compare === 'asymmetry') return formatAsymmetry(comparison.asymmetry);
+  return formatLsi(comparison.lsi);
+}
+
 export function formatLsi(lsi) {
   return Number.isFinite(lsi) ? `LSI ${formatNumber(lsi, 0)} %` : 'LSI –';
 }
@@ -33,9 +44,7 @@ export function formatDifference(difference, test) {
 
 /** Korte samenvatting van een bilaterale meting: LSI of verschil, plus de absolute waarden. */
 export function describeBilateral(test, measurement) {
-  const result = test.compare === 'difference'
-    ? formatDifference(measurement.difference, test)
-    : formatLsi(measurement.lsi);
+  const result = formatComparison(test, measurement);
   const unit = unitOf(test, measurement);
   const values = `L ${withUnit(formatNumber(measurement.left, test.decimals), unit)} / R ${withUnit(formatNumber(measurement.right, test.decimals), unit)}`;
   return { result, values };
