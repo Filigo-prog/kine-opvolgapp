@@ -96,6 +96,9 @@ function validateLevels(protocol) {
     if (level.number !== index + 1) problems.push(`level ${index + 1}: "number" moet ${index + 1} zijn`);
     if (!level.title) problems.push(`level ${index + 1}: "title" ontbreekt`);
     if (level.shortTitle !== undefined && !String(level.shortTitle).trim()) problems.push(`level ${index + 1}: "shortTitle" mag niet leeg zijn`);
+    if (level.remarks !== undefined && !(Array.isArray(level.remarks) && level.remarks.every((line) => String(line).trim()))) {
+      problems.push(`level ${index + 1}: "remarks" moet een lijst met opmerkingen zijn`);
+    }
     for (const criterion of level.criteria ?? []) {
       const name = `criterium "${criterion.id}"`;
       if (!criterion.id || ids.has(criterion.id)) problems.push(`${name}: id ontbreekt of komt dubbel voor`);
@@ -103,6 +106,7 @@ function validateLevels(protocol) {
       if (!criterion.label) problems.push(`${name}: "label" ontbreekt`);
       if (criterion.evidence !== undefined && !EVIDENCE.test(criterion.evidence)) problems.push(`${name}: "evidence" moet A, B, C of D zijn (of een combinatie zoals B/C)`);
       if (criterion.ifNotMet !== undefined && !String(criterion.ifNotMet).trim()) problems.push(`${name}: "ifNotMet" mag niet leeg zijn`);
+      if (criterion.method !== undefined && !String(criterion.method).trim()) problems.push(`${name}: "method" (testmethode) mag niet leeg zijn`);
       for (const field of ['label', 'patientLabel', 'note']) checkPlaceholders(`${name}.${field}`, criterion[field], criterionValues(criterion), problems);
       if (!CRITERION_TYPES.includes(criterion.type)) problems.push(`${name}: onbekend type "${criterion.type}"`);
       if (criterion.type === 'minTime' && !(criterion.weeks > 0 || criterion.months > 0)) {

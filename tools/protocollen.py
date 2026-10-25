@@ -190,7 +190,7 @@ def build_sheets(P):
     # ---- Criteria ----
     cr = Sheet("Criteria", "1F6F6B", [("Protocol", 11), ("Level", 8), ("ID", 20), ("Omschrijving", 52), ("Zo ziet het eruit", 52), ("Tekst voor de patiënt", 44),
                                       ("Type", 15), ("Test", 30), ("Meetwaarde", 16), ("Vergelijking", 12), ("Grens", 10), ("Eenheid", 10), ("Niveau (A–D)", 12),
-                                      ("Bij niet halen", 52), ("Notitie", 40)],
+                                      ("Testmethode", 40), ("Bij niet halen", 52), ("Notitie", 40)],
                ["Protocol", "ID"], "De criteria om naar het volgende level te gaan. Pas de gele cel 'Grens' aan; schrijf {threshold} in de omschrijving "
                                    "waar de grens moet verschijnen ({weeks} of {months} bij een minimumtermijn). 'Zo ziet het eruit' rekent dat meteen voor je uit. "
                                    "'Niveau' is het evidentieniveau (A tot D) van de grens; 'Bij niet halen' is wat je doet als het criterium niet gehaald wordt.")
@@ -198,7 +198,7 @@ def build_sheets(P):
 
     # ---- Levels ----
     lv = Sheet("Levels", "1F6F6B", [("Protocol", 11), ("Level", 8), ("Titel", 30), ("Korte titel", 18), ("Ondertitel", 30), ("Doel voor de patiënt", 50), ("Focus (voor jou)", 50),
-                                    ("Wat doen we nu? (patiënt, één regel per zin)", 60)],
+                                    ("Wat doen we nu? (patiënt, één regel per zin)", 60), ("Opmerkingen en aandachtspunten (voor jou, één per regel)", 60)],
                ["Protocol", "Level"], "De titels en teksten per level. In de laatste kolom zet je elke zin op een nieuwe regel (Alt+Enter in Excel).")
     sheets[lv.name] = lv
 
@@ -258,6 +258,7 @@ def build_sheets(P):
                 "Doel voor de patiënt": ("E", attr_field(lk("Doel voor de patiënt"), where, "Doel voor de patiënt", "text", lloc, "patientGoal", optional=True)),
                 "Focus (voor jou)": ("E", attr_field(lk("Focus (voor jou)"), where, "Focus (voor jou)", "text", lloc, "focus", optional=True)),
                 "Wat doen we nu? (patiënt, één regel per zin)": ("E", attr_field(lk("Wat doen we nu? (patiënt, één regel per zin)"), where, "Wat doen we nu?", "lines", lloc, "patientFocus", optional=True)),
+                "Opmerkingen en aandachtspunten (voor jou, één per regel)": ("E", attr_field(lk("Opmerkingen en aandachtspunten (voor jou, één per regel)"), where, "Opmerkingen en aandachtspunten", "lines", lloc, "remarks", optional=True)),
             })
             for crit in level["criteria"]:
                 cid = crit["id"]
@@ -276,6 +277,7 @@ def build_sheets(P):
                     "Vergelijking": ("L", {"in": "een van"}.get(crit.get("operator"), crit.get("operator", ""))),
                     "Eenheid": ("L", criterion_unit(crit, test_by_id)),
                     "Niveau (A–D)": ("E", attr_field(ck("Niveau (A–D)"), cwhere, "Niveau", "text", cloc, "evidence", check_evidence, optional=True)),
+                    "Testmethode": ("E", attr_field(ck("Testmethode"), cwhere, "Testmethode", "text", cloc, "method", optional=True)),
                     "Bij niet halen": ("E", attr_field(ck("Bij niet halen"), cwhere, "Bij niet halen", "text", cloc, "ifNotMet", optional=True)),
                     "Notitie": ("E", attr_field(ck("Notitie"), cwhere, "Notitie", "text", cloc, "note", optional=True)),
                 }

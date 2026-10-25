@@ -86,7 +86,7 @@ class Opbouw(Base):
         self.export()
         ws = load_workbook(self.xlsx)["Criteria"]
         unlocked = {ws.cell(row=3, column=c).value for r in range(4, ws.max_row + 1) for c in range(1, ws.max_column + 1) if not ws.cell(row=r, column=c).protection.locked}
-        self.assertEqual(unlocked, {"Omschrijving", "Tekst voor de patiënt", "Grens", "Niveau (A–D)", "Bij niet halen", "Notitie"})
+        self.assertEqual(unlocked, {"Omschrijving", "Tekst voor de patiënt", "Grens", "Niveau (A–D)", "Testmethode", "Bij niet halen", "Notitie"})
 
     def test_grens_en_omschrijving_van_een_criterium_staan_in_het_werkboek(self):
         self.export()
@@ -181,6 +181,15 @@ class Wijzigen(Base):
         code, text = self.importing(apply=True)
         self.assertEqual(code, 1, text)
         self.assertIn("A, B, C of D", text)
+
+    def test_testmethode_en_opmerkingen_van_een_fase_aanpassen(self):
+        self.export()
+        self.cell("Criteria", "vkb-6-quad", "Testmethode", "Handheld dynamometer")
+        self.cell("Levels", 2, "Opmerkingen en aandachtspunten (voor jou, één per regel)", "Eerste.\nTweede.", id_header="Level")
+        self.assertEqual(self.importing(apply=True)[0], 0)
+        self.assertEqual(self.criterion("vkb-6-quad")["method"], "Handheld dynamometer")
+        level = next(lv for lv in self.protocol()["levels"] if lv["number"] == 2)
+        self.assertEqual(level["remarks"], ["Eerste.", "Tweede."])
 
     def test_een_referentiewaarde_aanpassen_voor_man_en_vrouw(self):
         self.export()

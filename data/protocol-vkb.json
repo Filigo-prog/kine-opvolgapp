@@ -1,6 +1,6 @@
 {
   "id": "vkb",
-  "version": "2026-10-24.4",
+  "version": "2026-10-25.1",
   "status": "concept, te valideren door de therapeut",
   "name": "VKB-reconstructie",
   "codePrefix": "VKB",
@@ -828,7 +828,8 @@
           "test": "extensie",
           "patientLabel": "Je knie gaat volledig recht, even ver als je andere knie.",
           "evidence": "C",
-          "ifNotMet": "Extensiedrill hoog in frequentie, laag in intensiteit. Extensiedeficit dat op week 3 nog aanwezig is: overleg met chirurg, denk aan cyclops of arthrofibrose."
+          "ifNotMet": "Extensiedrill hoog in frequentie, laag in intensiteit. Extensiedeficit dat op week 3 nog aanwezig is: overleg met chirurg, denk aan cyclops of arthrofibrose.",
+          "method": "Heel height difference of goniometrie, vergelijk contralateraal"
         },
         {
           "id": "vkb-1-slr",
@@ -836,7 +837,8 @@
           "type": "judgement",
           "patientLabel": "Je kan je been gestrekt optillen zonder dat het doorzakt.",
           "evidence": "C",
-          "ifNotMet": "NMES en quad sets opvoeren; SLR pas hervatten als er geen lag is."
+          "ifNotMet": "NMES en quad sets opvoeren; SLR pas hervatten als er geen lag is.",
+          "method": "Actieve SLR in rugligging"
         },
         {
           "id": "vkb-1-stroke",
@@ -852,7 +854,8 @@
             "0",
             "spoor",
             "1+"
-          ]
+          ],
+          "method": "Stroke test"
         },
         {
           "id": "vkb-1-gang",
@@ -860,7 +863,8 @@
           "type": "judgement",
           "patientLabel": "Je stapt normaal, zonder mank te gaan en zonder krukken.",
           "evidence": "C",
-          "ifNotMet": "Eén kruk houden aan de contralaterale zijde, gangscholing met visuele feedback."
+          "ifNotMet": "Eén kruk houden aan de contralaterale zijde, gangscholing met visuele feedback.",
+          "method": "Visueel op vlakke grond, bevestigen met video op loopband"
         },
         {
           "id": "vkb-1-pijn",
@@ -872,7 +876,8 @@
           "test": "nprs-adl",
           "patientLabel": "Pijn bij het stappen blijft laag, ook de ochtend erna.",
           "evidence": "C",
-          "ifNotMet": "Afstand beperken tot pijnvrij, opsplitsen in kortere blokken."
+          "ifNotMet": "Afstand beperken tot pijnvrij, opsplitsen in kortere blokken.",
+          "method": "NPRS"
         }
       ],
       "patientFocus": [
@@ -880,6 +885,10 @@
         "Koelen en hoogleggen.",
         "Kort en vaak wandelen in plaats van één lange wandeling.",
         "Volledig recht komen is het belangrijkste van deze fase."
+      ],
+      "remarks": [
+        "Opmerkingen. Bij een BTB- of quadricepspeesgraft kan voorste kniepijn de gangnormalisatie remmen zonder dat de knie overbelast is; onderscheid pijn aan de donorsite van gewrichtspijn. Bij een hamstringgraft is flexiekracht in de late standfase het aandachtspunt.",
+        "De valkuil hier is de knie die er goed uitziet omdat de patiënt stil zit. Test na een belastingsprikkel, niet ervoor."
       ]
     },
     {
@@ -909,7 +918,8 @@
           "test": "flexie",
           "patientLabel": "Je knie plooit minstens {threshold} graden.",
           "evidence": "C",
-          "ifNotMet": "Belaste OKC uitstellen, onbelaste LAQ in beschikbare ROM doorzetten."
+          "ifNotMet": "Belaste OKC uitstellen, onbelaste LAQ in beschikbare ROM doorzetten.",
+          "method": "Goniometrie"
         },
         {
           "id": "vkb-2-extensie",
@@ -921,7 +931,8 @@
           "test": "extensie",
           "patientLabel": "Je knie komt volledig recht.",
           "evidence": "C",
-          "ifNotMet": "Zie poort 1, extensie eerst."
+          "ifNotMet": "Zie poort 1, extensie eerst.",
+          "method": "Vergelijk contralateraal"
         },
         {
           "id": "vkb-2-slr",
@@ -929,7 +940,8 @@
           "type": "judgement",
           "patientLabel": "Je been zakt niet door bij het optillen.",
           "evidence": "C",
-          "ifNotMet": "NMES doorzetten, BFR overwegen voor volume zonder last."
+          "ifNotMet": "NMES doorzetten, BFR overwegen voor volume zonder last.",
+          "method": "Actieve SLR in rugligging"
         },
         {
           "id": "vkb-2-stroke",
@@ -945,7 +957,8 @@
             "0",
             "spoor",
             "1+"
-          ]
+          ],
+          "method": "Stroke test"
         },
         {
           "id": "vkb-2-pijn",
@@ -957,12 +970,17 @@
           "test": "nprs-adl",
           "patientLabel": "De oefeningen doen geen pijn, tijdens en ook niet de dag erna.",
           "evidence": "C",
-          "ifNotMet": "Bereik beperken tot 90–45°, gewicht halveren."
+          "ifNotMet": "Bereik beperken tot 90–45°, gewicht halveren.",
+          "method": "NPRS tijdens en 24 u na"
         }
       ],
       "patientFocus": [
         "Je begint in het middenbereik en breidt pas uit als dat vlot gaat.",
         "Op de machine of met een gewichtje aan je enkel."
+      ],
+      "remarks": [
+        "ROM-afspraak bij start. Begin in 90–45° met tempo 3-1-3, en breid het bereik pas uit naar de laatste 45–0° als de belasting in het middenbereik pijnvrij en zonder effusierespons verdraagt wordt. Bij een BTB- of quadricepspeesgraft is dat eindbereik onder last het gevoeligste stuk voor het patellofemorale gewricht.",
+        "Opmerkingen. Wees je bewust van graftverslapping in de eerste 6 tot 12 weken bij hoge belasting in eindstandige extensie. Dat is een argument voor gecontroleerde progressie in bereik en last, niet voor het weglaten van open keten."
       ]
     },
     {
@@ -992,7 +1010,8 @@
           "test": "flexie",
           "patientLabel": "Je knie plooit minstens {threshold} graden.",
           "evidence": "C",
-          "ifNotMet": "Mobilisatie doorzetten; unilateraal werk in beschikbare ROM mag al starten."
+          "ifNotMet": "Mobilisatie doorzetten; unilateraal werk in beschikbare ROM mag al starten.",
+          "method": "Goniometrie"
         },
         {
           "id": "vkb-3-extensie",
@@ -1004,7 +1023,8 @@
           "test": "extensie",
           "patientLabel": "Je knie komt volledig recht, precies als de andere.",
           "evidence": "C",
-          "ifNotMet": "Prioriteit boven alle krachtwerk."
+          "ifNotMet": "Prioriteit boven alle krachtwerk.",
+          "method": "Heel height difference"
         },
         {
           "id": "vkb-3-stroke",
@@ -1019,7 +1039,8 @@
           "values": [
             "0",
             "spoor"
-          ]
+          ],
+          "method": "Stroke test"
         },
         {
           "id": "vkb-3-gang",
@@ -1027,7 +1048,8 @@
           "type": "judgement",
           "patientLabel": "Je stapt normaal, ook als je sneller of trager gaat.",
           "evidence": "C",
-          "ifNotMet": "Gangscholing, wandelvolume opbouwen vóór unilaterale last."
+          "ifNotMet": "Gangscholing, wandelvolume opbouwen vóór unilaterale last.",
+          "method": "Loopband, video"
         },
         {
           "id": "vkb-3-quad",
@@ -1039,7 +1061,8 @@
           "test": "quad-iso",
           "patientLabel": "Je bovenbeen haalt ongeveer twee derde van de kracht van je andere been.",
           "evidence": "C",
-          "ifNotMet": "Bilateraal en BFR-werk doorzetten, unilateraal beperkt tot isometrisch."
+          "ifNotMet": "Bilateraal en BFR-werk doorzetten, unilateraal beperkt tot isometrisch.",
+          "method": "Isometrisch 60°, HHD of plaat"
         },
         {
           "id": "vkb-3-quad-base",
@@ -1050,7 +1073,8 @@
           "threshold": 55,
           "test": "quad-iso",
           "evidence": "C",
-          "ifNotMet": "Bij ontbrekende baseline: markeer als n.v.t. en werk met LSI en absolute waarden."
+          "ifNotMet": "Bij ontbrekende baseline: markeer als n.v.t. en werk met LSI en absolute waarden.",
+          "method": "Isometrisch 60°, HHD of plaat"
         },
         {
           "id": "vkb-3-ham",
@@ -1061,14 +1085,16 @@
           "threshold": 70,
           "test": "ham-iso",
           "evidence": "C",
-          "ifNotMet": "Bij HT-graft normaal traag; doorbouwen, niet forceren."
+          "ifNotMet": "Bij HT-graft normaal traag; doorbouwen, niet forceren.",
+          "method": "Isometrisch 90°"
         },
         {
           "id": "vkb-3-ckc",
           "label": "Unilaterale CKC-tolerantie: single-leg yielding isometric hold 45–60°, 3 × 45 s met pijn < 4/10",
           "type": "judgement",
           "evidence": "C",
-          "ifNotMet": "Terug naar bilateraal met gewichtsverplaatsing."
+          "ifNotMet": "Terug naar bilateraal met gewichtsverplaatsing.",
+          "method": "Single-leg yielding isometric hold 45–60°"
         },
         {
           "id": "vkb-3-kuit",
@@ -1080,12 +1106,17 @@
           "test": "calf-raise-reps",
           "patientLabel": "Je kan minstens {threshold} keer op één been op je tenen komen.",
           "evidence": "D",
-          "ifNotMet": "Kuitprogramma als aparte prioriteit inplannen."
+          "ifNotMet": "Kuitprogramma als aparte prioriteit inplannen.",
+          "method": "Single-leg calf raise, volledige ROM"
         }
       ],
       "patientFocus": [
         "Je goede been mag het werk niet overnemen.",
         "Je knie voelt beter aan dan ze is. Dat verschil is normaal en het is precies waarom we meten."
+      ],
+      "remarks": [
+        "Opmerkingen. Bij een hamstringgraft is de doelstelling in de vroege fase herstel van de donorsite, niet alleen atrofiepreventie; verwacht een tragere flexiekrachtcurve en test op 90° én op lange spierlengte apart. Bij een BTB-graft is het patellofemorale gewricht de rem, niet de graft.",
+        "De quadricepsdrempel van 65 % is een klinisch voorstel, geen literatuurwaarde. De bekende week-12-drempel van 70 % ligt iets verderop; dit is de tussenstap die voorkomt dat je unilaterale last opbouwt op een been dat nog niet kan aanspannen."
       ]
     },
     {
@@ -1118,7 +1149,8 @@
           "values": [
             "0",
             "spoor"
-          ]
+          ],
+          "method": "Stroke test"
         },
         {
           "id": "vkb-4-quad",
@@ -1130,7 +1162,8 @@
           "test": "quad-iso",
           "patientLabel": "Je bovenbeen haalt minstens {threshold} procent van je andere been.",
           "evidence": "B/C",
-          "ifNotMet": "Loopstart uitstellen, krachtblok van 4 weken."
+          "ifNotMet": "Loopstart uitstellen, krachtblok van 4 weken.",
+          "method": "Isometrisch 60°"
         },
         {
           "id": "vkb-4-quad-base",
@@ -1141,7 +1174,8 @@
           "threshold": 65,
           "test": "quad-iso",
           "evidence": "B/C",
-          "ifNotMet": "Bij ontbrekende baseline: markeer als n.v.t. en werk met LSI en absolute waarden."
+          "ifNotMet": "Bij ontbrekende baseline: markeer als n.v.t. en werk met LSI en absolute waarden.",
+          "method": "Isometrisch 60°"
         },
         {
           "id": "vkb-4-ham",
@@ -1153,7 +1187,8 @@
           "test": "ham-iso",
           "patientLabel": "Je hamstrings halen minstens {threshold} procent van je andere been.",
           "evidence": "C",
-          "ifNotMet": "Idem, krachtblok."
+          "ifNotMet": "Idem, krachtblok.",
+          "method": "Isometrisch 90°"
         },
         {
           "id": "vkb-4-squat",
@@ -1165,7 +1200,8 @@
           "test": "sl-squat-reps",
           "patientLabel": "{threshold} keer een kniebuiging op één been.",
           "evidence": "C",
-          "ifNotMet": "Volume opbouwen, geen loopstart."
+          "ifNotMet": "Volume opbouwen, geen loopstart.",
+          "method": "Tot ±60° knieflexie, gecontroleerd"
         },
         {
           "id": "vkb-4-bridge",
@@ -1177,7 +1213,8 @@
           "test": "sl-bridge-reps",
           "patientLabel": "{threshold} keer een bruggetje op één been.",
           "evidence": "C",
-          "ifNotMet": "Idem."
+          "ifNotMet": "Idem.",
+          "method": "Volledige ROM"
         },
         {
           "id": "vkb-4-kuit",
@@ -1189,7 +1226,8 @@
           "test": "calf-raise-reps",
           "patientLabel": "{threshold} keer op je tenen op één been.",
           "evidence": "C",
-          "ifNotMet": "Kuitprogramma eerst."
+          "ifNotMet": "Kuitprogramma eerst.",
+          "method": "Volledige ROM, cadans 30/min"
         },
         {
           "id": "vkb-4-fwdhop",
@@ -1201,7 +1239,8 @@
           "test": "sl-fwd-hop-reps",
           "patientLabel": "{threshold} kleine sprongetjes op één been, vooruit en omhoog.",
           "evidence": "C",
-          "ifNotMet": "Terug naar bilaterale hopvoorbereiding."
+          "ifNotMet": "Terug naar bilaterale hopvoorbereiding.",
+          "method": "Laag, ter plaatse"
         },
         {
           "id": "vkb-4-verthop",
@@ -1212,7 +1251,8 @@
           "threshold": 15,
           "test": "sl-vert-hop-reps",
           "evidence": "C",
-          "ifNotMet": "Idem."
+          "ifNotMet": "Idem.",
+          "method": "Laag, ter plaatse"
         },
         {
           "id": "vkb-4-soleus",
@@ -1224,7 +1264,8 @@
           "test": "soleus-bw",
           "patientLabel": "Je kuit is sterk genoeg. Dit is vaker de beperkende factor dan je knie.",
           "evidence": "D",
-          "ifNotMet": "Vaak de echte beperking. Aparte kuitprogressie van 4 tot 6 weken."
+          "ifNotMet": "Vaak de echte beperking. Aparte kuitprogressie van 4 tot 6 weken.",
+          "method": "Zittende isometrische calf raise, knie 90°, ≥10° dorsiflexie"
         },
         {
           "id": "vkb-4-dorsiflexie",
@@ -1235,13 +1276,19 @@
           "threshold": 100,
           "test": "wblt",
           "evidence": "D",
-          "ifNotMet": "Mobilisatie; loopstart kan wel bij klein deficit met opvolging."
+          "ifNotMet": "Mobilisatie; loopstart kan wel bij klein deficit met opvolging.",
+          "method": "Weight-bearing lunge test"
         }
       ],
       "patientFocus": [
         "Je begint met afwisselen tussen wandelen en lopen, twee keer per week.",
         "Elke sessie gaat pas door als de vorige goed verteerd is.",
         "Wat telt is niet hoe je je voelt tijdens het lopen, maar hoe je knie er de dag erna uitziet."
+      ],
+      "remarks": [
+        "Progressieschema. Kies één van de twee programma's en meng ze niet. Het sessiegebaseerde schema (15 sessies, geen kalender) verdient de voorkeur bij een knie die nog reactief is, omdat sessie 4 pas volgt als sessie 3 verdragen werd. Het zesweekse kalenderschema ramt de eerste weken hard op (+60 % van week 1 naar 2) en laat minder ruimte om een week vast te houden.",
+        "Opvolging per sessie. Noteer telkens: tolerantie tijdens, pijn de volgende ochtend, stroke test de volgende dag. De effusierespons de dag erna is de beslisser, niet het gevoel tijdens het lopen.",
+        "Praktische keuzes. Loop sneller dan joggen waar mogelijk, want een voorvoetlanding ontlast de knie. Outdoor-atleten lopen buiten. Twee loopsessies per week gedurende de eerste twee tot drie weken. Lopen en springen in dezelfde sessie, krachtwerk op andere dagen; moet het toch samen, dan krachtwerk ná het lopen."
       ]
     },
     {
@@ -1267,7 +1314,8 @@
           "type": "judgement",
           "patientLabel": "Je loopprogramma gaat al minstens drie weken goed.",
           "evidence": "C",
-          "ifNotMet": "Lopen consolideren vóór sprongbelasting."
+          "ifNotMet": "Lopen consolideren vóór sprongbelasting.",
+          "method": "Sessielog"
         },
         {
           "id": "vkb-5-stroke",
@@ -1282,7 +1330,8 @@
           "values": [
             "0",
             "spoor"
-          ]
+          ],
+          "method": "Stroke test"
         },
         {
           "id": "vkb-5-quad",
@@ -1294,7 +1343,8 @@
           "test": "quad-iso",
           "patientLabel": "Je bovenbeen haalt ongeveer drie kwart van je andere been.",
           "evidence": "C",
-          "ifNotMet": "Krachtblok, plyo uitstellen."
+          "ifNotMet": "Krachtblok, plyo uitstellen.",
+          "method": "Isometrisch 60°"
         },
         {
           "id": "vkb-5-quad-base",
@@ -1305,7 +1355,8 @@
           "threshold": 70,
           "test": "quad-iso",
           "evidence": "C",
-          "ifNotMet": "Bij ontbrekende baseline: markeer als n.v.t. en werk met LSI en absolute waarden."
+          "ifNotMet": "Bij ontbrekende baseline: markeer als n.v.t. en werk met LSI en absolute waarden.",
+          "method": "Isometrisch 60°"
         },
         {
           "id": "vkb-5-landing",
@@ -1317,7 +1368,8 @@
           "test": "dl-landing-pfa",
           "patientLabel": "Je landt gelijkmatig op beide benen. Dit meten we op de krachtplaat.",
           "evidence": "D",
-          "ifNotMet": "Landingstechniek en excentrische capaciteit eerst."
+          "ifNotMet": "Landingstechniek en excentrische capaciteit eerst.",
+          "method": "Double-leg land and hold vanaf 30 cm, krachtplaat"
         },
         {
           "id": "vkb-5-edi",
@@ -1328,7 +1380,8 @@
           "threshold": 15,
           "test": "cmj-edi",
           "evidence": "D",
-          "ifNotMet": "Excentrisch en yielding isometrisch werk opvoeren."
+          "ifNotMet": "Excentrisch en yielding isometrisch werk opvoeren.",
+          "method": "CMJ bilateraal op plaat"
         },
         {
           "id": "vkb-5-kuit",
@@ -1340,7 +1393,8 @@
           "test": "calf-raise-reps",
           "patientLabel": "{threshold} keer op je tenen op één been.",
           "evidence": "D",
-          "ifNotMet": "Kuit is de eerste beperking bij sprongvolume."
+          "ifNotMet": "Kuit is de eerste beperking bij sprongvolume.",
+          "method": "Single-leg calf raise"
         },
         {
           "id": "vkb-5-pijn",
@@ -1351,12 +1405,17 @@
           "threshold": 3,
           "test": "nprs-adl",
           "evidence": "C",
-          "ifNotMet": "Volume halveren, valhoogte terug."
+          "ifNotMet": "Volume halveren, valhoogte terug.",
+          "method": "NPRS tijdens en 24 u na"
         }
       ],
       "patientFocus": [
         "Telkens één ding tegelijk: ofwel hoger, ofwel meer, ofwel op één been.",
         "Nooit twee dingen samen, anders weten we bij een terugslag niet waar het aan lag."
+      ],
+      "remarks": [
+        "Opmerkingen. Bouw op in landingsvolume vóór je in sprunghoogte opbouwt. Één variabele per keer: hoogte, volume, of eenbenig. Nooit twee tegelijk.",
+        "Een CMJ-hoogte die symmetrisch oogt zegt hier weinig. De asymmetriemetrieken op de plaat (eccentric deceleration impulse, concentric impulse, peak landing force) zijn gevoeliger en blijven langer afwijken dan de uitkomstmaat."
       ]
     },
     {
@@ -1386,7 +1445,8 @@
           "test": "quad-iso",
           "patientLabel": "Je bovenbeen en hamstrings halen minstens {threshold} procent van je andere been.",
           "evidence": "C",
-          "ifNotMet": "Krachtblok van 6 weken, unilaterale plyo uitstellen."
+          "ifNotMet": "Krachtblok van 6 weken, unilaterale plyo uitstellen.",
+          "method": "Isometrisch 60°"
         },
         {
           "id": "vkb-6-quad-base",
@@ -1397,7 +1457,8 @@
           "threshold": 80,
           "test": "quad-iso",
           "evidence": "C",
-          "ifNotMet": "Bij ontbrekende baseline: markeer als n.v.t. en werk met LSI en absolute waarden."
+          "ifNotMet": "Bij ontbrekende baseline: markeer als n.v.t. en werk met LSI en absolute waarden.",
+          "method": "Isometrisch 60°"
         },
         {
           "id": "vkb-6-ham",
@@ -1408,7 +1469,8 @@
           "threshold": 80,
           "test": "ham-iso",
           "evidence": "C",
-          "ifNotMet": "Idem, met nadruk op lange spierlengte."
+          "ifNotMet": "Idem, met nadruk op lange spierlengte.",
+          "method": "Isometrisch 90°, plus excentrisch waar mogelijk"
         },
         {
           "id": "vkb-6-plyo",
@@ -1416,7 +1478,8 @@
           "type": "judgement",
           "patientLabel": "Je hebt het springen op twee benen volledig doorlopen.",
           "evidence": "C",
-          "ifNotMet": "Fase afmaken."
+          "ifNotMet": "Fase afmaken.",
+          "method": "Fasen 1 tot 3 van het continuüm"
         },
         {
           "id": "vkb-6-tts",
@@ -1428,7 +1491,8 @@
           "test": "sl-ttsl",
           "patientLabel": "Je landt gecontroleerd op één been en komt snel tot stilstand.",
           "evidence": "D",
-          "ifNotMet": "Landingstechniek en excentrisch werk."
+          "ifNotMet": "Landingstechniek en excentrisch werk.",
+          "method": "Single-leg land and hold, krachtplaat"
         },
         {
           "id": "vkb-6-landing",
@@ -1439,7 +1503,8 @@
           "threshold": 15,
           "test": "sl-landing-pfa",
           "evidence": "D",
-          "ifNotMet": "Landingstechniek en excentrisch werk."
+          "ifNotMet": "Landingstechniek en excentrisch werk.",
+          "method": "Single-leg land and hold, krachtplaat"
         },
         {
           "id": "vkb-6-rsi",
@@ -1450,7 +1515,8 @@
           "threshold": 85,
           "test": "sl-rsi",
           "evidence": "D",
-          "ifNotMet": "Stiffness- en kuitwerk, nog geen COD."
+          "ifNotMet": "Stiffness- en kuitwerk, nog geen COD.",
+          "method": "Single-leg hop test of SL drop jump, RSI"
         },
         {
           "id": "vkb-6-snelheid",
@@ -1462,7 +1528,8 @@
           "test": "run-speed-pct",
           "patientLabel": "Je kan al bijna op volle snelheid rechtdoor lopen.",
           "evidence": "C",
-          "ifNotMet": "Sprintprogressie eerst, COD komt na sprint."
+          "ifNotMet": "Sprintprogressie eerst, COD komt na sprint.",
+          "method": "Sprinttest of GPS"
         },
         {
           "id": "vkb-6-effusie",
@@ -1470,13 +1537,18 @@
           "type": "judgement",
           "patientLabel": "Geen zwelling na je zwaarste trainingsdag.",
           "evidence": "C",
-          "ifNotMet": "Volume terug."
+          "ifNotMet": "Volume terug.",
+          "method": "Stroke test 24 u na de zwaarste sessie"
         }
       ],
       "patientFocus": [
         "De volgorde ligt vast: eerst rechtdoor, dan zijwaarts, dan remmen, dan draaien dat je kent, dan draaien dat je niet kent.",
         "Elke stap krijgt minstens twee goede sessies voor we verder gaan.",
         "Vanaf hier trainen we ook je reactie en aandacht."
+      ],
+      "remarks": [
+        "Volgorde binnen deze poort. Eerst eenbenige plyometrie in het sagittale vlak, dan frontaal en transversaal, dan voorgeplande deceleratie, dan voorgeplande richtingsverandering, en pas daarna onverwachte richtingsverandering. Elke stap krijgt minstens twee sessies zonder effusierespons voor je doorgaat.",
+        "Neurocognitieve laag. Vanaf hier wordt de cognitieve belasting relevanter dan de beweging zelf. Bouw op van intern naar extern focus, van voorgepland naar reactief, van enkelvoudig naar dubbeltaak. Er bestaan geen gevalideerde afkapwaarden voor reactieve capaciteit; wat je wel kan meten is het verschil tussen voorgeplande en onverwachte uitvoering (tijd, grondcontacttijd, of kwaliteitsscore). Een verschil dat groter is dan aan de niet-aangedane zijde is een klinisch signaal, geen drempel."
       ]
     },
     {
@@ -1506,7 +1578,8 @@
           "test": "quad-iso",
           "patientLabel": "Je bovenbeen, hamstrings en bilspieren halen minstens {threshold} procent van je andere been.",
           "evidence": "C",
-          "ifNotMet": "Krachtblok, OFR beperkt tot lineair werk."
+          "ifNotMet": "Krachtblok, OFR beperkt tot lineair werk.",
+          "method": "Isometrisch 60°"
         },
         {
           "id": "vkb-7-quad-base",
@@ -1517,7 +1590,8 @@
           "threshold": 85,
           "test": "quad-iso",
           "evidence": "C",
-          "ifNotMet": "Bij ontbrekende baseline: markeer als n.v.t. en werk met LSI en absolute waarden."
+          "ifNotMet": "Bij ontbrekende baseline: markeer als n.v.t. en werk met LSI en absolute waarden.",
+          "method": "Isometrisch 60°"
         },
         {
           "id": "vkb-7-ham",
@@ -1528,7 +1602,8 @@
           "threshold": 85,
           "test": "ham-iso",
           "evidence": "C",
-          "ifNotMet": "Idem."
+          "ifNotMet": "Idem.",
+          "method": "Isometrisch plus Nordic-break point of dynamometrie"
         },
         {
           "id": "vkb-7-ham-ecc",
@@ -1539,7 +1614,8 @@
           "threshold": 85,
           "test": "ham-ecc",
           "evidence": "C",
-          "ifNotMet": "Idem."
+          "ifNotMet": "Idem.",
+          "method": "Isometrisch plus Nordic-break point of dynamometrie"
         },
         {
           "id": "vkb-7-heup",
@@ -1550,7 +1626,8 @@
           "threshold": 85,
           "test": "hip-ext",
           "evidence": "C",
-          "ifNotMet": "Gerichte progressie, OFR mag door."
+          "ifNotMet": "Gerichte progressie, OFR mag door.",
+          "method": "HHD of dynamometer"
         },
         {
           "id": "vkb-7-snelheid",
@@ -1562,7 +1639,8 @@
           "test": "run-speed-pct",
           "patientLabel": "Je haalt bijna je volle loopsnelheid.",
           "evidence": "C",
-          "ifNotMet": "Sprintblok afwerken vóór chaos."
+          "ifNotMet": "Sprintblok afwerken vóór chaos.",
+          "method": "Sprint of GPS"
         },
         {
           "id": "vkb-7-coord",
@@ -1573,7 +1651,8 @@
           "threshold": 95,
           "test": "coord-pct",
           "evidence": "C",
-          "ifNotMet": "Voorgepland consolideren."
+          "ifNotMet": "Voorgepland consolideren.",
+          "method": "Timing of kwaliteitsscore"
         },
         {
           "id": "vkb-7-plyo",
@@ -1581,7 +1660,8 @@
           "type": "judgement",
           "patientLabel": "Je hebt alle sprongoefeningen doorlopen.",
           "evidence": "C",
-          "ifNotMet": "Ontbrekende fase afwerken."
+          "ifNotMet": "Ontbrekende fase afwerken.",
+          "method": "Fasen 1 tot 4"
         },
         {
           "id": "vkb-7-conditie",
@@ -1589,19 +1669,26 @@
           "type": "judgement",
           "patientLabel": "Je conditie is terug op peil.",
           "evidence": "C",
-          "ifNotMet": "Conditieblok, OFR met lagere dichtheid."
+          "ifNotMet": "Conditieblok, OFR met lagere dichtheid.",
+          "method": "Veldtest of GPS"
         },
         {
           "id": "vkb-7-rsi",
           "label": "Psychologische gereedheid besproken (ACL-RSI als vlag, geen poort in deze fase)",
           "type": "judgement",
           "evidence": "C",
-          "ifNotMet": "Bespreken, angstvermijding gericht aanpakken."
+          "ifNotMet": "Bespreken, angstvermijding gericht aanpakken.",
+          "method": "ACL-RSI"
         }
       ],
       "patientFocus": [
         "Eerst alleen, dan met een partner, dan met tegenstand, dan op wedstrijdtempo.",
         "Rustig en voorspelbaar eerst, snel en chaotisch later."
+      ],
+      "remarks": [
+        "Control to chaos. Bouw op langs vier assen tegelijk maar nooit meer dan één per sessie: van voorgepland naar onverwacht, van open ruimte naar krappe ruimte, van geen tegenstander naar contact, van laag naar hoog tempo. Leg per week vast waar je zit op elke as.",
+        "Meet de belasting, niet alleen de kwaliteit. Zonder GPS of vergelijkbare data weet je niet of de speler op 60 % of op 95 % van zijn wedstrijdeisen zit. Minimaal: afstand, aantal versnellingen en vertragingen, en het aantal hoge-intensiteitsacties per sessie.",
+        "Perturbatie en visuo-spatiale belasting horen hier, niet pas bij return to play. Het letsel ontstaat bij een beslissing onder tijdsdruk met verstoorde bovenlichaamscontrole, niet bij een gecontroleerde cutting-beweging."
       ]
     },
     {
@@ -1631,7 +1718,8 @@
           "test": "quad-iso",
           "patientLabel": "Je bovenbeen en hamstrings halen minstens {threshold} procent van je andere been.",
           "evidence": "B",
-          "ifNotMet": "Gerichte hertest na 6 weken; deeltraining zonder contact."
+          "ifNotMet": "Gerichte hertest na 6 weken; deeltraining zonder contact.",
+          "method": "Isometrisch 60° of isokinetisch ≥60°/s"
         },
         {
           "id": "vkb-8-quad-base",
@@ -1643,7 +1731,8 @@
           "test": "quad-iso",
           "patientLabel": "Je bent terug op je eigen niveau van voor de blessure, als we dat gemeten hebben.",
           "evidence": "B",
-          "ifNotMet": "Bij ontbrekende baseline: markeer als n.v.t. en werk met LSI en absolute waarden."
+          "ifNotMet": "Bij ontbrekende baseline: markeer als n.v.t. en werk met LSI en absolute waarden.",
+          "method": "Isometrisch 60° of isokinetisch ≥60°/s"
         },
         {
           "id": "vkb-8-ham",
@@ -1654,7 +1743,8 @@
           "threshold": 90,
           "test": "ham-iso",
           "evidence": "B",
-          "ifNotMet": "Idem."
+          "ifNotMet": "Idem.",
+          "method": "Isokinetisch of dynamometrie, ook excentrisch op lange lengte"
         },
         {
           "id": "vkb-8-ham-ecc",
@@ -1665,7 +1755,8 @@
           "threshold": 90,
           "test": "ham-ecc",
           "evidence": "B",
-          "ifNotMet": "Idem."
+          "ifNotMet": "Idem.",
+          "method": "Isokinetisch of dynamometrie, ook excentrisch op lange lengte"
         },
         {
           "id": "vkb-8-hop",
@@ -1683,7 +1774,8 @@
           ],
           "patientLabel": "Je springtesten zijn minstens {threshold} procent gelijk.",
           "evidence": "B",
-          "ifNotMet": "Hoptraining is geen oplossing; zoek de onderliggende kracht- of landingsbeperking."
+          "ifNotMet": "Hoptraining is geen oplossing; zoek de onderliggende kracht- of landingsbeperking.",
+          "method": "Single, triple, crossover, 6 m getimed, verticaal"
         },
         {
           "id": "vkb-8-landing",
@@ -1698,7 +1790,8 @@
           "tests": [
             "sl-landing-pfa",
             "sl-loading-rate"
-          ]
+          ],
+          "method": "Single-leg land and hold of drop landing, krachtplaat"
         },
         {
           "id": "vkb-8-strategie",
@@ -1709,7 +1802,8 @@
           "threshold": 10,
           "test": "sl-cmj-conc",
           "evidence": "D",
-          "ifNotMet": "Symmetrische hoogte met asymmetrische strategie is een rode vlag, geen pass."
+          "ifNotMet": "Symmetrische hoogte met asymmetrische strategie is een rode vlag, geen pass.",
+          "method": "SL CMJ, krachtplaat"
         },
         {
           "id": "vkb-8-rsi",
@@ -1720,7 +1814,8 @@
           "threshold": 90,
           "test": "sl-rsi",
           "evidence": "D",
-          "ifNotMet": "Stiffness- en kuitwerk."
+          "ifNotMet": "Stiffness- en kuitwerk.",
+          "method": "SL drop jump, hoogte en contacttijd"
         },
         {
           "id": "vkb-8-stroke",
@@ -1735,7 +1830,8 @@
           "values": [
             "0",
             "spoor"
-          ]
+          ],
+          "method": "Stroke test, ook 24 u na de zwaarste trainingsdag"
         },
         {
           "id": "vkb-8-prom",
@@ -1743,7 +1839,8 @@
           "type": "judgement",
           "patientLabel": "Je vindt zelf dat je knie aanvoelt zoals je wil.",
           "evidence": "A",
-          "ifNotMet": "Bespreken welk domein achterblijft."
+          "ifNotMet": "Bespreken welk domein achterblijft.",
+          "method": "IKDC of KOOS"
         },
         {
           "id": "vkb-8-aclrsi",
@@ -1754,7 +1851,8 @@
           "threshold": 65,
           "test": "acl-rsi",
           "evidence": "C",
-          "ifNotMet": "Geen harde stop, wel gericht gesprek en blootstelling; overweeg doorverwijzing."
+          "ifNotMet": "Geen harde stop, wel gericht gesprek en blootstelling; overweeg doorverwijzing.",
+          "method": "ACL-RSI"
         },
         {
           "id": "vkb-8-belasting",
@@ -1762,12 +1860,18 @@
           "type": "judgement",
           "patientLabel": "Je hebt minstens vier weken volledig meegetraind zonder problemen.",
           "evidence": "C",
-          "ifNotMet": "Belasting verder opbouwen vóór volledige training."
+          "ifNotMet": "Belasting verder opbouwen vóór volledige training.",
+          "method": "GPS of sessielog"
         }
       ],
       "patientFocus": [
         "Even ver springen betekent niet dat beide benen even hard werken: je heup kan stilletjes overnemen.",
         "Daarom meten we niet alleen hoe ver je springt, maar ook hoe je landt."
+      ],
+      "remarks": [
+        "Over de hoptests. Afstand kan symmetrisch zijn terwijl het kniewerk aan de aangedane zijde fors lager ligt en de heup het opvangt. Dat betekent dat een hopbatterij op 92 % je niets zegt zonder een strategie- of kinetiekmaat ernaast. Dit is de reden dat de landingskinetiek in deze tabel staat.",
+        "Wat de krachtplaat hier moet tonen. Sprongtests falen per fase: de CMJ vooral concentrisch, de drop jump excentrisch, concentrisch én in reactieve sterkte. Kijk daarom bij deze poort naar eccentric impulse, force at zero velocity en concentric impulse naast RSI, niet naar sprunghoogte alleen. Het eenbenige drop jump is vermoedelijk de laatste test die symmetrisch wordt; als die als enige nog achterblijft, is dat verwacht en geen reden om de rest van de batterij in twijfel te trekken. Bij een patellapeesgraft mag een goede isokinetische quadricepstest het excentrische deficit op de plaat niet vervangen, want die twee hangen niet samen. Welk deficit naar welk trainingsspoor verwijst, staat op het tabblad Programmering.",
+        "Over ACL-RSI. De drempel van 65 is een veelgebruikte werkwaarde, niet gevalideerd als beslissingsgrens. Behandel hem als een gespreksopener: welke item scoort laag, en waarom."
       ]
     },
     {
@@ -1793,7 +1897,8 @@
           "type": "judgement",
           "patientLabel": "Alle testen geslaagd.",
           "evidence": "A",
-          "ifNotMet": "Hertest na 6 weken gericht werk."
+          "ifNotMet": "Hertest na 6 weken gericht werk.",
+          "method": "Poort 8"
         },
         {
           "id": "vkb-9-team",
@@ -1801,7 +1906,8 @@
           "type": "judgement",
           "patientLabel": "Minstens 4 weken volledig meegetraind zonder klachten.",
           "evidence": "C",
-          "ifNotMet": "Verlengen tot vier schone weken."
+          "ifNotMet": "Verlengen tot vier schone weken.",
+          "method": "Sessielog"
         },
         {
           "id": "vkb-9-vaardigheden",
@@ -1809,14 +1915,16 @@
           "type": "judgement",
           "patientLabel": "Je vaardigheden zijn terug, ook als je moe bent.",
           "evidence": "C",
-          "ifNotMet": "Sportspecifiek blok."
+          "ifNotMet": "Sportspecifiek blok.",
+          "method": "Observatie in trainingscontext"
         },
         {
           "id": "vkb-9-effusie",
           "label": "Effusierespons op wedstrijdbelasting: geen toename van de stroke test na de zwaarste training",
           "type": "judgement",
           "evidence": "C",
-          "ifNotMet": "Belasting doseren, eerst gedeeltelijke speeltijd."
+          "ifNotMet": "Belasting doseren, eerst gedeeltelijke speeltijd.",
+          "method": "Stroke test na de zwaarste training"
         },
         {
           "id": "vkb-9-psych",
@@ -1824,7 +1932,8 @@
           "type": "judgement",
           "patientLabel": "Je voelt je er zelf klaar voor.",
           "evidence": "C",
-          "ifNotMet": "Niet forceren. Angstvermijding voorspelt niet-terugkeer sterker dan kracht."
+          "ifNotMet": "Niet forceren. Angstvermijding voorspelt niet-terugkeer sterker dan kracht.",
+          "method": "ACL-RSI, gesprek"
         },
         {
           "id": "vkb-9-beslissing",
@@ -1832,11 +1941,16 @@
           "type": "judgement",
           "patientLabel": "Jij, je arts en je club beslissen dit samen met ons.",
           "evidence": "C",
-          "ifNotMet": "Beslissing uitstellen tot het gesprek gevoerd is."
+          "ifNotMet": "Beslissing uitstellen tot het gesprek gevoerd is.",
+          "method": "Gesprek met sporter, arts, club"
         }
       ],
       "patientFocus": [
         "Eerst een deel van de wedstrijd, dan een volledige wedstrijd, dan alles."
+      ],
+      "remarks": [
+        "Waarom de tijdspoort hard is. Uitstel van terugkeer verlaagt het risico op een nieuw letsel substantieel tot ongeveer negen maanden. De gemiddelde werkelijke terugkeer naar competitief niveau ligt eerder rond zeventien maanden. Behandel negen maanden als vloer, niet als doel.",
+        "Terugkeer is getrapt. Return to play is niet return to performance. Plan gedeeltelijke speeltijd, dan volledige speeltijd, dan volledige belasting over enkele weken, met een beslismoment tussen elke stap."
       ]
     }
   ],

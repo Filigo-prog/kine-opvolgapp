@@ -136,6 +136,7 @@ export async function criteriaChecklistView({ code }) {
       h('div', { class: 'criterion-main' },
         h('p', { class: 'criterion-label' }, criterionText(criterion, 'label')),
         criterion.note ? h('p', { class: 'criterion-note-text muted' }, criterionText(criterion, 'note')) : null,
+        criterion.method ? h('p', { class: 'criterion-method muted' }, h('strong', {}, 'Testmethode: '), criterion.method) : null,
         h('p', { class: `suggestion suggestion-${suggestion}` },
           h('strong', {}, SUGGESTION_LABELS[suggestion]),
           suggestionDetail(criterion, details, protocol)),
@@ -173,8 +174,14 @@ export async function criteriaChecklistView({ code }) {
       h('h2', {}, level.title),
       level.subtitle ? h('p', { class: 'muted' }, level.subtitle) : null,
       level.focus ? h('p', {}, h('strong', {}, 'Focus: '), level.focus) : null,
+      level.patientGoal ? h('p', {}, h('strong', {}, 'Doel: '), level.patientGoal) : null,
       h('div', { class: 'progress', role: 'presentation' }, progressBar),
       progressText,
+      level.remarks?.length
+        ? h('details', { class: 'level-remarks' },
+          h('summary', {}, 'Opmerkingen en aandachtspunten van deze fase'),
+          level.remarks.map((line) => h('p', {}, line)))
+        : null,
     ),
     h('div', { class: 'card' },
       h('h2', {}, level.number < protocol.levels.length ? `Criteria om naar level ${level.number + 1} te gaan` : 'Criteria voor return to sport'),

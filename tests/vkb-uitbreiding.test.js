@@ -157,6 +157,21 @@ export const tests = {
     ok(build({ 'sl-landing-pfa': { left: '900', right: '' } }).errors['sl-landing-pfa'], 'beide zijden nodig');
     equal(build({ 'vertical-hop': { left: '40,5', right: '42' } }).session.measurements['vertical-hop'].lsi, 96.4);
   },
+  'Testmethode bij elk meet- en oordeelcriterium, opmerkingen per fase; een lege waarde wordt geweigerd': async () => {
+    const protocol = await vkb();
+    for (const c of all(protocol).filter((x) => x.type !== 'minTime')) ok(c.method, `${c.id}: testmethode`);
+    ok(protocol.levels.every((l) => l.remarks?.length), 'opmerkingen per fase');
+    const broken = JSON.parse(JSON.stringify(protocol));
+    broken.levels[0].criteria[0].method = ' ';
+    let message = '';
+    try { validateProtocol(broken, 'vkb'); } catch (error) { message = error.message; }
+    ok(message.includes('testmethode'), message);
+    broken.levels[0].criteria[0].method = 'ok';
+    broken.levels[0].remarks = ['goed', ''];
+    message = '';
+    try { validateProtocol(broken, 'vkb'); } catch (error) { message = error.message; }
+    ok(message.includes('remarks'), message);
+  },
   'Mijlpalen per afgerond level, stopregels, na terugkeer en uitleg zijn aanwezig': async () => {
     const protocol = await vkb();
     ok(protocol.milestones.filter((m) => m.trigger.type === 'level').length >= 6, 'level-mijlpalen');
