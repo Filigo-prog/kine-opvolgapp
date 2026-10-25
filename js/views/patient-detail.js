@@ -23,6 +23,7 @@ import { homeLogCard } from '../ui/home-log.js';
 import { enterPatientMode } from '../ui/mode.js';
 import { describeBilateral, describeSingle } from '../ui/format.js';
 import { notFound } from '../ui/not-found.js';
+import { shareOverview } from '../ui/share-overview.js';
 
 export async function patientDetailView({ code }) {
   const patient = await getPatient(code);
@@ -79,6 +80,11 @@ export async function patientDetailView({ code }) {
     navigate('#/patienten');
   }
 
+  async function onShareOverview() {
+    const result = await shareOverview({ patient, protocol, statuses, history, sessions, dates, today: todayIso() });
+    if (result === 'gedownload') showToast('PDF opgeslagen. Voeg het toe aan je mail.');
+  }
+
   return h('section', {},
     h('div', { class: 'page-head' },
       h('div', {},
@@ -115,6 +121,7 @@ export async function patientDetailView({ code }) {
           h('a', { class: 'btn btn-secondary', href: `#/patient/${encodeURIComponent(code)}/voortgang` }, 'Bekijk patiëntweergave'),
           h('button', { type: 'button', class: 'btn btn-secondary', onclick: () => enterPatientMode(code) }, 'Toon aan patiënt'),
         ),
+        h('button', { type: 'button', class: 'btn btn-secondary', onclick: onShareOverview }, 'Overzicht delen (PDF)'),
       ),
     ),
     protocol.homeLog

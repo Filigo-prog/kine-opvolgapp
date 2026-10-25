@@ -7,6 +7,7 @@ import { tests as enkelTests } from './enkel.test.js';
 import { tests as homeLogTests } from './home-log.test.js';
 import { tests as lsiTests } from './lsi.test.js';
 import { tests as milestoneTests } from './milestones.test.js';
+import { tests as overviewTests } from './overview.test.js';
 import { tests as patientTests } from './patient.test.js';
 import { tests as scheduleTests } from './schedule.test.js';
 import { tests as sessionTests } from './test-session.test.js';
@@ -14,7 +15,7 @@ import { tests as textTests } from './text.test.js';
 import { tests as valdTests } from './vald.test.js';
 import { tests as vkbTests } from './vkb-uitbreiding.test.js';
 
-const suites = { backup: backupTests, criteria: criteriaTests, dates: dateTests, enkel: enkelTests, thuislog: homeLogTests, lsi: lsiTests, mijlpalen: milestoneTests, patient: patientTests, testschema: scheduleTests, testmoment: sessionTests, tekst: textTests, vald: valdTests, vkbUitbreiding: vkbTests };
+const suites = { backup: backupTests, criteria: criteriaTests, dates: dateTests, enkel: enkelTests, thuislog: homeLogTests, lsi: lsiTests, mijlpalen: milestoneTests, overzicht: overviewTests, patient: patientTests, testschema: scheduleTests, testmoment: sessionTests, tekst: textTests, vald: valdTests, vkbUitbreiding: vkbTests };
 const results = document.getElementById('results');
 let passed = 0;
 let failed = 0;
